@@ -1,0 +1,100 @@
+{
+  "totalTested": 343,
+  "totalPassed": 343,
+  "failureCount": 0,
+  "passRate": "100%",
+  "averageFpsThrottled": 62.9,
+  "failures": [],
+  "samples": [
+    {
+      "text": "M\nMETAVAYN\nTECHNOLOGIES\nHome\nAbout us\nSe",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "text": "M\nMETAVAYN\nTECHNOLOGIES\nHome\nAbout us\nSe",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "text": "M\nMETAVAYN\nTECHNOLOGIES",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "text": "M",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "text": "M",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "text": "METAVAYN\nTECHNOLOGIES",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "text": "METAVAYN",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "text": "TECHNOLOGIES",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "text": "Home",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "text": "About us",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "text": "Services",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "text": "Industries",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "text": "Our approach",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "text": "Careers",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "text": "Contact",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    }
+  ]
+}
