@@ -52,7 +52,7 @@ const config: Config = {
         "cad-24": "var(--cad-space-24)", // 96px
       },
       maxWidth: {
-        prose: "75ch",
+        prose: "68ch",
       },
       transitionTimingFunction: {
         "cad-ease": "var(--ease-cad-deliberate)",

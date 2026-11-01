@@ -15,7 +15,8 @@ import {
 const DISCIPLINES: DisciplineMapping[] = Object.values(DISCIPLINE_HIGHLIGHT_MAPPINGS);
 
 export function WhatWeDoSection() {
-  const [activeId, setActiveId] = useState<string>("hvac");
+  // First item active on load
+  const [activeId, setActiveId] = useState<string>("product");
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const activeDiscipline =
@@ -59,7 +60,7 @@ export function WhatWeDoSection() {
     >
       <Container>
         {/* Section Header in Sentence Case */}
-        <div className="border-b border-pale-blue/20 pb-4 mb-12">
+        <div className="border-b border-pale-blue/20 pb-4 mb-10">
           <h2 className="font-display text-display-xl sm:text-display-2xl text-paper">
             What we do
           </h2>
@@ -67,8 +68,8 @@ export function WhatWeDoSection() {
 
         {/* Layout: Left Column Scrolls Past Sticky Right Viewport */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start relative">
-          {/* Left Column: Hairline Index List */}
-          <div className="lg:col-span-5 divide-y divide-pale-blue/20 border-t border-b border-pale-blue/20">
+          {/* Left Column: Exactly one hairline rule above first item only, then one hairline between items */}
+          <div className="lg:col-span-5 border-t border-pale-blue/20 divide-y divide-pale-blue/20">
             {DISCIPLINES.map((d) => {
               const isSelected = d.id === activeId;
               return (
@@ -80,16 +81,16 @@ export function WhatWeDoSection() {
                   onMouseEnter={() => setActiveId(d.id)}
                   onFocus={() => setActiveId(d.id)}
                   tabIndex={0}
-                  className="py-10 transition-colors duration-fast cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-pale-blue focus-visible:ring-offset-2 focus-visible:ring-offset-black group"
+                  className="py-6 sm:py-7 transition-colors duration-fast cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-pale-blue focus-visible:ring-offset-2 focus-visible:ring-offset-black group"
                   role="button"
                   aria-pressed={isSelected}
                   aria-label={`${d.title} capability details`}
                 >
-                  <div className="flex items-baseline justify-between mb-2">
+                  <div className="flex items-baseline justify-between">
                     <h3
-                      className={`font-display text-display-base sm:text-display-lg transition-colors ${
+                      className={`font-display text-display-base sm:text-display-lg transition-colors duration-fast ${
                         isSelected
-                          ? "font-bold text-paper"
+                          ? "font-semibold text-paper"
                           : "font-normal text-paper/80 group-hover:text-paper"
                       }`}
                     >
@@ -97,14 +98,17 @@ export function WhatWeDoSection() {
                     </h3>
                   </div>
 
-                  {/* Active Indicator Rule */}
-                  {isSelected ? (
-                    <div className="w-10 h-0.5 bg-copper mb-4 transition-all duration-fast" />
-                  ) : (
-                    <div className="w-0 h-0.5 bg-transparent mb-4 transition-all duration-fast" />
-                  )}
+                  {/* Active Indicator Rule: short copper bar (2px x 40px) under heading */}
+                  <div className="h-[2px] mt-1.5 mb-2.5">
+                    {isSelected ? (
+                      <div className="w-10 h-[2px] bg-copper transition-all duration-300" />
+                    ) : (
+                      <div className="w-0 h-[2px] bg-transparent transition-all duration-300" />
+                    )}
+                  </div>
 
-                  <p className="font-sans text-body-sm text-paper/80 leading-relaxed mb-4 max-w-prose">
+                  {/* Reduced gap to body text and constrained line length */}
+                  <p className="font-sans text-body text-paper/80 leading-relaxed mb-2.5 max-w-[68ch]">
                     {d.description}
                   </p>
 

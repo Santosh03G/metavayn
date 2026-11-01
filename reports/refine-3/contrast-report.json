@@ -1,0 +1,184 @@
+{
+  "totalTested": 673,
+  "totalPassed": 673,
+  "failureCount": 0,
+  "passRate": "100%",
+  "failures": [],
+  "samples": [
+    {
+      "page": "home",
+      "text": "M\nMETAVAYN\nTECHNOLOGIES\nHome\nAbout us\nSe",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "M\nMETAVAYN\nTECHNOLOGIES\nHome\nAbout us\nSe",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "M\nMETAVAYN\nTECHNOLOGIES",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "M",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "M",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "METAVAYN\nTECHNOLOGIES",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "METAVAYN",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "TECHNOLOGIES",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "Home",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "About us",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "Services",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "Industries",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "Our approach",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "Careers",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "Contact",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "Talk to our engineers",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "Talk to our engineers",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "Talk to our engineers",
+      "ratio": 17.58,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "Menu",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "Engineering the next dimension\n\nEngineer",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "Engineering the next dimension\n\nEngineer",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "Engineering the next dimension\n\nEngineer",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "Engineering the next dimension\n\nEngineer",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "Engineering the next dimension\n\nEngineer",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    },
+    {
+      "page": "home",
+      "text": "Engineering the next dimension\n\nEngineer",
+      "ratio": 5.94,
+      "required": 4.5,
+      "pass": true
+    }
+  ]
+}

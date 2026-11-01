@@ -15,10 +15,10 @@ export default function OurApproachPage() {
             <h1 className="font-display text-display-2xl sm:text-display-3xl text-paper tracking-tight">
               Our approach
             </h1>
-            <p className="font-display text-display-lg text-paper font-semibold">
+            <p className="text-lead text-paper">
               Define, Design, Validate, Deliver
             </p>
-            <p className="font-sans text-body-lg text-paper leading-relaxed max-w-prose">
+            <p className="font-sans text-body text-paper leading-relaxed max-w-[68ch]">
               We follow a structured engineering process designed to minimize
               errors, improve communication, and accelerate delivery.
             </p>

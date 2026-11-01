@@ -17,6 +17,7 @@ export interface DisciplineMapping {
   description: string;
   has3DModel: boolean;
   highlightedParts: {
+    allEdgesCopper?: boolean; // For Product Engineering: whole unit edges copper, fills stay paper
     skid: boolean;
     casing: boolean;
     filter: boolean;
@@ -36,14 +37,16 @@ export const DISCIPLINE_HIGHLIGHT_MAPPINGS: Record<string, DisciplineMapping> = 
       "From concept development to detailed engineering, we help transform product ideas into practical and manufacturable designs.",
     has3DModel: true,
     highlightedParts: {
-      skid: true,
-      casing: true,
-      filter: true,
-      coil: true,
-      fan: true,
-      doors: true,
+      allEdgesCopper: true,
+      skid: false,
+      casing: false,
+      filter: false,
+      coil: false,
+      fan: false,
+      doors: false,
     },
-    explanation: "Complete system integration: highlights all modular subassemblies in copper.",
+    explanation:
+      "Whole unit edge geometry highlighted: all subassembly edges tinted copper (#F0A06A), fills remain neutral paper (#F1EEE6).",
   },
   mechanical: {
     id: "mechanical",
@@ -53,6 +56,7 @@ export const DISCIPLINE_HIGHLIGHT_MAPPINGS: Record<string, DisciplineMapping> = 
       "Our mechanical engineering capabilities support OEMs and manufacturers with accurate, production-ready designs.",
     has3DModel: true,
     highlightedParts: {
+      allEdgesCopper: false,
       skid: true,
       casing: true,
       filter: false,
@@ -60,7 +64,8 @@ export const DISCIPLINE_HIGHLIGHT_MAPPINGS: Record<string, DisciplineMapping> = 
       fan: false,
       doors: true,
     },
-    explanation: "Sheet metal and structural frame: highlights ISMC channel base skid and casing enclosure.",
+    explanation:
+      "Sheet metal and structural enclosure: casing panels and base skid tinted copper (#F0A06A).",
   },
   hvac: {
     id: "hvac",
@@ -70,6 +75,7 @@ export const DISCIPLINE_HIGHLIGHT_MAPPINGS: Record<string, DisciplineMapping> = 
       "We support HVAC and thermal-system companies with engineering design and documentation services.",
     has3DModel: true,
     highlightedParts: {
+      allEdgesCopper: false,
       skid: false,
       casing: false,
       filter: false,
@@ -77,7 +83,8 @@ export const DISCIPLINE_HIGHLIGHT_MAPPINGS: Record<string, DisciplineMapping> = 
       fan: true,
       doors: false,
     },
-    explanation: "Thermal & air-movement core: highlights finned cooling coil bundle with copper headers and centrifugal fan impeller.",
+    explanation:
+      "Thermal and air-movement core: cooling coil bundle and centrifugal fan section tinted copper (#F0A06A).",
   },
   documentation: {
     id: "documentation",
@@ -87,6 +94,7 @@ export const DISCIPLINE_HIGHLIGHT_MAPPINGS: Record<string, DisciplineMapping> = 
       "Accurate documentation is critical for successful product development and manufacturing.",
     has3DModel: false,
     highlightedParts: {
+      allEdgesCopper: false,
       skid: false,
       casing: false,
       filter: false,
@@ -94,7 +102,8 @@ export const DISCIPLINE_HIGHLIGHT_MAPPINGS: Record<string, DisciplineMapping> = 
       fan: false,
       doors: false,
     },
-    explanation: "No 3D mechanical hardware: displays a 2D technical drawing sheet and BOM table illustration instead.",
+    explanation:
+      "No 3D hardware: displays a 2D technical drawing sheet and BOM table in the stage instead of the 3D model.",
   },
   support: {
     id: "support",
@@ -104,13 +113,15 @@ export const DISCIPLINE_HIGHLIGHT_MAPPINGS: Record<string, DisciplineMapping> = 
       "Extend your engineering capacity without increasing your internal overhead.",
     has3DModel: true,
     highlightedParts: {
+      allEdgesCopper: false,
       skid: false,
       casing: false,
       filter: false,
       coil: false,
       fan: false,
-      doors: true,
+      doors: false,
     },
-    explanation: "Maintenance and revision access: highlights casing service access doors and inspection ports.",
+    explanation:
+      "Ongoing lifecycle support: no part tint; model stays neutral paper (#F1EEE6) with black edges (#050505).",
   },
 };

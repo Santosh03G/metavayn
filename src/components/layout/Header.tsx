@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/Button";
 
 export const NAV_LINKS = [
   { href: "/", label: "Home" },
-  { href: "/about-us", label: "About Us" },
+  { href: "/about-us", label: "About us" },
   { href: "/services", label: "Services" },
   { href: "/industries", label: "Industries" },
-  { href: "/our-approach", label: "Our Approach" },
+  { href: "/our-approach", label: "Our approach" },
   { href: "/careers", label: "Careers" },
   { href: "/contact", label: "Contact" },
 ] as const;
