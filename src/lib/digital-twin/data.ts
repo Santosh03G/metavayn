@@ -1,0 +1,48 @@
+import type { SubAssemblyMetadata } from "./types";
+
+export const SUB_ASSEMBLIES: Record<string, SubAssemblyMetadata> = {
+  "filter-bank": {
+    id: "filter-bank",
+    num: "01",
+    name: "Air Intake & Filtration Module",
+    discipline: "HVAC & Thermal Engineering",
+    hotspotAnchor: [-1.4, 0.35, 0.65],
+    materialSpecs: "1.6mm Galvanized Steel (GI) Casing, Synthetic Pre-Filters, MERV 14 Bag Filters",
+    manufacturingProcess: "CNC Turret Punching, CNC Press-Brake Folding, Polyurethane Gasket Sealing",
+    designTolerances: "±0.5 mm diagonal squareness, Air Leakage Class L1 compliant",
+    validationStandard: "EN 1886:2007 (Mechanical Performance & Casing Strength)",
+  },
+  "cooling-coil": {
+    id: "cooling-coil",
+    num: "02",
+    name: "Chilled Water Cooling Coil Section",
+    discipline: "Mechanical Design Engineering",
+    hotspotAnchor: [0.0, 0.25, 0.65],
+    materialSpecs: "Seamless Copper Tubes (Ø12.7mm OD Cu-DHP), Corrugated Al Fins (14 FPI), SS304 Tray",
+    manufacturingProcess: "Precision Mechanical Tube Expansion, CNC Hairpin Bending, Orbital TIG Welded Headers",
+    designTolerances: "Fin spacing variance < 2%, Hydrostatic pressure tested to 2.5 MPa (360 psi)",
+    validationStandard: "AHRI Standard 410 / ASME Boiler & Pressure Vessel Code Sec VIII",
+  },
+  "centrifugal-fan": {
+    id: "centrifugal-fan",
+    num: "03",
+    name: "Centrifugal Blower & Drive Assembly",
+    discipline: "Product Engineering",
+    hotspotAnchor: [1.35, -0.05, 0.65],
+    materialSpecs: "Backward-Curved DIDW Impeller, Laser-cut Scroll Housing, IE3 Motor, Cast Iron Bearings",
+    manufacturingProcess: "Laser Profile Cutting, Dynamic Dual-Plane Balancing, Precision Shaft Turn-Grind",
+    designTolerances: "Shaft radial runout < 0.02 mm, Vibration severity < 1.8 mm/s RMS at 1800 RPM",
+    validationStandard: "AMCA 210 (Airflow & Static Efficiency) / ISO 1940 Grade G2.5",
+  },
+  "skid-base": {
+    id: "skid-base",
+    num: "04",
+    name: "Structural C-Channel Foundation Skid",
+    discipline: "Manufacturing Readiness",
+    hotspotAnchor: [0.0, -0.68, 0.65],
+    materialSpecs: "ISMC 100 Structural Steel C-Channels, Hot-Dip Galvanized (85µm minimum coating)",
+    manufacturingProcess: "Full-Penetration Structural MIG Welding, Integrated Rigging/Lifting Lugs",
+    designTolerances: "Diagonal camber tolerance < 2.0 mm over 4.0 m length, Deflection < L/500",
+    validationStandard: "AWS D1.1 (Structural Welding Code - Steel) / ISO 1461",
+  },
+};
