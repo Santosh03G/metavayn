@@ -74,9 +74,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${bricolageGrotesque.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`}
+      className={`${bricolageGrotesque.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable} bg-royal`}
     >
-      <body className="min-h-screen flex flex-col bg-black text-paper antialiased selection:bg-royal selection:text-paper">
+      <body className="min-h-screen flex flex-col bg-royal text-paper antialiased selection:bg-royal selection:text-paper">
         <SmoothScroll>
           <Header />
           <PageTransition>

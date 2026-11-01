@@ -23,25 +23,38 @@ interface SceneProps {
   enableControls?: boolean;
   borderless?: boolean;
   orthographic?: boolean;
+  modelScale?: number;
   orthoPadding?: number;
 }
 
 /**
  * Responsive orthographic auto-fit camera controller
- * Keeps assembly visible across all viewports with guaranteed padding.
+ * Ensures on-screen model width is 55-65% of container on desktop,
+ * with 8-10% padding and zero crop at all explode values (0 to 1).
  */
-function OrthoFitController({ padding = 1.15 }: { padding?: number }) {
+function OrthoFitController({
+  modelScale = 1.0,
+  paddingMargin = 0.09,
+}: {
+  modelScale?: number;
+  paddingMargin?: number;
+}) {
   const { camera, size } = useThree();
 
   useEffect(() => {
     if (!("zoom" in camera)) return;
     const ortho = camera as THREE.OrthographicCamera;
-    // Bounding diameter of exploded assembly: ~6.2 units
-    const targetSize = 6.2 * padding;
-    const computedZoom = Math.min(size.width, size.height) / targetSize;
-    ortho.zoom = Math.max(computedZoom, 28);
+
+    // Projected width of fully exploded assembly (explodeFactor=1.0) in isometric view
+    const maxExplodedProjectedWidth = 6.2 * modelScale * 0.7071;
+    // targetZoom provides (1 - paddingMargin) fill at explode 1.0
+    const targetZoom = (size.width * (1 - paddingMargin)) / maxExplodedProjectedWidth;
+
+    // Responsive bounds protection for mobile/tablet (< 768px)
+    const minZoom = size.width < 500 ? size.width / 11.5 : size.width / 13;
+    ortho.zoom = Math.max(targetZoom, minZoom);
     ortho.updateProjectionMatrix();
-  }, [camera, size.width, size.height, padding]);
+  }, [camera, size.width, size.height, modelScale, paddingMargin]);
 
   return null;
 }
@@ -95,10 +108,11 @@ export function Scene({
   className = "",
   cameraPosition = [16, 13, 16],
   frameloop = "always",
-  enableControls = true,
+  enableControls = false, // Pure CAD isometric view without mouse tilt drift
   borderless = false,
   orthographic = false,
-  orthoPadding = 1.15,
+  modelScale = 1.0,
+  orthoPadding = 0.09,
 }: SceneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [hasWebGL, setHasWebGL] = useState<boolean | null>(null);
@@ -206,9 +220,14 @@ export function Scene({
               gl.outputColorSpace = THREE.SRGBColorSpace;
             }}
           >
-            {orthographic && <OrthoFitController padding={orthoPadding} />}
+            {orthographic && (
+              <OrthoFitController
+                modelScale={modelScale}
+                paddingMargin={orthoPadding}
+              />
+            )}
 
-            {/* Ambient + Directional lighting without blue-glow bias */}
+            {/* Directional lighting without blue-glow bias */}
             <ambientLight intensity={0.9} />
             <directionalLight position={[5, 8, 4]} intensity={1.2} />
 

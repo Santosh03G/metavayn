@@ -19,7 +19,7 @@ export function QualitySection() {
         <div className="max-w-4xl mx-auto space-y-10">
           <div className="space-y-3">
             <h2 className="font-display text-display-xl sm:text-display-2xl text-black">
-              Quality & Engineering Excellence
+              Quality & engineering excellence
             </h2>
             <p className="font-sans text-body-base sm:text-body-lg text-black/90 leading-relaxed max-w-prose">
               At Metavayn, quality is integrated into every stage of our engineering

@@ -12,16 +12,16 @@ export default function HomePage() {
     <div className="flex-1 flex flex-col">
       {/* 1. HERO SECTION: ROYAL FIELD */}
       <section className="relative min-h-[85vh] flex flex-col justify-center py-12 sm:py-20 lg:py-24 bg-royal text-paper select-none">
-        <Container size="wide">
+        <Container>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            {/* Hero Copy (Verbatim from site-content.md) */}
+            {/* Hero Copy Block */}
             <div className="lg:col-span-6 space-y-6">
               <div className="space-y-3">
                 <h1 className="font-display text-display-2xl sm:text-display-3xl text-paper tracking-tight">
-                  Engineering the Next Dimension
+                  Engineering the next dimension
                 </h1>
                 <p className="font-display text-display-lg text-paper font-semibold">
-                  Engineering Excellence. Delivered.
+                  Engineering excellence. Delivered.
                 </p>
               </div>
 
@@ -31,39 +31,38 @@ export default function HomePage() {
                 better products faster.
               </p>
 
-              {/* Primary Action Buttons complying with Step 5:
-                  Primary on royal: --paper bg, --black text
-                  Secondary on royal: transparent, 1.5px --paper border, --paper text */}
+              {/* Action Buttons in Sentence Case */}
               <div className="pt-2 flex flex-wrap gap-4 items-center">
                 <Link href="/services">
                   <Button surface="royal" variant="primary" size="base">
-                    Explore Our Services
+                    Explore our services
                   </Button>
                 </Link>
                 <Link href="/contact">
                   <Button surface="royal" variant="secondary" size="base">
-                    Talk to Our Engineers
+                    Talk to our engineers
                   </Button>
                 </Link>
               </div>
             </div>
 
-            {/* Hero 3D M1 AHU Assembly: Model sits directly on royal field, larger, generous margins */}
-            <div className="lg:col-span-6 flex items-center justify-center">
-              <div className="w-full max-w-2xl">
+            {/* Hero 3D M1 AHU Assembly: 1.6x scale, 55-65% width on desktop, centered on headline */}
+            <div className="lg:col-span-6 flex items-center justify-center w-full">
+              <div className="w-full">
                 <Scene
                   surface="royal"
-                  aspectRatio="aspect-[4/3]"
+                  aspectRatio="aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3]"
                   orthographic={true}
                   cameraPosition={[16, 13, 16]}
                   borderless={true}
-                  orthoPadding={1.12}
+                  modelScale={1.6}
+                  orthoPadding={0.09}
                   fallback={<M1DrawingFallback surface="royal" />}
                 >
                   <M1AirHandlingUnit
                     surface="royal"
                     explodeFactor={0}
-                    interactiveTilt={true}
+                    modelScale={1.6}
                   />
                 </Scene>
               </div>
@@ -72,37 +71,39 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* 2. ABOUT METAVAYN: PAPER SECTION */}
+      {/* 2. ABOUT METAVAYN: PAPER SECTION (ALIGNED TO 12-COLUMN GRID) */}
       <Section id="about" surface="paper" className="scroll-mt-16">
-        <div className="max-w-4xl mx-auto space-y-8 select-none">
-          <div className="space-y-2">
-            <h2 className="font-display text-display-xl sm:text-display-2xl text-black">
-              About Metavayn
-            </h2>
-            <h3 className="font-display text-display-base sm:text-display-lg text-royal font-semibold">
-              Your Engineering Partner for Faster Product Delivery
-            </h3>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 select-none">
+          <div className="lg:col-span-8 space-y-8">
+            <div className="space-y-2">
+              <h2 className="font-display text-display-xl sm:text-display-2xl text-black">
+                About Metavayn
+              </h2>
+              <h3 className="font-display text-display-base sm:text-display-lg text-royal font-semibold">
+                Your engineering partner for faster product delivery
+              </h3>
+            </div>
+
+            <p className="font-sans text-body-base text-black/90 leading-relaxed">
+              Metavayn Technologies Pvt. Ltd. is an engineering services company
+              focused on delivering reliable, scalable, and technology-driven
+              engineering solutions. We work as an extension of our clients&apos;
+              engineering teams, supporting them across product design, mechanical
+              engineering, engineering documentation, product development, and
+              manufacturing readiness.
+            </p>
+
+            {/* Full-column Typographic Quote */}
+            <blockquote className="font-display text-display-lg sm:text-display-xl lg:text-display-2xl font-medium text-black leading-snug pt-4 pb-2 border-t border-paper-line">
+              &ldquo;Help businesses transform engineering ideas into
+              production-ready products &mdash; faster, smarter, and with greater
+              confidence.&rdquo;
+            </blockquote>
           </div>
-
-          <p className="font-sans text-body-base text-black/90 leading-relaxed">
-            Metavayn Technologies Pvt. Ltd. is an engineering services company
-            focused on delivering reliable, scalable, and technology-driven
-            engineering solutions. We work as an extension of our clients&apos;
-            engineering teams, supporting them across product design, mechanical
-            engineering, engineering documentation, product development, and
-            manufacturing readiness.
-          </p>
-
-          {/* Core Mission Quote: Full text column typographic quote, no side stripe */}
-          <blockquote className="font-display text-display-lg sm:text-display-xl lg:text-display-2xl font-medium text-black leading-snug pt-4 pb-2 border-t border-paper-line">
-            &ldquo;Help businesses transform engineering ideas into
-            production-ready products &mdash; faster, smarter, and with greater
-            confidence.&rdquo;
-          </blockquote>
         </div>
       </Section>
 
-      {/* 3. WHAT WE DO: BLACK SECTION (HAIRLINE INDEX LIST & PINNED 3D AHU) */}
+      {/* 3. WHAT WE DO: BLACK SECTION */}
       <WhatWeDoSection />
 
       {/* 4. OUR APPROACH TEASER & VALUE PROPOSITION: PAPER SECTION */}
@@ -111,7 +112,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-paper-line pb-4 gap-4">
             <div>
               <h2 className="font-display text-display-xl sm:text-display-2xl text-black">
-                Our Approach
+                Our approach
               </h2>
               <p className="font-display text-display-base text-royal font-medium mt-1">
                 Define, Design, Validate, Deliver
@@ -179,10 +180,10 @@ export default function HomePage() {
           <div className="pt-12 border-t border-paper-line space-y-8">
             <div className="space-y-2">
               <h2 className="font-display text-display-xl sm:text-display-2xl text-black">
-                Our Value Proposition
+                Our value proposition
               </h2>
               <h3 className="font-display text-display-base sm:text-display-lg text-royal font-semibold">
-                Extend Your Engineering Team Without Extending Your Overhead
+                Extend your engineering team without extending your overhead
               </h3>
             </div>
 
@@ -209,11 +210,11 @@ export default function HomePage() {
       <Section id="partner" surface="black" className="scroll-mt-16">
         <div className="max-w-3xl mx-auto text-center space-y-6 select-none">
           <h2 className="font-display text-display-2xl sm:text-display-3xl text-paper">
-            Partner With Metavayn
+            Partner with Metavayn
           </h2>
 
           <h3 className="font-display text-display-lg text-pale-blue font-semibold">
-            Have an Engineering Challenge?
+            Have an engineering challenge?
           </h3>
 
           <p className="font-sans text-body-base text-paper leading-relaxed max-w-prose mx-auto">
@@ -226,12 +227,12 @@ export default function HomePage() {
           <div className="pt-4 flex flex-wrap justify-center gap-4">
             <Link href="/contact">
               <Button surface="black" variant="primary" size="base">
-                Start a Conversation
+                Start a conversation
               </Button>
             </Link>
             <Link href="/contact">
               <Button surface="black" variant="secondary" size="base">
-                Request Engineering Support
+                Request engineering support
               </Button>
             </Link>
           </div>

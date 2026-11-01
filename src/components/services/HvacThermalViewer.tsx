@@ -47,7 +47,6 @@ export function HvacThermalViewer() {
           surface="black"
           explodeFactor={0.5}
           activeDiscipline="hvac"
-          interactiveTilt={true}
         />
       </Scene>
     </div>

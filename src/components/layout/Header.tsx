@@ -43,7 +43,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-royal border-b border-paper/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo / Monogram */}
           <Link
@@ -66,7 +66,7 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-1" aria-label="Main Navigation">
+          <nav className="hidden lg:flex items-center space-x-2" aria-label="Main Navigation">
             {NAV_LINKS.map((link) => {
               const isActive = pathname === link.href;
               return (
@@ -75,20 +75,21 @@ export function Header() {
                   href={link.href}
                   className={`px-3 py-1.5 text-xs font-medium tracking-wide transition-colors duration-fast relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper focus-visible:ring-offset-2 focus-visible:ring-offset-royal ${
                     isActive
-                      ? "text-paper bg-royal-hover border border-paper/40 font-semibold"
-                      : "text-paper/90 hover:text-white hover:bg-royal-hover"
+                      ? "text-paper font-semibold"
+                      : "text-paper/90 hover:text-white"
                   }`}
                 >
                   {link.label}
+                  {/* Single clean underline indicator, no box */}
                   {isActive && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-[2px] bg-paper" />
+                    <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-paper" />
                   )}
                 </Link>
               );
             })}
           </nav>
 
-          {/* Primary Action Button */}
+          {/* Primary Action Button in sentence case */}
           <div className="hidden sm:flex items-center">
             <Link href="/contact">
               <Button surface="royal" variant="primary" size="sm">
@@ -134,11 +135,12 @@ export function Header() {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center justify-between py-2.5 px-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper ${
                     isActive
-                      ? "text-paper font-semibold bg-royal-hover"
+                      ? "text-paper font-semibold"
                       : "text-paper/90 hover:text-white"
                   }`}
                 >
                   <span>{link.label}</span>
+                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-paper" />}
                 </Link>
               );
             })}

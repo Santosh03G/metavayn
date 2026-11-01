@@ -14,8 +14,8 @@ export function Container({
 }: ContainerProps) {
   const sizeStyles = {
     tight: "max-w-4xl",
-    default: "max-w-7xl",
-    wide: "max-w-[1440px]",
+    default: "max-w-[1520px]",
+    wide: "max-w-[1520px]",
     full: "w-full",
   }[size];
 

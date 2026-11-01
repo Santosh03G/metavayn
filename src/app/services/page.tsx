@@ -14,10 +14,10 @@ export default function ServicesPage() {
     <div className="flex-1 flex flex-col">
       {/* 1. SERVICES DIRECTORY HEADER: PAPER SECTION */}
       <section className="relative py-12 sm:py-20 bg-paper text-black border-b border-paper-line select-none">
-        <Container size="wide">
+        <Container>
           <div className="max-w-3xl space-y-4">
             <h1 className="font-display text-display-2xl sm:text-display-3xl text-black tracking-tight">
-              What We Do
+              What we do
             </h1>
             <p className="font-sans text-body-lg text-black/90 leading-relaxed max-w-prose">
               From concept development to detailed engineering, we help
@@ -33,7 +33,7 @@ export default function ServicesPage() {
           <div className="lg:col-span-6 space-y-6">
             <div>
               <h2 className="font-display text-display-xl sm:text-display-2xl text-paper">
-                Product Engineering
+                Product engineering
               </h2>
             </div>
 
@@ -83,7 +83,7 @@ export default function ServicesPage() {
           <div className="lg:col-span-6 space-y-6">
             <div>
               <h2 className="font-display text-display-xl sm:text-display-2xl text-paper">
-                Mechanical Design Engineering
+                Mechanical design engineering
               </h2>
             </div>
 
@@ -129,7 +129,7 @@ export default function ServicesPage() {
           <div className="lg:col-span-6 space-y-6">
             <div>
               <h2 className="font-display text-display-xl sm:text-display-2xl text-paper">
-                HVAC & Thermal Engineering
+                HVAC & thermal engineering
               </h2>
             </div>
 
@@ -174,7 +174,7 @@ export default function ServicesPage() {
         <div className="space-y-8 select-none">
           <div className="max-w-3xl space-y-3">
             <h2 className="font-display text-display-xl sm:text-display-2xl text-black">
-              Engineering Documentation
+              Engineering documentation
             </h2>
             <p className="font-sans text-body-base text-black/90 leading-relaxed">
               Accurate documentation is critical for successful product
@@ -219,7 +219,7 @@ export default function ServicesPage() {
         <div className="max-w-4xl space-y-6 select-none">
           <div>
             <h2 className="font-display text-display-xl sm:text-display-2xl text-paper">
-              Engineering Support
+              Engineering support
             </h2>
             <p className="font-sans text-body-base text-paper leading-relaxed mt-2 max-w-prose">
               Extend your engineering capacity without increasing your internal
@@ -264,10 +264,10 @@ export default function ServicesPage() {
         <div className="space-y-8 select-none">
           <div className="space-y-2">
             <h2 className="font-display text-display-xl sm:text-display-2xl text-black">
-              Engineering Services That Scale With You
+              Engineering services that scale with you
             </h2>
             <h3 className="font-display text-display-base sm:text-display-lg text-royal font-semibold">
-              Extend Your Engineering Team Without Extending Your Overhead
+              Extend your engineering team without extending your overhead
             </h3>
           </div>
 
@@ -279,7 +279,7 @@ export default function ServicesPage() {
       <Section id="services-cta" surface="black" className="scroll-mt-16">
         <div className="max-w-3xl mx-auto text-center space-y-6 select-none">
           <h2 className="font-display text-display-xl sm:text-display-2xl text-paper">
-            Have an Engineering Challenge?
+            Have an engineering challenge?
           </h2>
           <p className="font-sans text-body-base text-paper max-w-prose mx-auto">
             Whether you&apos;re developing a new product, expanding your
@@ -289,7 +289,7 @@ export default function ServicesPage() {
           <div className="pt-2 flex justify-center gap-4">
             <Link href="/contact">
               <Button surface="black" variant="primary" size="base">
-                Request Engineering Support
+                Request engineering support
               </Button>
             </Link>
           </div>

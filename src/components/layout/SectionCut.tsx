@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { type SurfaceType } from "@/components/ui/Button";
+import { Container } from "@/components/ui/Container";
 
 interface SectionCutProps {
   id?: string;
@@ -48,7 +49,7 @@ export function SectionCut({
       id={id}
       className={`relative py-16 sm:py-24 ${currentConfig.section} ${className}`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">{children}</div>
+      <Container>{children}</Container>
     </section>
   );
 }

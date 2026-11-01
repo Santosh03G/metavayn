@@ -21,16 +21,16 @@
       "viewport": "768",
       "width": 768,
       "canvasBox": {
-        "x": 48,
+        "x": 24,
         "y": 466.5,
-        "width": 672,
-        "height": 504
+        "width": 720,
+        "height": 450
       },
       "margins": {
-        "width": 672,
-        "height": 504,
-        "left": 48,
-        "right": 48
+        "width": 720,
+        "height": 450,
+        "left": 24,
+        "right": 24
       },
       "status": "VISIBLE_NO_CROP"
     },
@@ -56,19 +56,19 @@
       "width": 1920,
       "canvasBox": {
         "x": 988,
-        "y": 276.5,
-        "width": 660,
-        "height": 495
+        "y": 261.5,
+        "width": 700,
+        "height": 525
       },
       "margins": {
-        "width": 660,
-        "height": 495,
+        "width": 700,
+        "height": 525,
         "left": 988,
-        "right": 272
+        "right": 232
       },
       "status": "VISIBLE_NO_CROP"
     }
   ],
-  "totalPairs": 442,
+  "totalPairs": 441,
   "failures": 0
 }

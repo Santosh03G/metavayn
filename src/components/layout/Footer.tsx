@@ -21,13 +21,13 @@ const SERVICES_LINKS = [
 export function Footer() {
   return (
     <footer className="bg-black border-t border-pale-blue/20 mt-auto text-paper select-none">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <div className="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
           {/* Identity & Mission */}
-          <div className="md:col-span-6 space-y-4">
+          <div className="md:col-span-6 space-y-3">
             <div>
-              <h2 className="font-display font-bold text-lg sm:text-xl text-paper tracking-wide">
-                METAVAYN TECHNOLOGIES PVT. LTD.
+              <h2 className="font-display font-bold text-lg sm:text-xl text-paper">
+                Metavayn Technologies Pvt. Ltd.
               </h2>
             </div>
             <p className="font-display text-sm font-medium text-pale-blue">
@@ -40,8 +40,8 @@ export function Footer() {
 
           {/* Quick Links */}
           <div className="md:col-span-3 space-y-3">
-            <h3 className="font-sans text-xs font-semibold uppercase tracking-wider text-pale-blue border-b border-pale-blue/20 pb-1">
-              Quick Links
+            <h3 className="font-sans text-xs font-semibold text-pale-blue">
+              Quick links
             </h3>
             <ul className="space-y-2 text-xs font-sans">
               {QUICK_LINKS.map((link) => (
@@ -59,7 +59,7 @@ export function Footer() {
 
           {/* Services */}
           <div className="md:col-span-3 space-y-3">
-            <h3 className="font-sans text-xs font-semibold uppercase tracking-wider text-pale-blue border-b border-pale-blue/20 pb-1">
+            <h3 className="font-sans text-xs font-semibold text-pale-blue">
               Services
             </h3>
             <ul className="space-y-2 text-xs font-sans">
