@@ -12,3 +12,4 @@ export {
 export { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 export { useScrub } from "./useScrub";
 export { SplitLines, type SplitLinesProps } from "./SplitLines";
+export { SectionCut, type SectionCutProps } from "./SectionCut";

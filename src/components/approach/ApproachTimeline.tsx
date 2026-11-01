@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePrefersReducedMotion } from "@/lib/motion/usePrefersReducedMotion";
 
 const STEPS = [
   {
@@ -32,7 +33,7 @@ export function ApproachTimeline() {
 
   const [lineBounds, setLineBounds] = useState<{ left: number; width: number } | null>(null);
   const [progress, setProgress] = useState(0);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const prefersReduced = usePrefersReducedMotion();
 
   const updateBounds = () => {
     if (!node1Ref.current || !node4Ref.current || !containerRef.current) return;
@@ -47,19 +48,13 @@ export function ApproachTimeline() {
   };
 
   useEffect(() => {
-    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReducedMotion(motionQuery.matches);
-
-    if (motionQuery.matches) {
+    if (prefersReduced) {
       setProgress(1);
+      return;
     }
 
     const handleScroll = () => {
       if (!containerRef.current) return;
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        setProgress(1);
-        return;
-      }
 
       const rect = containerRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
@@ -77,11 +72,9 @@ export function ApproachTimeline() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", updateBounds);
 
-    // Initial measurements
     updateBounds();
     handleScroll();
 
-    // Recheck after DOM stabilizes
     const timer = setTimeout(updateBounds, 250);
 
     return () => {
@@ -89,17 +82,17 @@ export function ApproachTimeline() {
       window.removeEventListener("resize", updateBounds);
       clearTimeout(timer);
     };
-  }, []);
+  }, [prefersReduced]);
 
   const isNodeActive = (idx: number) => {
-    if (reducedMotion) return true;
+    if (prefersReduced) return true;
     if (idx === 0) return true;
     return progress >= idx / 3;
   };
 
   return (
     <div ref={containerRef} className="relative select-none">
-      {/* Desktop Horizontal Line: Exactly between Step 1 and Step 4 node centers */}
+      {/* Desktop Horizontal Line: Between Step 1 and Step 4 node centers */}
       {lineBounds && (
         <div
           className="hidden lg:block absolute top-5 -z-0 pointer-events-none"
@@ -113,14 +106,27 @@ export function ApproachTimeline() {
             style={{
               width: "100%",
               transformOrigin: "left",
-              transform: `scaleX(${reducedMotion ? 1 : progress})`,
-              transition: reducedMotion ? "none" : "transform 75ms ease-out",
+              transform: `scaleX(${prefersReduced ? 1 : progress})`,
+              transition: prefersReduced ? "none" : "transform 75ms ease-out",
             }}
           />
         </div>
       )}
 
-      {/* 4 Steps Grid: Stacked vertically on mobile, 4 columns on desktop */}
+      {/* Mobile Vertical Line: Along left column between nodes */}
+      <div className="block lg:hidden absolute left-5 top-5 bottom-8 w-[1px] bg-paper-line -z-0 pointer-events-none">
+        <div
+          className="w-[2px] -translate-x-[0.5px] bg-royal"
+          style={{
+            height: "100%",
+            transformOrigin: "top",
+            transform: `scaleY(${prefersReduced ? 1 : progress})`,
+            transition: prefersReduced ? "none" : "transform 75ms ease-out",
+          }}
+        />
+      </div>
+
+      {/* 4 Steps: Stacked vertically with left padding on mobile, 4 columns on desktop */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
         {STEPS.map((s, idx) => {
           const isFirst = idx === 0;
@@ -128,20 +134,27 @@ export function ApproachTimeline() {
           const active = isNodeActive(idx);
 
           return (
-            <div key={s.num} className="flex flex-col space-y-3">
-              {/* Number Node on Line */}
+            <div
+              key={s.num}
+              className="flex flex-row lg:flex-col items-start gap-4 lg:gap-0 lg:space-y-3"
+            >
+              {/* Number Node on Line: Fills royal when line reaches it */}
               <div
                 ref={isFirst ? node1Ref : isLast ? node4Ref : undefined}
-                className={`w-10 h-10 rounded-full border flex items-center justify-center font-display font-semibold text-sm transition-colors duration-200 ${
+                className={`w-10 h-10 shrink-0 rounded-full border flex items-center justify-center font-display font-semibold text-sm transition-all duration-300 ${
                   active
-                    ? "border-royal bg-paper text-royal ring-2 ring-royal/20"
+                    ? "border-royal bg-royal text-paper shadow-sm"
                     : "border-paper-line bg-paper text-royal/60"
                 }`}
               >
                 {s.num}
               </div>
 
-              <div>
+              {/* Step Heading and Description: Brighten from 40% to 100% opacity */}
+              <div
+                className="transition-opacity duration-300"
+                style={{ opacity: active ? 1 : 0.4 }}
+              >
                 <h3 className="font-display text-display-base text-black font-semibold mb-1.5">
                   {s.title}
                 </h3>

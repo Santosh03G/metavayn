@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import gsap from "gsap";
 import { Container } from "@/components/ui/Container";
 import { Scene } from "@/components/canvas/Scene";
 import { M1AirHandlingUnit } from "@/components/canvas/M1AirHandlingUnit";
@@ -11,16 +12,63 @@ import {
   DISCIPLINE_HIGHLIGHT_MAPPINGS,
   type DisciplineMapping,
 } from "@/lib/discipline-highlight-mapping";
+import { MOTION_TOKENS } from "@/lib/motion/tokens";
+import { usePrefersReducedMotion } from "@/lib/motion/usePrefersReducedMotion";
 
 const DISCIPLINES: DisciplineMapping[] = Object.values(DISCIPLINE_HIGHLIGHT_MAPPINGS);
 
+// Subtle explode factor per discipline (small changes only, no sudden jumps)
+const DISCIPLINE_EXPLODE_FACTORS: Record<string, number> = {
+  product: 0.68,
+  mechanical: 0.76,
+  hvac: 0.71,
+  manufacturing: 0.74,
+  documentation: 0.70,
+};
+
 export function WhatWeDoSection() {
-  // First item active on load
   const [activeId, setActiveId] = useState<string>("product");
+  const [animatedExplode, setAnimatedExplode] = useState<number>(0.68);
+  const [animatedRotationY, setAnimatedRotationY] = useState<number>(0);
+  const previousActiveRef = useRef<string>(activeId);
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const prefersReduced = usePrefersReducedMotion();
 
   const activeDiscipline =
     DISCIPLINE_HIGHLIGHT_MAPPINGS[activeId] || DISCIPLINES[0];
+
+  // Motion Pass 1: Animate 6 to 8 degrees rotation and smooth explode gap on item change
+  useEffect(() => {
+    if (previousActiveRef.current === activeId) return;
+    previousActiveRef.current = activeId;
+
+    const targetExplode = DISCIPLINE_EXPLODE_FACTORS[activeId] ?? 0.72;
+    const disciplineIndex = DISCIPLINES.findIndex((d) => d.id === activeId);
+    // Alternate 7 degrees (0.122 rad) left/right
+    const targetRotY = ((disciplineIndex % 2 === 0 ? 7 : -7) * Math.PI) / 180;
+
+    if (prefersReduced) {
+      setAnimatedExplode(targetExplode);
+      setAnimatedRotationY(targetRotY);
+      return;
+    }
+
+    const state = { explode: animatedExplode, rotY: animatedRotationY };
+    const tween = gsap.to(state, {
+      explode: targetExplode,
+      rotY: targetRotY,
+      duration: MOTION_TOKENS.durations.base, // 0.8s
+      ease: MOTION_TOKENS.easings.gsapEaseInOut, // easeInOut curve
+      onUpdate: () => {
+        setAnimatedExplode(state.explode);
+        setAnimatedRotationY(state.rotY);
+      },
+    });
+
+    return () => {
+      tween.kill();
+    };
+  }, [activeId, prefersReduced]);
 
   // Scroll-driven active item detection using IntersectionObserver
   useEffect(() => {
@@ -148,11 +196,13 @@ export function WhatWeDoSection() {
                     modelScale={1.35}
                     fallback={<M1DrawingFallback surface="black" exploded={true} />}
                   >
-                    <M1AirHandlingUnit
-                      surface="black"
-                      explodeFactor={0.7}
-                      activeDiscipline={activeId}
-                    />
+                    <group rotation={[0, animatedRotationY, 0]}>
+                      <M1AirHandlingUnit
+                        surface="black"
+                        explodeFactor={animatedExplode}
+                        activeDiscipline={activeId}
+                      />
+                    </group>
                   </Scene>
                 </div>
               )}
