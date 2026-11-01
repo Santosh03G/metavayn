@@ -1,0 +1,59 @@
+"use client";
+
+import { useState } from "react";
+import { Scene } from "@/components/canvas/Scene";
+import { M1AirHandlingUnit } from "@/components/canvas/M1AirHandlingUnit";
+import { M1DrawingFallback } from "@/components/canvas/M1DrawingFallback";
+
+export function HvacThermalViewer() {
+  const [viewMode, setViewMode] = useState<"shaded" | "wireframe" | "drawing">("drawing");
+
+  return (
+    <div className="border border-[rgba(127,178,255,0.3)] bg-blueprint-deep/95 p-4 sm:p-6 select-none space-y-4">
+      {/* View Mode Switcher Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[rgba(127,178,255,0.2)] pb-2 gap-2 text-mono-xs font-mono text-blueprint-dimension">
+        <span className="flex items-center space-x-2">
+          <span className="w-2 h-2 rounded-full bg-blueprint-signal animate-pulse" />
+          <span>HVAC & THERMAL UNIT: M1 AHU INSPECTION</span>
+        </span>
+
+        {/* View Mode Buttons */}
+        <div className="flex items-center space-x-1.5">
+          {(["drawing", "shaded", "wireframe"] as const).map((m) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => setViewMode(m)}
+              className={`px-2.5 py-1 text-[10px] uppercase font-semibold border transition-colors ${
+                viewMode === m
+                  ? "bg-blueprint-signal text-white border-blueprint-signal"
+                  : "bg-blueprint-cyanotype/40 text-blueprint-dimension/80 border-blueprint-dimension/30 hover:border-blueprint-dimension"
+              }`}
+            >
+              {m}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 3D Viewport */}
+      <Scene
+        aspectRatio="aspect-[16/10]"
+        cameraPosition={[3.6, 2.5, 4.6]}
+        fallback={<M1DrawingFallback exploded={true} />}
+      >
+        <M1AirHandlingUnit
+          explodeFactor={0.5}
+          activeDiscipline="hvac"
+          mode={viewMode}
+          interactiveTilt={true}
+        />
+      </Scene>
+
+      <div className="flex justify-between items-center text-[10px] font-mono text-blueprint-dimension/60 pt-1 border-t border-[rgba(127,178,255,0.15)]">
+        <span>CHILLED WATER COILS & CENTRIFUGAL BLOWERS HIGHLIGHTED</span>
+        <span>DRAG TO ORBIT • ACTIVE: [{viewMode.toUpperCase()}]</span>
+      </div>
+    </div>
+  );
+}

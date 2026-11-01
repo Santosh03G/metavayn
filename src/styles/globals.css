@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Colors */
+  --color-deep: #06142B;
+  --color-cyanotype: #0D2B52;
+  --color-signal: #2F7BFF;
+  --color-dimension: #7FB2FF;
+  --color-linen: #EEF2F6;
+  --color-graphite: #1B2430;
+  --color-redline: #E5484D;
+
+  /* Motion Tokens */
+  --ease-cad-deliberate: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-cad-snap: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-deliberate: 500ms;
+
+  /* CAD Drafting Spacing Scale */
+  --cad-space-1: 4px;
+  --cad-space-2: 8px;
+  --cad-space-3: 12px;
+  --cad-space-4: 16px;
+  --cad-space-6: 24px;
+  --cad-space-8: 32px;
+  --cad-space-12: 48px;
+  --cad-space-16: 64px;
+  --cad-space-24: 96px;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-deep);
+    color: var(--color-linen);
+    font-family: var(--font-ibm-plex-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: var(--color-signal);
+    color: #FFFFFF;
+  }
+
+  /* Technical drawings use crisp hairline rendering */
+  svg text {
+    user-select: none;
+  }
+}
+
+/* CAD Drafting Grid Patterns */
+.bg-cad-grid {
+  background-image: 
+    linear-gradient(to right, rgba(127, 178, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(127, 178, 255, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-cad-grid-major {
+  background-image: 
+    linear-gradient(to right, rgba(127, 178, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(127, 178, 255, 0.12) 1px, transparent 1px);
+  background-size: 120px 120px;
+}
+
+.bg-cad-grid-light {
+  background-image: 
+    linear-gradient(to right, rgba(27, 36, 48, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(27, 36, 48, 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Drafting Border Frame */
+.cad-border {
+  border: 1px solid rgba(127, 178, 255, 0.25);
+  position: relative;
+}
+
+.cad-border::before,
+.cad-border::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  pointer-events: none;
+}
+
+.cad-border::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid var(--color-dimension);
+  border-left: 2px solid var(--color-dimension);
+}
+
+.cad-border::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid var(--color-dimension);
+  border-right: 2px solid var(--color-dimension);
+}
+
+/* Accessibility: Reduced Motion Bypass */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
