@@ -116,6 +116,7 @@ export function HeroSection() {
               {/* Royal subheading kept for Hero Tagline */}
               <p
                 ref={subheadRef}
+                data-hero-fade="true"
                 className="font-display text-display-lg text-paper font-semibold"
                 style={prefersReduced ? {} : { opacity: 0 }}
               >
@@ -125,6 +126,7 @@ export function HeroSection() {
 
             <p
               ref={bodyRef}
+              data-hero-fade="true"
               className="font-sans text-body max-w-[68ch] text-paper leading-relaxed"
               style={prefersReduced ? {} : { opacity: 0 }}
             >
@@ -136,6 +138,7 @@ export function HeroSection() {
             {/* Action Buttons: Fade in last with magnetic hover shift */}
             <div
               ref={buttonsRef}
+              data-hero-fade="true"
               className="pt-2 flex flex-wrap gap-4 items-center"
               style={prefersReduced ? {} : { opacity: 0 }}
             >

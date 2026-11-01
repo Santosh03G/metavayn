@@ -1,0 +1,10 @@
+{
+  "unthrottled": {
+    "avg": 140,
+    "min": 36
+  },
+  "throttled4x": {
+    "avg": 135,
+    "min": 7
+  }
+}

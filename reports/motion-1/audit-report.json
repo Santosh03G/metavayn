@@ -1,0 +1,15 @@
+{
+  "contrast": {
+    "totalTested": 1036,
+    "totalPassed": 1036,
+    "failureCount": 0,
+    "passRate": "100%",
+    "failures": []
+  },
+  "mobilePerformance": {
+    "domContentLoadedMs": 140,
+    "fcpMs": 140,
+    "domNodes": 436,
+    "estimatedLighthouseScore": 94
+  }
+}

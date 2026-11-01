@@ -47,8 +47,13 @@ export function SplitLines({
       : []);
 
   useEffect(() => {
+    const isReduced =
+      prefersReduced ||
+      (typeof window !== "undefined" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
     // If reduced motion is requested, render static immediately
-    if (prefersReduced || lineRefs.current.length === 0) {
+    if (isReduced || lineRefs.current.length === 0) {
       lineRefs.current.forEach((el) => {
         if (el) {
           el.style.transform = "none";
@@ -158,6 +163,7 @@ export function SplitLines({
             ref={(el) => {
               lineRefs.current[0] = el;
             }}
+            data-split-line="true"
             className={`block ${lineClassName}`}
             style={prefersReduced ? {} : { transform: "translateY(100%)", opacity: 0 }}
           >
@@ -176,6 +182,7 @@ export function SplitLines({
             ref={(el) => {
               lineRefs.current[idx] = el;
             }}
+            data-split-line="true"
             className={`block ${lineClassName}`}
             style={prefersReduced ? {} : { transform: "translateY(100%)", opacity: 0 }}
           >

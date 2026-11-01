@@ -163,6 +163,7 @@ export function AboutSection() {
                     ref={(el) => {
                       wordRefs.current[idx] = el;
                     }}
+                    data-quote-word="true"
                     className="inline-block mr-2"
                     style={{
                       opacity: prefersReduced ? 1 : 0.2,
