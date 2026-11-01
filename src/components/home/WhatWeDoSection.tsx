@@ -14,6 +14,11 @@ import {
 } from "@/lib/discipline-highlight-mapping";
 import { MOTION_TOKENS } from "@/lib/motion/tokens";
 import { usePrefersReducedMotion } from "@/lib/motion/usePrefersReducedMotion";
+import { DigitalTwinProvider, useDigitalTwin } from "@/lib/digital-twin/context";
+import type { SubAssemblyId } from "@/lib/digital-twin/types";
+import { DigitalTwinHUD } from "@/components/digital-twin/DigitalTwinHUD";
+import { DigitalTwinHotspots } from "@/components/digital-twin/HotspotPin";
+import { useLenis } from "@/components/layout/SmoothScrollProvider";
 
 const DISCIPLINES: DisciplineMapping[] = Object.values(DISCIPLINE_HIGHLIGHT_MAPPINGS);
 
@@ -26,7 +31,10 @@ const DISCIPLINE_EXPLODE_FACTORS: Record<string, number> = {
   documentation: 0.70,
 };
 
-export function WhatWeDoSection() {
+function WhatWeDoContent() {
+  const digitalTwin = useDigitalTwin();
+  const lenis = useLenis();
+
   const [activeId, setActiveId] = useState<string>("product");
   const [animatedExplode, setAnimatedExplode] = useState<number>(0.68);
   const [animatedRotationY, setAnimatedRotationY] = useState<number>(0);
@@ -34,11 +42,65 @@ export function WhatWeDoSection() {
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const prefersReduced = usePrefersReducedMotion();
 
+  const isInspector = digitalTwin.mode === "inspector";
+  const activeExplode = isInspector ? digitalTwin.explodeFactor : animatedExplode;
+  const activeSelectedId = isInspector ? digitalTwin.selectedAssemblyId : null;
+
+  // Lenis scroll lifecycle: Pause when in inspector mode, resume when in story mode or on unmount
+  useEffect(() => {
+    if (isInspector) {
+      lenis?.stop();
+    } else {
+      lenis?.start();
+    }
+    return () => {
+      lenis?.start();
+    };
+  }, [isInspector, lenis]);
+
+  // Fullscreen support: hide sticky site header while in fullscreen CAD inspection so it does not intercept HUD controls
+  useEffect(() => {
+    if (digitalTwin.isFullscreen) {
+      const header = document.querySelector("header.sticky") as HTMLElement | null;
+      if (header) {
+        const prevVisibility = header.style.visibility;
+        const prevPointerEvents = header.style.pointerEvents;
+        header.style.visibility = "hidden";
+        header.style.pointerEvents = "none";
+        return () => {
+          header.style.visibility = prevVisibility;
+          header.style.pointerEvents = prevPointerEvents;
+        };
+      }
+    }
+  }, [digitalTwin.isFullscreen]);
+
+  // Keyboard listener for Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (digitalTwin.selectedAssemblyId) {
+          e.preventDefault();
+          digitalTwin.setSelectedAssemblyId(null);
+        } else if (digitalTwin.mode === "inspector") {
+          e.preventDefault();
+          digitalTwin.resetInspector();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [digitalTwin.selectedAssemblyId, digitalTwin.mode, digitalTwin]);
+
   const activeDiscipline =
     DISCIPLINE_HIGHLIGHT_MAPPINGS[activeId] || DISCIPLINES[0];
 
   // Motion Pass 1: Animate 6 to 8 degrees rotation and smooth explode gap on item change
   useEffect(() => {
+    if (isInspector) return; // In inspector mode, rotation & explosion are controlled by user
     if (previousActiveRef.current === activeId) return;
     previousActiveRef.current = activeId;
 
@@ -68,7 +130,7 @@ export function WhatWeDoSection() {
     return () => {
       tween.kill();
     };
-  }, [activeId, prefersReduced]);
+  }, [activeId, prefersReduced, isInspector]);
 
   // Scroll-driven active item detection using IntersectionObserver
   useEffect(() => {
@@ -177,7 +239,7 @@ export function WhatWeDoSection() {
           {/* Right Column: Sticky Centered Viewport on Black Field (No Border Box) */}
           <div className="lg:col-span-7 lg:sticky lg:top-[calc(50vh-220px)] self-start py-4">
             <div className="w-full flex items-center justify-center">
-              {!activeDiscipline.has3DModel ? (
+              {!activeDiscipline.has3DModel && !isInspector ? (
                 /* Engineering Documentation: No 3D model; clean 2D drawing sheet & BOM preview */
                 <div className="w-full space-y-4 animate-in fade-in duration-normal">
                   <div className="border border-pale-blue/30 bg-black/80 p-4 sm:p-6">
@@ -186,24 +248,51 @@ export function WhatWeDoSection() {
                 </div>
               ) : (
                 /* 3D AHU Model: Direct on black field, horizontal orientation, same isometric angle as hero, length-axis explode */
-                <div className="w-full animate-in fade-in duration-normal">
+                <div
+                  className={
+                    digitalTwin.isFullscreen
+                      ? "fixed inset-0 z-50 bg-paper p-4 md:p-8 flex flex-col justify-center items-center"
+                      : "relative w-full animate-in fade-in duration-normal"
+                  }
+                >
+                  {!isInspector && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        digitalTwin.setMode("inspector");
+                        digitalTwin.setExplodeFactor(0.5); // Open to 50% to invite discovery
+                      }}
+                      aria-label="Inspect CAD Digital Twin"
+                      className="absolute top-4 right-4 z-20 flex items-center gap-2 px-3 py-1.5 rounded-[2px] bg-paper/90 backdrop-blur-sm border border-paper-line text-black text-caption font-semibold hover:bg-black hover:text-white transition-all shadow-sm"
+                    >
+                      <span className="w-2 h-2 rounded-full bg-royal animate-pulse" />
+                      <span>Inspect CAD Assembly</span>
+                    </button>
+                  )}
+
                   <Scene
-                    aspectRatio="aspect-[16/10]"
+                    aspectRatio={digitalTwin.isFullscreen ? "aspect-auto h-full w-full" : "aspect-[16/10]"}
                     surface="black"
                     orthographic={true}
                     cameraPosition={[16, 13, 16]}
                     borderless={true}
                     modelScale={1.35}
+                    mode={digitalTwin.mode}
+                    cameraPreset={digitalTwin.cameraPreset}
                     fallback={<M1DrawingFallback surface="black" exploded={true} />}
                   >
-                    <group rotation={[0, animatedRotationY, 0]}>
+                    <group rotation={[0, isInspector ? 0 : animatedRotationY, 0]}>
                       <M1AirHandlingUnit
                         surface="black"
-                        explodeFactor={animatedExplode}
+                        explodeFactor={activeExplode}
+                        selectedAssemblyId={activeSelectedId as SubAssemblyId | null}
                         activeDiscipline={activeId}
                       />
+                      {isInspector && <DigitalTwinHotspots />}
                     </group>
                   </Scene>
+
+                  {isInspector && <DigitalTwinHUD />}
                 </div>
               )}
             </div>
@@ -211,5 +300,13 @@ export function WhatWeDoSection() {
         </div>
       </Container>
     </section>
+  );
+}
+
+export function WhatWeDoSection() {
+  return (
+    <DigitalTwinProvider>
+      <WhatWeDoContent />
+    </DigitalTwinProvider>
   );
 }
