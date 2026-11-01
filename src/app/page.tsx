@@ -1,77 +1,15 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
-import { Scene } from "@/components/canvas/Scene";
-import { M1AirHandlingUnit } from "@/components/canvas/M1AirHandlingUnit";
-import { M1DrawingFallback } from "@/components/canvas/M1DrawingFallback";
+import { HeroSection } from "@/components/home/HeroSection";
 import { WhatWeDoSection } from "@/components/home/WhatWeDoSection";
 import { ApproachTimeline } from "@/components/approach/ApproachTimeline";
 
 export default function HomePage() {
   return (
     <div className="flex-1 flex flex-col">
-      {/* 1. HERO SECTION: ROYAL FIELD */}
-      <section className="relative min-h-[85vh] flex flex-col justify-center py-12 sm:py-20 lg:py-24 bg-royal text-paper select-none">
-        <Container>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            {/* Hero Copy Block */}
-            <div className="lg:col-span-6 space-y-6">
-              <div className="space-y-3">
-                <h1 className="font-display text-display-2xl sm:text-display-3xl text-paper tracking-tight">
-                  Engineering the next dimension
-                </h1>
-                {/* Royal subheading kept for Hero Tagline */}
-                <p className="font-display text-display-lg text-paper font-semibold">
-                  Engineering excellence. Delivered.
-                </p>
-              </div>
-
-              <p className="font-sans text-body max-w-[68ch] text-paper leading-relaxed">
-                We help global OEMs and engineering-driven businesses accelerate
-                product development, expand engineering capacity, and deliver
-                better products faster.
-              </p>
-
-              {/* Action Buttons in Sentence Case */}
-              <div className="pt-2 flex flex-wrap gap-4 items-center">
-                <Link href="/services">
-                  <Button surface="royal" variant="primary" size="base">
-                    Explore our services
-                  </Button>
-                </Link>
-                <Link href="/contact">
-                  <Button surface="royal" variant="secondary" size="base">
-                    Talk to our engineers
-                  </Button>
-                </Link>
-              </div>
-            </div>
-
-            {/* Hero 3D M1 AHU Assembly: 1.6x scale, 55-65% width on desktop, centered on headline */}
-            <div className="lg:col-span-6 flex items-center justify-center w-full lg:pr-3">
-              <div className="w-full">
-                <Scene
-                  surface="royal"
-                  aspectRatio="aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3]"
-                  orthographic={true}
-                  cameraPosition={[16, 13, 16]}
-                  borderless={true}
-                  modelScale={1.6}
-                  orthoPadding={0.09}
-                  fallback={<M1DrawingFallback surface="royal" />}
-                >
-                  <M1AirHandlingUnit
-                    surface="royal"
-                    explodeFactor={0}
-                    modelScale={1.6}
-                  />
-                </Scene>
-              </div>
-            </div>
-          </div>
-        </Container>
-      </section>
+      {/* 1. HERO SECTION: ROYAL FIELD (CHOREOGRAPHED PAGE LOAD) */}
+      <HeroSection />
 
       {/* 2. ABOUT METAVAYN: PAPER SECTION (ALIGNED TO 12-COLUMN GRID)
           At 1280 and up: 2 columns (Left col 1-5: heading, subheading, paragraph; Right col 7-12: quote top-aligned at 40-48px).

@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import * as THREE from "three";
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { type SurfaceType } from "@/components/ui/Button";
 
@@ -25,6 +25,88 @@ interface SceneProps {
   orthographic?: boolean;
   modelScale?: number;
   orthoPadding?: number;
+  enableSpringTilt?: boolean; // Up to 4 deg tilt toward cursor with spring physics (k=90, c=20)
+}
+
+/**
+ * Spring-smoothed cursor tilt controller for hero 3D model:
+ * Tilts up to 4 degrees toward cursor with spring physics (stiffness 90, damping 20).
+ * Disabled on touch and reduced motion.
+ */
+function SpringTiltWrapper({
+  children,
+  enabled = false,
+}: {
+  children: ReactNode;
+  enabled?: boolean;
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const targetRot = useRef({ x: 0, y: 0 });
+  const currentRot = useRef({ x: 0, y: 0 });
+  const velocity = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    if (!enabled) return;
+    const isReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (isReduced) return;
+
+    // 4 degrees in radians ~ 0.0698 rad
+    const maxTilt = (4 * Math.PI) / 180;
+
+    const handlePointerMove = (e: PointerEvent) => {
+      // Explicitly disabled on touch screens
+      if (e.pointerType === "touch") return;
+
+      const normX = (e.clientX / window.innerWidth) * 2 - 1;
+      const normY = (e.clientY / window.innerHeight) * 2 - 1;
+
+      targetRot.current.y = normX * maxTilt;
+      targetRot.current.x = normY * maxTilt;
+    };
+
+    const handlePointerLeave = () => {
+      targetRot.current.x = 0;
+      targetRot.current.y = 0;
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerleave", handlePointerLeave);
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerleave", handlePointerLeave);
+    };
+  }, [enabled]);
+
+  useFrame((_, delta) => {
+    if (!enabled || !groupRef.current) return;
+
+    // Spring physics equations: stiffness = 90, damping = 20
+    const k = 90;
+    const damping = 20;
+    const dt = Math.min(delta, 0.1);
+
+    // X axis tilt
+    const forceX =
+      -k * (currentRot.current.x - targetRot.current.x) - damping * velocity.current.x;
+    velocity.current.x += forceX * dt;
+    currentRot.current.x += velocity.current.x * dt;
+
+    // Y axis tilt
+    const forceY =
+      -k * (currentRot.current.y - targetRot.current.y) - damping * velocity.current.y;
+    velocity.current.y += forceY * dt;
+    currentRot.current.y += velocity.current.y * dt;
+
+    groupRef.current.rotation.x = currentRot.current.x;
+    groupRef.current.rotation.y = currentRot.current.y;
+  });
+
+  if (!enabled) return <>{children}</>;
+
+  return <group ref={groupRef}>{children}</group>;
 }
 
 /**
@@ -108,11 +190,12 @@ export function Scene({
   className = "",
   cameraPosition = [16, 13, 16],
   frameloop = "always",
-  enableControls = false, // Pure CAD isometric view without mouse tilt drift
+  enableControls = false,
   borderless = false,
   orthographic = false,
   modelScale = 1.0,
   orthoPadding = 0.09,
+  enableSpringTilt = false,
 }: SceneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [hasWebGL, setHasWebGL] = useState<boolean | null>(null);
@@ -231,7 +314,9 @@ export function Scene({
             <ambientLight intensity={0.9} />
             <directionalLight position={[5, 8, 4]} intensity={1.2} />
 
-            {children}
+            <SpringTiltWrapper enabled={enableSpringTilt}>
+              {children}
+            </SpringTiltWrapper>
 
             {enableControls && (
               <OrbitControls

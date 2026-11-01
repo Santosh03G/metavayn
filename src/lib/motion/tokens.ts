@@ -5,15 +5,25 @@
  * Calm, precise, engineering deceleration curves.
  */
 
+import gsap from "gsap";
+import { CustomEase } from "gsap/CustomEase";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(CustomEase);
+  // Register exact custom cubic-bezier curves
+  CustomEase.create("metavaynEaseOut", "0.22, 1, 0.36, 1");
+  CustomEase.create("metavaynEaseInOut", "0.65, 0, 0.35, 1");
+}
+
 export const MOTION_TOKENS = {
   easings: {
-    // Primary calm CAD deceleration curve
+    // Primary calm CAD deceleration curve (CSS)
     easeOut: "cubic-bezier(0.22, 1, 0.36, 1)",
-    // Mechanical turnaround / reversal curve
+    // Mechanical turnaround / reversal curve (CSS)
     easeInOut: "cubic-bezier(0.65, 0, 0.35, 1)",
-    // GSAP custom format
-    gsapEaseOut: "cubic-bezier(0.22, 1, 0.36, 1)",
-    gsapEaseInOut: "power2.inOut",
+    // GSAP custom format names registered with CustomEase
+    gsapEaseOut: "metavaynEaseOut",
+    gsapEaseInOut: "metavaynEaseInOut",
   },
   durations: {
     fast: 0.4, // 400ms: micro-interactions, active part cross-fades, button shifts

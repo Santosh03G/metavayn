@@ -3,7 +3,9 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import gsap from "gsap";
 import { Button } from "@/components/ui/Button";
+import { MOTION_TOKENS } from "@/lib/motion/tokens";
 
 export const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -18,6 +20,7 @@ export const NAV_LINKS = [
 export function Header() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -25,6 +28,31 @@ export function Header() {
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
+
+  // Page load entrance: Nav fades in over 0.6s
+  useEffect(() => {
+    const isReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!isReduced && headerRef.current) {
+      gsap.fromTo(
+        headerRef.current,
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: 0.6,
+          ease: MOTION_TOKENS.easings.gsapEaseOut,
+          onStart: () => {
+            if (headerRef.current) headerRef.current.style.willChange = "opacity";
+          },
+          onComplete: () => {
+            if (headerRef.current) headerRef.current.style.willChange = "auto";
+          },
+        }
+      );
+    }
+  }, []);
 
   // Accessibility: Handle Escape key and focus trap
   useEffect(() => {
@@ -42,7 +70,10 @@ export function Header() {
   }, [mobileMenuOpen]);
 
   return (
-    <header className="sticky top-0 z-50 bg-royal border-b border-paper/20">
+    <header
+      ref={headerRef}
+      className="sticky top-0 z-50 bg-royal border-b border-paper/20"
+    >
       <div className="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo / Monogram */}

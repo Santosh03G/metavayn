@@ -11,6 +11,7 @@ export interface M1AirHandlingUnitProps {
   explodeFactor?: number; // 0 = assembled, 1 = fully exploded along length axis
   activeDiscipline?: string | null;
   modelScale?: number; // scale multiplier (default 1.0, hero uses 1.6)
+  introAnimation?: boolean; // hero page load: edge lines first (0.8s), then fill with paper (0.5s)
 }
 
 export function M1AirHandlingUnit({
@@ -18,8 +19,11 @@ export function M1AirHandlingUnit({
   explodeFactor = 0,
   activeDiscipline = null,
   modelScale = 1.0,
+  introAnimation = false,
 }: M1AirHandlingUnitProps) {
   const rootRef = useRef<THREE.Group>(null);
+  const shadowMatRef = useRef<THREE.MeshBasicMaterial>(null);
+  const introTimerRef = useRef(0);
 
   // Single-axis explosion along X axis with perfectly even gaps
   const spacing = explodeFactor * 1.4;
@@ -40,27 +44,70 @@ export function M1AirHandlingUnit({
   // Hero mode (activeDiscipline is null): pipework copper (one highlight per screen)
   const isHeroMode = activeDiscipline === null;
 
-  // Reusable materials with continuous 300ms color lerping
+  // Reusable materials with continuous 300ms color lerping and intro animation support
   const materials = useMemo(() => {
+    const initialOpacity = introAnimation ? 0 : 1;
     return {
-      skid: new THREE.MeshBasicMaterial({ color: "#F1EEE6", toneMapped: false }),
-      casing: new THREE.MeshBasicMaterial({ color: "#F1EEE6", toneMapped: false }),
-      filterLouver: new THREE.MeshBasicMaterial({ color: "#050505", toneMapped: false }),
-      filterPack: new THREE.MeshBasicMaterial({ color: "#050505", toneMapped: false }),
-      coil: new THREE.MeshBasicMaterial({ color: "#050505", toneMapped: false }),
-      fanHousing: new THREE.MeshBasicMaterial({ color: "#050505", toneMapped: false }),
-      fanWheel: new THREE.MeshBasicMaterial({ color: "#F1EEE6", toneMapped: false }),
-      motor: new THREE.MeshBasicMaterial({ color: "#050505", toneMapped: false }),
-      doors: new THREE.MeshBasicMaterial({ color: "#050505", toneMapped: false }),
-      pipe: new THREE.MeshBasicMaterial({ color: "#F0A06A", toneMapped: false }),
-      edge: new THREE.LineBasicMaterial({ color: "#050505", linewidth: 1.5 }),
-      innerEdge: new THREE.LineBasicMaterial({ color: "#F1EEE6" }),
+      skid: new THREE.MeshBasicMaterial({ color: "#F1EEE6", toneMapped: false, transparent: true, opacity: initialOpacity }),
+      casing: new THREE.MeshBasicMaterial({ color: "#F1EEE6", toneMapped: false, transparent: true, opacity: initialOpacity }),
+      filterLouver: new THREE.MeshBasicMaterial({ color: "#050505", toneMapped: false, transparent: true, opacity: initialOpacity }),
+      filterPack: new THREE.MeshBasicMaterial({ color: "#050505", toneMapped: false, transparent: true, opacity: initialOpacity }),
+      coil: new THREE.MeshBasicMaterial({ color: "#050505", toneMapped: false, transparent: true, opacity: initialOpacity }),
+      fanHousing: new THREE.MeshBasicMaterial({ color: "#050505", toneMapped: false, transparent: true, opacity: initialOpacity }),
+      fanWheel: new THREE.MeshBasicMaterial({ color: "#F1EEE6", toneMapped: false, transparent: true, opacity: initialOpacity }),
+      motor: new THREE.MeshBasicMaterial({ color: "#050505", toneMapped: false, transparent: true, opacity: initialOpacity }),
+      doors: new THREE.MeshBasicMaterial({ color: "#050505", toneMapped: false, transparent: true, opacity: initialOpacity }),
+      pipe: new THREE.MeshBasicMaterial({ color: "#F0A06A", toneMapped: false, transparent: true, opacity: initialOpacity }),
+      edge: new THREE.LineBasicMaterial({ color: "#050505", linewidth: 1.5, transparent: true, opacity: 1 }),
+      innerEdge: new THREE.LineBasicMaterial({ color: "#F1EEE6", transparent: true, opacity: initialOpacity }),
     };
-  }, []);
+  }, [introAnimation]);
 
-  // Frame-driven 300ms smooth color transition
+  // Frame-driven animation: page load fill & discipline color lerping
   useFrame((_, delta) => {
-    // Lerp factor approximating ~300ms transition time: 1 - exp(-delta * 10)
+    const isReduced = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // 1. Page Load Intro Animation: Black edge lines first (0.8s), then paper fill (0.5s)
+    if (introAnimation && !isReduced) {
+      introTimerRef.current += delta;
+      const elapsed = introTimerRef.current;
+
+      // 0.0s to 0.8s: edges only (fillProgress = 0). Next 0.5s: fill ramps from 0 to 1
+      const fillProgress = elapsed < 0.8 ? 0 : Math.min(1, (elapsed - 0.8) / 0.5);
+
+      materials.skid.opacity = fillProgress;
+      materials.casing.opacity = fillProgress;
+      materials.filterLouver.opacity = fillProgress;
+      materials.filterPack.opacity = fillProgress;
+      materials.coil.opacity = fillProgress;
+      materials.fanHousing.opacity = fillProgress;
+      materials.fanWheel.opacity = fillProgress;
+      materials.motor.opacity = fillProgress;
+      materials.doors.opacity = fillProgress;
+      materials.pipe.opacity = fillProgress;
+      materials.innerEdge.opacity = fillProgress;
+
+      if (shadowMatRef.current) {
+        shadowMatRef.current.opacity = 0.18 * fillProgress;
+      }
+    } else if (isReduced) {
+      materials.skid.opacity = 1;
+      materials.casing.opacity = 1;
+      materials.filterLouver.opacity = 1;
+      materials.filterPack.opacity = 1;
+      materials.coil.opacity = 1;
+      materials.fanHousing.opacity = 1;
+      materials.fanWheel.opacity = 1;
+      materials.motor.opacity = 1;
+      materials.doors.opacity = 1;
+      materials.pipe.opacity = 1;
+      materials.innerEdge.opacity = 1;
+      if (shadowMatRef.current) {
+        shadowMatRef.current.opacity = 0.18;
+      }
+    }
+
+    // 2. Lerp factor approximating ~300ms transition time: 1 - exp(-delta * 10)
     const t = Math.min(1, 1 - Math.exp(-delta * 10));
 
     // Product Engineering: All edges copper, fills remain neutral paper
@@ -102,9 +149,10 @@ export function M1AirHandlingUnit({
       <mesh position={[0, -0.765, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[4.02, 1.28]} />
         <meshBasicMaterial
+          ref={shadowMatRef}
           color={COLOR_BLACK}
           transparent
-          opacity={0.18}
+          opacity={introAnimation ? 0 : 0.18}
           depthWrite={false}
           toneMapped={false}
         />

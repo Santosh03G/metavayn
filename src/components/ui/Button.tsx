@@ -1,4 +1,13 @@
-import React, { forwardRef, type ButtonHTMLAttributes } from "react";
+"use client";
+
+import React, {
+  forwardRef,
+  useRef,
+  useImperativeHandle,
+  type ButtonHTMLAttributes,
+  type MouseEvent,
+} from "react";
+import { MOTION_TOKENS } from "@/lib/motion/tokens";
 
 export type SurfaceType = "royal" | "paper" | "black";
 export type ButtonVariant = "primary" | "secondary" | "copper" | "ghost" | "blueprint";
@@ -21,10 +30,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       className = "",
       children,
       disabled,
+      onMouseMove,
+      onMouseLeave,
       ...props
     },
-    ref
+    forwardedRef
   ) => {
+    const internalRef = useRef<HTMLButtonElement>(null);
+    useImperativeHandle(forwardedRef, () => internalRef.current!);
+
     // Sharp 2px corners, engineering focus ring (2px with 2px offset by surface), sentence case
     const focusRingBySurface: Record<SurfaceType, string> = {
       royal:
@@ -89,10 +103,49 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       }
     };
 
+    // Magnetic interaction: shift up to 4px toward cursor on hover with fast duration (0.4s)
+    const handleMouseMove = (e: MouseEvent<HTMLButtonElement>) => {
+      onMouseMove?.(e);
+
+      const btn = internalRef.current;
+      if (!btn) return;
+
+      // Disable under prefers-reduced-motion
+      if (
+        typeof window !== "undefined" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
+        return;
+      }
+
+      const rect = btn.getBoundingClientRect();
+      const relX = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+      const relY = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+
+      // Max shift: 4px
+      const shiftX = Math.max(-4, Math.min(4, relX * 4));
+      const shiftY = Math.max(-4, Math.min(4, relY * 4));
+
+      btn.style.transform = `translate3d(${shiftX.toFixed(1)}px, ${shiftY.toFixed(1)}px, 0)`;
+      btn.style.transition = `transform ${MOTION_TOKENS.durations.fast}s ${MOTION_TOKENS.easings.easeOut}`;
+    };
+
+    const handleMouseLeave = (e: MouseEvent<HTMLButtonElement>) => {
+      onMouseLeave?.(e);
+
+      const btn = internalRef.current;
+      if (!btn) return;
+
+      btn.style.transform = "translate3d(0, 0, 0)";
+      btn.style.transition = `transform ${MOTION_TOKENS.durations.fast}s ${MOTION_TOKENS.easings.easeOut}`;
+    };
+
     return (
       <button
-        ref={ref}
+        ref={internalRef}
         disabled={disabled}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
         className={`${baseStyles} ${sizeStyles} ${getVariantStyles()} ${className}`}
         {...props}
       >
