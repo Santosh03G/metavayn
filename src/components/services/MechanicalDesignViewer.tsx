@@ -27,13 +27,12 @@ export function MechanicalDesignViewer({ surface = "royal" }: MechanicalDesignVi
     <div className="space-y-4 select-none">
       <div className={`border p-4 sm:p-6 ${containerClass}`}>
         {/* Header telemetry */}
-        <div className={`flex items-center justify-between border-b ${dividerClass} pb-2 mb-3 text-mono-xs font-mono ${labelClass}`}>
-          <span className="flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-copper animate-pulse" />
-            <span>M2 SHEET METAL KINEMATIC UNFOLD SIMULATOR</span>
+        <div className={`flex items-center justify-between border-b ${dividerClass} pb-2 mb-3 text-xs font-sans ${labelClass}`}>
+          <span className="flex items-center space-x-2 font-medium">
+            <span className="w-2 h-2 rounded-full bg-copper" />
+            <span>Sheet Metal Kinematic Unfold Simulator</span>
           </span>
-          {/* Text on royal must be --paper (5.9:1), not copper */}
-          <span className="font-semibold text-paper">BEND ANGLE: {bendDegrees}°</span>
+          <span className="font-semibold text-paper">Bend Angle: {bendDegrees}°</span>
         </div>
 
         {/* 3D Viewport */}
@@ -43,12 +42,12 @@ export function MechanicalDesignViewer({ surface = "royal" }: MechanicalDesignVi
 
         {/* Interactive Scrubber Slider */}
         <div className={`mt-4 pt-3 border-t ${dividerClass} space-y-2`}>
-          <div className={`flex items-center justify-between font-mono text-[10px] ${labelClass}`}>
-            <span>FLAT PATTERN (0°)</span>
+          <div className={`flex items-center justify-between font-sans text-xs ${labelClass}`}>
+            <span>Flat pattern (0°)</span>
             <span className="text-paper font-semibold">
-              SCRUBBER: {Math.round(unfoldProgress * 100)}% UNFOLDED
+              {Math.round(unfoldProgress * 100)}% unfolded
             </span>
-            <span>FORMED BRACKET (90°)</span>
+            <span>Formed bracket (90°)</span>
           </div>
 
           <input
@@ -58,19 +57,13 @@ export function MechanicalDesignViewer({ surface = "royal" }: MechanicalDesignVi
             step="0.01"
             value={unfoldProgress}
             onChange={(e) => setUnfoldProgress(parseFloat(e.target.value))}
-            className="w-full accent-copper bg-black/40 cursor-pointer h-1.5 rounded-none"
-            aria-label="Sheet metal unfold percentage scrubber"
+            className="w-full h-1.5 bg-paper/20 rounded-lg appearance-none cursor-pointer accent-copper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper"
+            aria-label="Sheet metal unfolding scrubber"
           />
-
-          <div className={`flex justify-between items-center text-[9px] font-mono ${labelClass} opacity-80 pt-1`}>
-            <span>NEUTRAL AXIS K-FACTOR: 0.44</span>
-            <span>BEND RADIUS R = 2.0mm • DIN 6935</span>
-            <span>MATERIAL: AL 5052-H32</span>
-          </div>
         </div>
       </div>
 
-      {/* M3 Weldment Callout underneath */}
+      {/* Weldment Callout Demonstration below Scrubber */}
       <M3WeldmentCallout surface={surface} />
     </div>
   );

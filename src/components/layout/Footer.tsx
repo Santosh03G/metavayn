@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { TitleBlock } from "@/components/drawing/TitleBlock";
 
 const QUICK_LINKS = [
   { href: "/", label: "Home" },
@@ -27,9 +26,6 @@ export function Footer() {
           {/* Identity & Mission */}
           <div className="md:col-span-6 space-y-4">
             <div>
-              <span className="font-mono text-[10px] text-pale-blue uppercase tracking-widest block mb-1">
-                ORGANIZATION IDENTIFIER
-              </span>
               <h2 className="font-display font-bold text-lg sm:text-xl text-paper tracking-wide">
                 METAVAYN TECHNOLOGIES PVT. LTD.
               </h2>
@@ -44,10 +40,10 @@ export function Footer() {
 
           {/* Quick Links */}
           <div className="md:col-span-3 space-y-3">
-            <h3 className="font-mono text-[11px] uppercase tracking-wider text-pale-blue border-b border-pale-blue/20 pb-1">
+            <h3 className="font-sans text-xs font-semibold uppercase tracking-wider text-pale-blue border-b border-pale-blue/20 pb-1">
               Quick Links
             </h3>
-            <ul className="space-y-2 text-xs">
+            <ul className="space-y-2 text-xs font-sans">
               {QUICK_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
@@ -63,10 +59,10 @@ export function Footer() {
 
           {/* Services */}
           <div className="md:col-span-3 space-y-3">
-            <h3 className="font-mono text-[11px] uppercase tracking-wider text-pale-blue border-b border-pale-blue/20 pb-1">
+            <h3 className="font-sans text-xs font-semibold uppercase tracking-wider text-pale-blue border-b border-pale-blue/20 pb-1">
               Services
             </h3>
-            <ul className="space-y-2 text-xs">
+            <ul className="space-y-2 text-xs font-sans">
               {SERVICES_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
@@ -81,23 +77,9 @@ export function Footer() {
           </div>
         </div>
 
-        {/* CAD Title Block on Black */}
-        <div className="mt-12 pt-8 border-t border-pale-blue/20">
-          <TitleBlock
-            surface="black"
-            drawingTitle="OFFICIAL WEB PORTAL - GENERAL SPECIFICATION"
-            drawingNumber="MV-2026-ROOT"
-            sheetNumber="00"
-            totalSheets="07"
-            scale="1:1"
-            revision="01"
-          />
-        </div>
-
         {/* Legal & Copyright */}
-        <div className="mt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-pale-blue/70 font-mono">
-          <p>© 2026 Metavayn Technologies Pvt. Ltd. All Rights Reserved.</p>
-          <p className="mt-2 sm:mt-0">SEC CUT: B-B / ISO STANDARD COMPLIANT</p>
+        <div className="mt-12 pt-6 border-t border-pale-blue/20 flex flex-col sm:flex-row items-center justify-between text-xs text-pale-blue/70 font-sans">
+          <p>© 2026 Metavayn Technologies Pvt. Ltd. All rights reserved.</p>
         </div>
       </div>
     </footer>

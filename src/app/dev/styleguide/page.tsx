@@ -49,7 +49,7 @@ export default function StyleguidePage() {
             </h1>
           </div>
           <div className="font-mono text-mono-xs text-pale-blue border border-pale-blue/30 px-3 py-1.5 bg-black">
-            SPEC: D2 PALETTE • 0 GRADIENTS • ISO 128 COMPLIANT
+            SPEC: D2 PALETTE • 0 GRADIENTS
           </div>
         </div>
 

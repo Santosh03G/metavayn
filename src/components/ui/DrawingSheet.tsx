@@ -110,7 +110,7 @@ export function DrawingSheet({
         ))}
       </div>
 
-      {/* Integrated ASME/ISO Title Block */}
+      {/* Integrated Title Block */}
       {showTitleBlock && (
         <div className={`mt-4 pt-4 border-t ${s.divider}`}>
           <TitleBlock

@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import * as THREE from "three";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { type SurfaceType } from "@/components/ui/Button";
 
@@ -21,10 +21,33 @@ interface SceneProps {
   cameraPosition?: [number, number, number];
   frameloop?: "demand" | "always";
   enableControls?: boolean;
+  borderless?: boolean;
+  orthographic?: boolean;
+  orthoPadding?: number;
 }
 
 /**
- * Accessible 2D CAD blueprint fallback SVG
+ * Responsive orthographic auto-fit camera controller
+ * Keeps assembly visible across all viewports with guaranteed padding.
+ */
+function OrthoFitController({ padding = 1.15 }: { padding?: number }) {
+  const { camera, size } = useThree();
+
+  useEffect(() => {
+    if (!("zoom" in camera)) return;
+    const ortho = camera as THREE.OrthographicCamera;
+    // Bounding diameter of exploded assembly: ~6.2 units
+    const targetSize = 6.2 * padding;
+    const computedZoom = Math.min(size.width, size.height) / targetSize;
+    ortho.zoom = Math.max(computedZoom, 28);
+    ortho.updateProjectionMatrix();
+  }, [camera, size.width, size.height, padding]);
+
+  return null;
+}
+
+/**
+ * Accessible 2D CAD drawing fallback SVG
  * rendered when WebGL is absent, loading, or under reduced motion.
  */
 function DefaultDrawingFallback({ surface = "royal" }: { surface?: SurfaceType }) {
@@ -58,7 +81,7 @@ function DefaultDrawingFallback({ surface = "royal" }: { surface?: SurfaceType }
         className="font-mono text-mono-xs mt-2"
         style={{ color: strokeColor, opacity: 0.7 }}
       >
-        ISO 128 ORTHOGRAPHIC PROJECTION (STATIC FALLBACK)
+        ORTHOGRAPHIC PROJECTION (STATIC FALLBACK)
       </span>
     </div>
   );
@@ -70,16 +93,25 @@ export function Scene({
   aspectRatio = "aspect-video",
   surface = "royal",
   className = "",
-  cameraPosition = [3, 2.5, 4],
+  cameraPosition = [16, 13, 16],
   frameloop = "always",
   enableControls = true,
+  borderless = false,
+  orthographic = false,
+  orthoPadding = 1.15,
 }: SceneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [hasWebGL, setHasWebGL] = useState<boolean | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isDebug, setIsDebug] = useState(false);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      setIsDebug(params.get("debug") === "1");
+    }
+
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setReducedMotion(motionQuery.matches);
     const onMotionChange = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
@@ -117,12 +149,13 @@ export function Scene({
   const shouldUseFallback =
     hasWebGL === false || reducedMotion || hasWebGL === null;
 
-  const borderClass =
-    surface === "royal"
-      ? "border-paper/30"
-      : surface === "black"
-      ? "border-pale-blue/30"
-      : "border-paper-line";
+  const borderClass = borderless
+    ? ""
+    : surface === "royal"
+    ? "border border-paper/30"
+    : surface === "black"
+    ? "border border-pale-blue/30"
+    : "border border-paper-line";
 
   const labelColor =
     surface === "royal"
@@ -134,7 +167,7 @@ export function Scene({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full ${aspectRatio} overflow-hidden border ${borderClass} bg-transparent ${className}`}
+      className={`relative w-full ${aspectRatio} overflow-hidden ${borderClass} bg-transparent ${className}`}
     >
       {shouldUseFallback ? (
         <div className="w-full h-full flex items-center justify-center">
@@ -150,7 +183,18 @@ export function Scene({
         >
           <Canvas
             dpr={[1, 1.75]}
-            camera={{ position: cameraPosition, fov: 38 }}
+            orthographic={orthographic}
+            camera={
+              orthographic
+                ? {
+                    position: cameraPosition,
+                    zoom: 50,
+                  }
+                : {
+                    position: cameraPosition,
+                    fov: 38,
+                  }
+            }
             frameloop={frameloop}
             gl={{
               antialias: true,
@@ -162,6 +206,8 @@ export function Scene({
               gl.outputColorSpace = THREE.SRGBColorSpace;
             }}
           >
+            {orthographic && <OrthoFitController padding={orthoPadding} />}
+
             {/* Ambient + Directional lighting without blue-glow bias */}
             <ambientLight intensity={0.9} />
             <directionalLight position={[5, 8, 4]} intensity={1.2} />
@@ -184,13 +230,17 @@ export function Scene({
         </div>
       )}
 
-      {/* CAD Datum corners */}
-      <div className={`absolute top-1.5 left-2 font-mono text-[9px] ${labelColor} pointer-events-none select-none`}>
-        VIEW: 3D-CAD/GL
-      </div>
-      <div className={`absolute bottom-1.5 right-2 font-mono text-[9px] ${labelColor} pointer-events-none select-none`}>
-        DPR: &le;1.75
-      </div>
+      {/* Debug-only info: visible only when ?debug=1 */}
+      {isDebug && (
+        <>
+          <div className={`absolute top-1.5 left-2 font-mono text-[9px] ${labelColor} pointer-events-none select-none`}>
+            DEBUG: 3D-CAD/GL
+          </div>
+          <div className={`absolute bottom-1.5 right-2 font-mono text-[9px] ${labelColor} pointer-events-none select-none`}>
+            DPR: &le;1.75
+          </div>
+        </>
+      )}
     </div>
   );
 }

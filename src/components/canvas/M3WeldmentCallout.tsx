@@ -12,9 +12,7 @@ export function M3WeldmentCallout({
   const isRoyal = surface === "royal";
   const isBlack = surface === "black";
 
-  // Tokens: --paper on royal, --pale-blue on black, --black on paper
-  const strokeColor = isRoyal ? "#F1EEE6" : isBlack ? "#9DB2FF" : "#050505";
-  const plateFill = isRoyal ? "#2347E0" : isBlack ? "#050505" : "#F1EEE6";
+  // Surface-dependent token mapping
   const containerClass = isRoyal
     ? "border-paper/30 bg-royal/90 text-paper"
     : isBlack
@@ -27,6 +25,13 @@ export function M3WeldmentCallout({
     ? "border-pale-blue/20"
     : "border-paper-line";
 
+  const strokeColor = isRoyal ? "#F1EEE6" : isBlack ? "#9DB2FF" : "#050505";
+  const plateFill = isRoyal
+    ? "rgba(241, 238, 230, 0.15)"
+    : isBlack
+    ? "rgba(157, 178, 255, 0.15)"
+    : "rgba(5, 5, 5, 0.05)";
+
   const labelClass = isRoyal
     ? "text-paper/80"
     : isBlack
@@ -36,7 +41,7 @@ export function M3WeldmentCallout({
   const headingTextClass = isRoyal
     ? "text-paper font-semibold"
     : isBlack
-    ? "text-paper font-semibold"
+    ? "text-pale-blue font-semibold"
     : "text-black font-semibold";
 
   return (
@@ -45,7 +50,7 @@ export function M3WeldmentCallout({
     >
       <div className={`flex items-center justify-between border-b pb-1.5 mb-3 ${dividerClass}`}>
         <span className={`text-[10px] uppercase tracking-wider font-semibold ${labelClass}`}>
-          WELDMENT SYMBOLOGY (ISO 2553 / AWS D1.1)
+          WELDMENT CALLOUT SYMBOLOGY
         </span>
         <span className={`text-[9px] ${labelClass}`}>
           JOINT REF: W-04 • ISMC 100
@@ -53,7 +58,7 @@ export function M3WeldmentCallout({
       </div>
 
       <div className="flex flex-col sm:flex-row items-center gap-4">
-        {/* ISO 2553 Weld Leader Line SVG */}
+        {/* Weld Leader Line SVG */}
         <svg
           className="w-48 h-20"
           viewBox="0 0 190 80"
@@ -73,7 +78,7 @@ export function M3WeldmentCallout({
 
           {/* Reference Line */}
           <line x1="95" y1="25" x2="165" y2="25" stroke={strokeColor} />
-          {/* Identification Dashed Line (ISO Standard) */}
+          {/* Identification Dashed Line */}
           <line x1="95" y1="30" x2="165" y2="30" stroke={strokeColor} strokeDasharray="3,3" opacity="0.6" />
 
           {/* Weld Symbol: Fillet Triangle on reference line */}
@@ -89,7 +94,7 @@ export function M3WeldmentCallout({
           {/* Weld Tail Specification */}
           <polyline points="165,15 175,25 165,35" stroke={strokeColor} />
           <text x="150" y="50" fill={strokeColor} fontSize="8" fontFamily="monospace">
-            GMAW-135
+            GMAW
           </text>
         </svg>
 
@@ -98,11 +103,8 @@ export function M3WeldmentCallout({
           <div className={headingTextClass}>
             CONTINUOUS FILLET WELD (THROAT a=5mm)
           </div>
-          <div className={`text-[10px] ${labelClass}`}>
-            Process: Gas Metal Arc Welding (GMAW 135)
-          </div>
-          <div className={`text-[10px] ${labelClass}`}>
-            Inspection: 100% Visual (VT) + Magnetic Particle (MT)
+          <div className={labelClass}>
+            All joints modeled for structural fabrication and production drawing release.
           </div>
         </div>
       </div>

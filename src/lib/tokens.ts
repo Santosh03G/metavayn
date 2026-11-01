@@ -20,8 +20,8 @@ export const TOKENS = {
   },
   drawing: {
     sheetScale: "1:1",
-    standard: "ISO 128 / ASME Y14.5",
-    dwgPrefix: "MV-2026",
+    standard: "Engineering Drawing Standard",
+    dwgPrefix: "DWG-2026",
     revision: "01",
   },
 } as const;

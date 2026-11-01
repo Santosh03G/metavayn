@@ -31,16 +31,19 @@ export function SceneContainer({
   const [hasWebGL, setHasWebGL] = useState<boolean | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isDebug, setIsDebug] = useState(false);
 
   useEffect(() => {
-    // 1. Reduced motion check
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      setIsDebug(params.get("debug") === "1");
+    }
+
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setReducedMotion(motionQuery.matches);
-
     const onMotionChange = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
     motionQuery.addEventListener("change", onMotionChange);
 
-    // 2. WebGL support check
     try {
       const canvas = document.createElement("canvas");
       const gl =
@@ -52,7 +55,6 @@ export function SceneContainer({
       setHasWebGL(false);
     }
 
-    // 3. Intersection Observer to pause rendering when off-screen
     const currentContainer = containerRef.current;
     if (!currentContainer) return;
 
@@ -114,13 +116,17 @@ export function SceneContainer({
         </div>
       )}
 
-      {/* CAD Datum corners */}
-      <div className="absolute top-1 left-1 font-mono text-[8px] text-pale-blue/40 pointer-events-none">
-        +0,0
-      </div>
-      <div className="absolute bottom-1 right-1 font-mono text-[8px] text-pale-blue/40 pointer-events-none">
-        R3F/GL
-      </div>
+      {/* Debug-only labels: visible only when ?debug=1 */}
+      {isDebug && (
+        <>
+          <div className="absolute top-1 left-1 font-mono text-[8px] text-pale-blue/40 pointer-events-none">
+            DEBUG: +0,0
+          </div>
+          <div className="absolute bottom-1 right-1 font-mono text-[8px] text-pale-blue/40 pointer-events-none">
+            DEBUG: R3F/GL
+          </div>
+        </>
+      )}
     </div>
   );
 }

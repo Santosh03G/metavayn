@@ -26,22 +26,22 @@ export function Section({
 
   const surfaceClasses: Record<
     SurfaceType,
-    { section: string; markerBorder: string; markerText: string }
+    { section: string; border: string; text: string }
   > = {
     royal: {
       section: "bg-royal text-paper border-b border-paper/30",
-      markerBorder: "border-paper/20",
-      markerText: "text-paper/80",
+      border: "border-paper/20",
+      text: "text-paper/80",
     },
     black: {
       section: "bg-black text-paper border-b border-pale-blue/20",
-      markerBorder: "border-pale-blue/20",
-      markerText: "text-pale-blue",
+      border: "border-pale-blue/20",
+      text: "text-pale-blue",
     },
     paper: {
       section: "bg-paper text-black border-b border-paper-line",
-      markerBorder: "border-paper-line",
-      markerText: "text-black/70",
+      border: "border-paper-line",
+      text: "text-black/70",
     },
   };
 
@@ -52,21 +52,6 @@ export function Section({
       className={`relative py-16 sm:py-24 ${currentConfig.section} ${className}`}
       {...props}
     >
-      {/* Section Cut Header Marker */}
-      {(sectionCutLabel || sheetRef) && (
-        <Container className="mb-8">
-          <div
-            className={`flex items-center justify-between border-b pb-2 font-mono text-mono-xs tracking-wider uppercase select-none ${currentConfig.markerBorder} ${currentConfig.markerText}`}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="w-1.5 h-1.5 border border-current" />
-              <span>{sectionCutLabel || "SECTION CUT"}</span>
-            </div>
-            {sheetRef && <span>DWG REF: {sheetRef}</span>}
-          </div>
-        </Container>
-      )}
-
       <Container>{children}</Container>
     </section>
   );

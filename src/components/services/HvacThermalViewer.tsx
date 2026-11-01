@@ -9,12 +9,12 @@ export function HvacThermalViewer() {
   const [viewMode, setViewMode] = useState<"shaded" | "wireframe" | "drawing">("shaded");
 
   return (
-    <div className="border border-pale-blue/30 bg-black p-4 sm:p-6 select-none space-y-4">
+    <div className="border border-pale-blue/30 bg-black/60 p-4 sm:p-6 select-none space-y-4">
       {/* View Mode Switcher Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-pale-blue/20 pb-2 gap-2 text-mono-xs font-mono text-pale-blue">
-        <span className="flex items-center space-x-2">
-          <span className="w-2 h-2 rounded-full bg-pale-blue animate-pulse" />
-          <span>HVAC & THERMAL UNIT: M1 AHU INSPECTION</span>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-pale-blue/20 pb-2 gap-2 text-xs font-sans text-pale-blue">
+        <span className="flex items-center space-x-2 font-medium">
+          <span className="w-2 h-2 rounded-full bg-pale-blue" />
+          <span>HVAC & Thermal Unit: M1 AHU Inspection</span>
         </span>
 
         {/* View Mode Buttons */}
@@ -24,9 +24,9 @@ export function HvacThermalViewer() {
               key={m}
               type="button"
               onClick={() => setViewMode(m)}
-              className={`px-2.5 py-1 text-[10px] uppercase font-semibold border transition-colors ${
+              className={`px-2.5 py-1 text-xs capitalize font-medium border transition-colors ${
                 viewMode === m
-                  ? "bg-pale-blue text-black border-pale-blue"
+                  ? "bg-pale-blue text-black border-pale-blue font-semibold"
                   : "bg-transparent text-pale-blue/80 border-pale-blue/30 hover:border-pale-blue"
               }`}
             >
@@ -47,15 +47,9 @@ export function HvacThermalViewer() {
           surface="black"
           explodeFactor={0.5}
           activeDiscipline="hvac"
-          mode={viewMode}
           interactiveTilt={true}
         />
       </Scene>
-
-      <div className="flex justify-between items-center text-[10px] font-mono text-pale-blue/80 pt-1 border-t border-pale-blue/20">
-        <span>CHILLED WATER COILS & CENTRIFUGAL BLOWERS HIGHLIGHTED</span>
-        <span>DRAG TO ORBIT • ACTIVE: [{viewMode.toUpperCase()}]</span>
-      </div>
     </div>
   );
 }

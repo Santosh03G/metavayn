@@ -1,0 +1,620 @@
+[
+  {
+    "file": "src/app/dev/styleguide/page.tsx",
+    "line": 52,
+    "target": "ISO",
+    "text": "SPEC: D2 PALETTE • 0 GRADIENTS • ISO 128 COMPLIANT"
+  },
+  {
+    "file": "src/app/dev/styleguide/page.tsx",
+    "line": 52,
+    "target": "compliant",
+    "text": "SPEC: D2 PALETTE • 0 GRADIENTS • ISO 128 COMPLIANT"
+  },
+  {
+    "file": "src/app/dev/styleguide/page.tsx",
+    "line": 182,
+    "target": "MV-",
+    "text": "drawingNumber=\"MV-2026-STY\""
+  },
+  {
+    "file": "src/app/our-approach/page.tsx",
+    "line": 17,
+    "target": "PROCESS WORKFLOW",
+    "text": "<RedlineCallout surface=\"royal\" revision=\"01\" note=\"STRUCTURED PROCESS WORKFLOW\" />"
+  },
+  {
+    "file": "src/app/our-approach/page.tsx",
+    "line": 19,
+    "target": "MV-",
+    "text": "DOC: MV-PROC-2026"
+  },
+  {
+    "file": "src/app/our-approach/page.tsx",
+    "line": 39,
+    "target": "ISO",
+    "text": "<span>QUALITY PROTOCOL: ISO 9001 / ASME Y14.5</span>"
+  },
+  {
+    "file": "src/app/our-approach/page.tsx",
+    "line": 50,
+    "target": "MV-",
+    "text": "sheetRef=\"MV-SEC-PROC-04\""
+  },
+  {
+    "file": "src/app/our-approach/page.tsx",
+    "line": 61,
+    "target": "verified",
+    "text": "From initial requirements capture to finalized manufacturing documentation, each stage represents a verified engineering gate."
+  },
+  {
+    "file": "src/app/our-approach/page.tsx",
+    "line": 77,
+    "target": "MV-",
+    "text": "sheetRef=\"MV-SEC-CTA-APP\""
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 24,
+    "target": "GENERAL ARRANGEMENT",
+    "text": "value=\"GENERAL ARRANGEMENT • 2400.00 mm\""
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 35,
+    "target": "MV-",
+    "text": "DWG: MV-AHU-HERO-01"
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 71,
+    "target": "SCALE:",
+    "text": "<span>SCALE: 1:20 (ISO 128)</span>"
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 71,
+    "target": "ISO",
+    "text": "<span>SCALE: 1:20 (ISO 128)</span>"
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 93,
+    "target": "CURSOR TILT",
+    "text": "<span>CURSOR TILT ACTIVE</span>"
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 94,
+    "target": "SCROLL DOWN TO EXPLODE",
+    "text": "<span>SCROLL DOWN TO EXPLODE ASSEMBLY</span>"
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 104,
+    "target": "GENERAL ARRANGEMENT",
+    "text": "drawingTitle=\"M1 AIR HANDLING UNIT - GENERAL ARRANGEMENT\""
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 105,
+    "target": "MV-",
+    "text": "drawingNumber=\"MV-2026-HERO-01\""
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 121,
+    "target": "MV-",
+    "text": "sheetRef=\"MV-SEC-ABOUT\""
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 126,
+    "target": "COMPANY OVERVIEW",
+    "text": "COMPANY OVERVIEW"
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 148,
+    "target": "CORE OBJECTIVE",
+    "text": "CORE OBJECTIVE"
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 166,
+    "target": "PROCESS WORKFLOW",
+    "text": "sectionCutLabel=\"PROCESS WORKFLOW / 01 TO 04 SEQUENCE\""
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 167,
+    "target": "MV-",
+    "text": "sheetRef=\"MV-SEC-PROC\""
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 173,
+    "target": "STRUCTURED WORKFLOW",
+    "text": "STRUCTURED WORKFLOW"
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 234,
+    "target": "PHASE STATUS:",
+    "text": "PHASE STATUS: VERIFIED"
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 234,
+    "target": "verified",
+    "text": "PHASE STATUS: VERIFIED"
+  },
+  {
+    "file": "src/app/page.tsx",
+    "line": 286,
+    "target": "MV-",
+    "text": "sheetRef=\"MV-SEC-CTA\""
+  },
+  {
+    "file": "src/app/services/page.tsx",
+    "line": 12,
+    "target": "ISO",
+    "text": "import { EngagementComparisonTable } from \"@/components/services/EngagementComparisonTable\";"
+  },
+  {
+    "file": "src/app/services/page.tsx",
+    "line": 24,
+    "target": "MV-",
+    "text": "DOC: MV-SRV-2026"
+  },
+  {
+    "file": "src/app/services/page.tsx",
+    "line": 41,
+    "target": "ISO",
+    "text": "<span>STANDARDS: ISO / ASME / AHRI COMPLIANT</span>"
+  },
+  {
+    "file": "src/app/services/page.tsx",
+    "line": 41,
+    "target": "compliant",
+    "text": "<span>STANDARDS: ISO / ASME / AHRI COMPLIANT</span>"
+  },
+  {
+    "file": "src/app/services/page.tsx",
+    "line": 52,
+    "target": "MV-",
+    "text": "sheetRef=\"MV-SRV-PE-01\""
+  },
+  {
+    "file": "src/app/services/page.tsx",
+    "line": 118,
+    "target": "MV-",
+    "text": "sheetRef=\"MV-SRV-MD-02\""
+  },
+  {
+    "file": "src/app/services/page.tsx",
+    "line": 172,
+    "target": "MV-",
+    "text": "sheetRef=\"MV-SRV-HVAC-03\""
+  },
+  {
+    "file": "src/app/services/page.tsx",
+    "line": 226,
+    "target": "MV-",
+    "text": "sheetRef=\"MV-SRV-DOC-04\""
+  },
+  {
+    "file": "src/app/services/page.tsx",
+    "line": 279,
+    "target": "MV-",
+    "text": "sheetRef=\"MV-SRV-SUP-05\""
+  },
+  {
+    "file": "src/app/services/page.tsx",
+    "line": 327,
+    "target": "ISO",
+    "text": "{/* 7. ENGAGEMENT MODELS COMPARISON TABLE: PAPER SECTION */}"
+  },
+  {
+    "file": "src/app/services/page.tsx",
+    "line": 332,
+    "target": "MV-",
+    "text": "sheetRef=\"MV-SEC-ENGAGE\""
+  },
+  {
+    "file": "src/app/services/page.tsx",
+    "line": 347,
+    "target": "ISO",
+    "text": "<EngagementComparisonTable />"
+  },
+  {
+    "file": "src/app/services/page.tsx",
+    "line": 352,
+    "target": "ISO",
+    "text": "value=\"ENGAGEMENT COMPARISON • 100% TRANSPARENT SCOPE\""
+  },
+  {
+    "file": "src/app/services/page.tsx",
+    "line": 364,
+    "target": "MV-",
+    "text": "sheetRef=\"MV-SEC-CTA-SRV\""
+  },
+  {
+    "file": "src/components/approach/ApproachSequenceViewer.tsx",
+    "line": 162,
+    "target": "ISO",
+    "text": "<span>ISO 9001 QUALITY GATE: VERIFIED</span>"
+  },
+  {
+    "file": "src/components/approach/ApproachSequenceViewer.tsx",
+    "line": 162,
+    "target": "verified",
+    "text": "<span>ISO 9001 QUALITY GATE: VERIFIED</span>"
+  },
+  {
+    "file": "src/components/approach/ApproachSequenceViewer.tsx",
+    "line": 198,
+    "target": "MV-",
+    "text": "ENGINEERING REQUIREMENTS NOTE: REQ-MV-01"
+  },
+  {
+    "file": "src/components/approach/ApproachSequenceViewer.tsx",
+    "line": 246,
+    "target": "MV-",
+    "text": "DRAWING AUDIT SHEET: MV-AUD-03 (PAPER SURFACE)"
+  },
+  {
+    "file": "src/components/approach/ApproachSequenceViewer.tsx",
+    "line": 337,
+    "target": "MV-",
+    "text": "drawingNumber=\"MV-2026-REL-04\""
+  },
+  {
+    "file": "src/components/approach/QualitySection.tsx",
+    "line": 24,
+    "target": "ISO",
+    "text": "<span>QUALITY & ENGINEERING STANDARDS • ISO 9001 COMPLIANT</span>"
+  },
+  {
+    "file": "src/components/approach/QualitySection.tsx",
+    "line": 24,
+    "target": "compliant",
+    "text": "<span>QUALITY & ENGINEERING STANDARDS • ISO 9001 COMPLIANT</span>"
+  },
+  {
+    "file": "src/components/approach/QualitySection.tsx",
+    "line": 65,
+    "target": "CORE OBJECTIVE",
+    "text": "{/* Core Objective Callout */}"
+  },
+  {
+    "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+    "line": 199,
+    "target": "INSPECT",
+    "text": "{/* Access Doors & Inspection Window */}"
+  },
+  {
+    "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+    "line": 212,
+    "target": "INSPECT",
+    "text": "{/* Inspection Viewport */}"
+  },
+  {
+    "file": "src/components/canvas/M1DrawingFallback.tsx",
+    "line": 99,
+    "target": "SCALE:",
+    "text": "<text x=\"350\" y=\"330\">SCALE: 1:20 (ISO 128)</text>"
+  },
+  {
+    "file": "src/components/canvas/M1DrawingFallback.tsx",
+    "line": 99,
+    "target": "ISO",
+    "text": "<text x=\"350\" y=\"330\">SCALE: 1:20 (ISO 128)</text>"
+  },
+  {
+    "file": "src/components/canvas/M3WeldmentCallout.tsx",
+    "line": 48,
+    "target": "ISO",
+    "text": "WELDMENT SYMBOLOGY (ISO 2553 / AWS D1.1)"
+  },
+  {
+    "file": "src/components/canvas/M3WeldmentCallout.tsx",
+    "line": 56,
+    "target": "ISO",
+    "text": "{/* ISO 2553 Weld Leader Line SVG */}"
+  },
+  {
+    "file": "src/components/canvas/M3WeldmentCallout.tsx",
+    "line": 76,
+    "target": "ISO",
+    "text": "{/* Identification Dashed Line (ISO Standard) */}"
+  },
+  {
+    "file": "src/components/canvas/M3WeldmentCallout.tsx",
+    "line": 105,
+    "target": "INSPECT",
+    "text": "Inspection: 100% Visual (VT) + Magnetic Particle (MT)"
+  },
+  {
+    "file": "src/components/canvas/Scene.tsx",
+    "line": 39,
+    "target": "ISO",
+    "text": "aria-label=\"2D Technical Drawing Isometric Blueprint Fallback\""
+  },
+  {
+    "file": "src/components/canvas/Scene.tsx",
+    "line": 61,
+    "target": "ISO",
+    "text": "ISO 128 ORTHOGRAPHIC PROJECTION (STATIC FALLBACK)"
+  },
+  {
+    "file": "src/components/canvas/Scene.tsx",
+    "line": 189,
+    "target": "VIEW: 3D",
+    "text": "VIEW: 3D-CAD/GL"
+  },
+  {
+    "file": "src/components/canvas/Scene.tsx",
+    "line": 192,
+    "target": "DPR:",
+    "text": "DPR: &le;1.75"
+  },
+  {
+    "file": "src/components/canvas/SceneContainer.tsx",
+    "line": 119,
+    "target": "+0,0",
+    "text": "+0,0"
+  },
+  {
+    "file": "src/components/canvas/SceneContainer.tsx",
+    "line": 122,
+    "target": "R3F/GL",
+    "text": "R3F/GL"
+  },
+  {
+    "file": "src/components/drawing/BomTable.tsx",
+    "line": 13,
+    "target": "MV-",
+    "text": "{ item: 1, qty: 1, partNo: \"MV-AHU-CS-01\", description: \"Main Casing Assembly\", material: \"GI Sheet 1.6mm\", spec: \"ASTM A653\" },"
+  },
+  {
+    "file": "src/components/drawing/BomTable.tsx",
+    "line": 14,
+    "target": "MV-",
+    "text": "{ item: 2, qty: 1, partNo: \"MV-AHU-CL-02\", description: \"Chilled Water Coil Assembly\", material: \"Cu Tubes / Al Fins\", spec: \"AHRI 410\" },"
+  },
+  {
+    "file": "src/components/drawing/BomTable.tsx",
+    "line": 15,
+    "target": "MV-",
+    "text": "{ item: 3, qty: 2, partNo: \"MV-AHU-FN-03\", description: \"Centrifugal Blower Fan\", material: \"Welded Steel Impeller\", spec: \"AMCA 210\" },"
+  },
+  {
+    "file": "src/components/drawing/BomTable.tsx",
+    "line": 16,
+    "target": "MV-",
+    "text": "{ item: 4, qty: 1, partNo: \"MV-AHU-SK-04\", description: \"Structural Skid Base Frame\", material: \"ISMC 100 Channel\", spec: \"IS 2062\" },"
+  },
+  {
+    "file": "src/components/drawing/BomTable.tsx",
+    "line": 17,
+    "target": "MV-",
+    "text": "{ item: 5, qty: 1, partNo: \"MV-AHU-DM-05\", description: \"Opposed Blade Damper\", material: \"Extruded Aluminum\", spec: \"AMCA 500-D\" },"
+  },
+  {
+    "file": "src/components/drawing/BomTable.tsx",
+    "line": 104,
+    "target": "MV-",
+    "text": "DOC: MV-BOM-AHU-01 • REV 01"
+  },
+  {
+    "file": "src/components/drawing/BomTable.tsx",
+    "line": 137,
+    "target": "verified",
+    "text": "<span>VERIFIED: METAVAYN DOCUMENTATION TEAM</span>"
+  },
+  {
+    "file": "src/components/drawing/SelfBuildingDrawing.tsx",
+    "line": 107,
+    "target": "ISO",
+    "text": "ORTHOGRAPHIC PROJECTION (FIRST ANGLE ISO 128)"
+  },
+  {
+    "file": "src/components/drawing/SelfBuildingDrawing.tsx",
+    "line": 165,
+    "target": "compliant",
+    "text": "CAD AUDIT: GD&T COMPLIANT (ASME Y14.5M)"
+  },
+  {
+    "file": "src/components/drawing/TitleBlock.tsx",
+    "line": 18,
+    "target": "GENERAL ARRANGEMENT",
+    "text": "drawingTitle = \"SYSTEM ARCHITECTURE & GENERAL ARRANGEMENT\","
+  },
+  {
+    "file": "src/components/drawing/TitleBlock.tsx",
+    "line": 19,
+    "target": "MV-",
+    "text": "drawingNumber = \"MV-2026-001\","
+  },
+  {
+    "file": "src/components/drawing/TitleBlock.tsx",
+    "line": 88,
+    "target": "ORGANIZATION / STANDARDS",
+    "text": "ORGANIZATION / STANDARDS"
+  },
+  {
+    "file": "src/components/drawing/TitleBlock.tsx",
+    "line": 94,
+    "target": "ISO",
+    "text": "ISO 128 / ASME Y14.5M COMPLIANT"
+  },
+  {
+    "file": "src/components/drawing/TitleBlock.tsx",
+    "line": 94,
+    "target": "compliant",
+    "text": "ISO 128 / ASME Y14.5M COMPLIANT"
+  },
+  {
+    "file": "src/components/drawing/TitleBlock.tsx",
+    "line": 104,
+    "target": "ISO",
+    "text": "{/* First Angle Projection Symbol (ISO) */}"
+  },
+  {
+    "file": "src/components/drawing/TitleBlock.tsx",
+    "line": 127,
+    "target": "SCALE:",
+    "text": "<span>SCALE: {scale}</span>"
+  },
+  {
+    "file": "src/components/home/WhatWeDoSection.tsx",
+    "line": 86,
+    "target": "CAPABILITIES INDEX",
+    "text": "<span>CAPABILITIES INDEX • FIVE CORE DISCIPLINES</span>"
+  },
+  {
+    "file": "src/components/home/WhatWeDoSection.tsx",
+    "line": 97,
+    "target": "INSPECT",
+    "text": "{/* Desktop Layout: Interactive Discipline Index (Left) + Sticky Inspection Viewport (Right) */}"
+  },
+  {
+    "file": "src/components/home/WhatWeDoSection.tsx",
+    "line": 145,
+    "target": "INSPECT",
+    "text": "{isSelected ? \"▶ ACTIVE MAPPING\" : \"INSPECT\"}"
+  },
+  {
+    "file": "src/components/home/WhatWeDoSection.tsx",
+    "line": 145,
+    "target": "ACTIVE MAPPING",
+    "text": "{isSelected ? \"▶ ACTIVE MAPPING\" : \"INSPECT\"}"
+  },
+  {
+    "file": "src/components/home/WhatWeDoSection.tsx",
+    "line": 160,
+    "target": "INSPECT",
+    "text": "{/* Right Column: Pinned Inspection Viewport (3D or BOM Drawing Sheet) */}"
+  },
+  {
+    "file": "src/components/home/WhatWeDoSection.tsx",
+    "line": 184,
+    "target": "ISO",
+    "text": "<span>ISO 128 TECHNICAL DOCUMENTATION SHEET</span>"
+  },
+  {
+    "file": "src/components/layout/Footer.tsx",
+    "line": 89,
+    "target": "MV-",
+    "text": "drawingNumber=\"MV-2026-ROOT\""
+  },
+  {
+    "file": "src/components/layout/Footer.tsx",
+    "line": 100,
+    "target": "ISO",
+    "text": "<p className=\"mt-2 sm:mt-0\">SEC CUT: B-B / ISO STANDARD COMPLIANT</p>"
+  },
+  {
+    "file": "src/components/layout/Footer.tsx",
+    "line": 100,
+    "target": "compliant",
+    "text": "<p className=\"mt-2 sm:mt-0\">SEC CUT: B-B / ISO STANDARD COMPLIANT</p>"
+  },
+  {
+    "file": "src/components/layout/SectionCut.tsx",
+    "line": 51,
+    "target": "SECTION CUT",
+    "text": "{/* Section Cut Header Callout */}"
+  },
+  {
+    "file": "src/components/layout/SectionCut.tsx",
+    "line": 59,
+    "target": "SECTION CUT",
+    "text": "<span>{sectionLabel || \"SECTION CUT\"}</span>"
+  },
+  {
+    "file": "src/components/layout/SectionCut.tsx",
+    "line": 61,
+    "target": "DWG REF:",
+    "text": "{sheetCode && <span>DWG REF: {sheetCode}</span>}"
+  },
+  {
+    "file": "src/components/services/EngagementComparisonTable.tsx",
+    "line": 50,
+    "target": "ISO",
+    "text": "export function EngagementComparisonTable() {"
+  },
+  {
+    "file": "src/components/services/HvacThermalViewer.tsx",
+    "line": 17,
+    "target": "INSPECT",
+    "text": "<span>HVAC & THERMAL UNIT: M1 AHU INSPECTION</span>"
+  },
+  {
+    "file": "src/components/ui/DrawingSheet.tsx",
+    "line": 20,
+    "target": "GENERAL ARRANGEMENT",
+    "text": "drawingTitle = \"GENERAL ARRANGEMENT\","
+  },
+  {
+    "file": "src/components/ui/DrawingSheet.tsx",
+    "line": 21,
+    "target": "MV-",
+    "text": "drawingNumber = \"MV-2026-001\","
+  },
+  {
+    "file": "src/components/ui/DrawingSheet.tsx",
+    "line": 113,
+    "target": "ISO",
+    "text": "{/* Integrated ASME/ISO Title Block */}"
+  },
+  {
+    "file": "src/components/ui/Section.tsx",
+    "line": 55,
+    "target": "SECTION CUT",
+    "text": "{/* Section Cut Header Marker */}"
+  },
+  {
+    "file": "src/components/ui/Section.tsx",
+    "line": 63,
+    "target": "SECTION CUT",
+    "text": "<span>{sectionCutLabel || \"SECTION CUT\"}</span>"
+  },
+  {
+    "file": "src/components/ui/Section.tsx",
+    "line": 65,
+    "target": "DWG REF:",
+    "text": "{sheetRef && <span>DWG REF: {sheetRef}</span>}"
+  },
+  {
+    "file": "src/lib/motion.ts",
+    "line": 18,
+    "target": "SECTION CUT",
+    "text": "deliberate: 0.5,  // 500ms: section cut wipe, page transition"
+  },
+  {
+    "file": "src/lib/motion.ts",
+    "line": 23,
+    "target": "SECTION CUT",
+    "text": "* Section Cut Wipe Animation Variants"
+  },
+  {
+    "file": "src/lib/tokens.ts",
+    "line": 22,
+    "target": "SCALE:",
+    "text": "sheetScale: \"1:1\","
+  },
+  {
+    "file": "src/lib/tokens.ts",
+    "line": 23,
+    "target": "ISO",
+    "text": "standard: \"ISO 128 / ASME Y14.5\","
+  },
+  {
+    "file": "src/lib/tokens.ts",
+    "line": 24,
+    "target": "MV-",
+    "text": "dwgPrefix: \"MV-2026\","
+  }
+]

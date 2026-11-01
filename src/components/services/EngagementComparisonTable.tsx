@@ -53,42 +53,40 @@ export function EngagementComparisonTable() {
       <table className="w-full text-left border-collapse font-sans text-xs sm:text-sm">
         <thead>
           <tr className="border-b-2 border-paper-line bg-black/[0.03] font-display text-black">
-            <th className="py-4 px-4 sm:px-6 w-1/4 font-semibold uppercase font-mono text-[11px] tracking-wider text-black/70">
-              ENGAGEMENT PARAMETER
+            <th className="py-4 px-4 sm:px-6 w-1/4 font-semibold uppercase font-sans text-xs tracking-wider text-black/70">
+              Engagement Parameter
             </th>
             {ENGAGEMENT_MODELS.map((m) => (
               <th
                 key={m.name}
-                className="py-4 px-4 sm:px-6 w-1/4 font-semibold text-body-base text-black border-l border-paper-line"
+                className="py-4 px-4 sm:px-6 w-1/4 font-bold text-sm sm:text-base border-l border-paper-line text-black"
               >
-                <div>{m.name}</div>
-                <div className="font-mono text-[10px] text-royal font-normal mt-0.5">
-                  [{m.scope.toUpperCase()}]
-                </div>
+                {m.name}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-paper-line text-black/90">
-          {/* Row 1: What It Is */}
+        <tbody className="divide-y divide-paper-line">
+          {/* Row 1: What it is */}
           <tr className="hover:bg-black/[0.02] transition-colors">
-            <td className="py-4 px-4 sm:px-6 font-mono text-[11px] font-semibold text-black/80 uppercase">
-              What It Is
+            <td className="py-4 px-4 sm:px-6 font-semibold font-sans text-xs uppercase tracking-wider text-black/70 align-top">
+              What it is
             </td>
             {ENGAGEMENT_MODELS.map((m) => (
               <td
                 key={`desc-${m.name}`}
-                className="py-4 px-4 sm:px-6 border-l border-paper-line align-top leading-relaxed text-xs sm:text-sm"
+                className="py-4 px-4 sm:px-6 border-l border-paper-line text-black/90 leading-relaxed align-top"
               >
-                {m.description}
+                <div className="font-medium text-royal mb-1">{m.scope}</div>
+                <div>{m.description}</div>
               </td>
             ))}
           </tr>
 
-          {/* Row 2: Best For */}
+          {/* Row 2: Best for */}
           <tr className="hover:bg-black/[0.02] transition-colors">
-            <td className="py-4 px-4 sm:px-6 font-mono text-[11px] font-semibold text-black/80 uppercase align-top">
-              Best For
+            <td className="py-4 px-4 sm:px-6 font-semibold font-sans text-xs uppercase tracking-wider text-black/70 align-top">
+              Best for
             </td>
             {ENGAGEMENT_MODELS.map((m) => (
               <td
@@ -96,31 +94,15 @@ export function EngagementComparisonTable() {
                 className="py-4 px-4 sm:px-6 border-l border-paper-line align-top"
               >
                 <ul className="space-y-1.5 text-xs text-black/85">
-                  {m.bestFor.map((item, idx) => (
-                    <li key={idx} className="flex items-start space-x-2">
-                      <span className="text-royal font-mono font-bold">▪</span>
+                  {m.bestFor.map((item) => (
+                    <li key={item} className="flex items-start space-x-2">
+                      <span className="text-royal font-bold">✓</span>
                       <span>{item}</span>
                     </li>
                   ))}
                 </ul>
               </td>
             ))}
-          </tr>
-
-          {/* Row 3: Engagement Structure */}
-          <tr className="hover:bg-black/[0.02] transition-colors bg-black/[0.02]">
-            <td className="py-4 px-4 sm:px-6 font-mono text-[11px] font-semibold text-black/80 uppercase">
-              Engagement Structure
-            </td>
-            <td className="py-4 px-4 sm:px-6 border-l border-paper-line font-mono text-[11px]">
-              Milestone / Fixed Deliverable SOW
-            </td>
-            <td className="py-4 px-4 sm:px-6 border-l border-paper-line font-mono text-[11px]">
-              Full-Time Dedicated Offshore Pod
-            </td>
-            <td className="py-4 px-4 sm:px-6 border-l border-paper-line font-mono text-[11px]">
-              Monthly Retainer / Hourly Engineering
-            </td>
           </tr>
         </tbody>
       </table>

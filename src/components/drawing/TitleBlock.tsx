@@ -16,7 +16,7 @@ interface TitleBlockProps {
 
 export function TitleBlock({
   drawingTitle = "SYSTEM ARCHITECTURE & GENERAL ARRANGEMENT",
-  drawingNumber = "MV-2026-001",
+  drawingNumber = "DWG-2026-001",
   sheetNumber = "01",
   totalSheets = "07",
   scale = "1:1",
@@ -85,13 +85,13 @@ export function TitleBlock({
         {/* Company & Standard */}
         <div className="md:col-span-4 p-2.5 space-y-1">
           <div className={`text-[10px] uppercase tracking-wider ${currentStyles.label}`}>
-            ORGANIZATION / STANDARDS
+            ORGANIZATION
           </div>
           <div className={`font-semibold tracking-wide text-sm ${currentStyles.title}`}>
             METAVAYN TECHNOLOGIES PVT. LTD.
           </div>
           <div className={`text-[10px] ${currentStyles.label}`}>
-            ISO 128 / ASME Y14.5M COMPLIANT
+            ENGINEERING SERVICES SPECIFICATION
           </div>
         </div>
 
@@ -101,7 +101,7 @@ export function TitleBlock({
             <span className={`text-[10px] uppercase tracking-wider ${currentStyles.label}`}>
               DRAWING TITLE
             </span>
-            {/* First Angle Projection Symbol (ISO) */}
+            {/* First Angle Projection Symbol */}
             <svg
               className={`w-10 h-4 ${currentStyles.label}`}
               viewBox="0 0 40 16"
@@ -140,7 +140,7 @@ export function TitleBlock({
         <div className="md:col-span-3 p-2.5 flex flex-col justify-between">
           <div>
             <div className={`text-[10px] uppercase tracking-wider ${currentStyles.label}`}>
-              DOCUMENT IDENTIFIER
+              DRAWING REFERENCE
             </div>
             <div className={`text-xs font-bold tracking-wider ${currentStyles.docId}`}>
               {drawingNumber}
@@ -149,7 +149,7 @@ export function TitleBlock({
           <div className={`flex items-center justify-between pt-1 border-t ${currentStyles.dividers} text-[10px]`}>
             <span className={currentStyles.label}>REV: {revision}</span>
             <span className={`px-1.5 py-0.5 border text-[9px] font-bold ${currentStyles.badge}`}>
-              VALIDATED
+              RELEASE
             </span>
           </div>
         </div>

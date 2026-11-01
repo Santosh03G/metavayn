@@ -1,15 +1,14 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { type SurfaceType } from "@/components/ui/Button";
 
 export interface M1AirHandlingUnitProps {
   surface?: SurfaceType;
-  explodeFactor?: number; // 0 = assembled, 1 = fully exploded
+  explodeFactor?: number; // 0 = assembled, 1 = fully exploded along single X axis
   activeDiscipline?: string | null;
-  mode?: "drawing" | "shaded" | "wireframe";
   interactiveTilt?: boolean;
 }
 
@@ -17,7 +16,6 @@ export function M1AirHandlingUnit({
   surface = "royal",
   explodeFactor = 0,
   activeDiscipline = null,
-  mode = "shaded",
   interactiveTilt = true,
 }: M1AirHandlingUnitProps) {
   const rootRef = useRef<THREE.Group>(null);
@@ -25,332 +23,292 @@ export function M1AirHandlingUnit({
 
   // Smooth mouse tilt damping
   useFrame((_, delta) => {
-    if (!rootRef.current) return;
-    if (interactiveTilt) {
-      const targetRotationY = pointer.x * 0.25 - 0.4;
-      const targetRotationX = -pointer.y * 0.15 + 0.35;
-      rootRef.current.rotation.y = THREE.MathUtils.damp(
-        rootRef.current.rotation.y,
-        targetRotationY,
-        4,
-        delta
-      );
-      rootRef.current.rotation.x = THREE.MathUtils.damp(
-        rootRef.current.rotation.x,
-        targetRotationX,
-        4,
-        delta
-      );
-    }
+    if (!rootRef.current || !interactiveTilt) return;
+    const targetRotationY = pointer.x * 0.2 - 0.45;
+    const targetRotationX = -pointer.y * 0.12 + 0.35;
+    rootRef.current.rotation.y = THREE.MathUtils.damp(
+      rootRef.current.rotation.y,
+      targetRotationY,
+      4,
+      delta
+    );
+    rootRef.current.rotation.x = THREE.MathUtils.damp(
+      rootRef.current.rotation.x,
+      targetRotationX,
+      4,
+      delta
+    );
   });
 
-  // Calculate explode translations based on explodeFactor (0 to 1)
-  const casingOffset = useMemo(
-    () => new THREE.Vector3(0, explodeFactor * 1.8, 0),
-    [explodeFactor]
-  );
-  const coilOffset = useMemo(
-    () => new THREE.Vector3(0, 0, explodeFactor * 1.5),
-    [explodeFactor]
-  );
-  const fanOffset = useMemo(
-    () => new THREE.Vector3(explodeFactor * 1.6, 0, 0),
-    [explodeFactor]
-  );
-  const damperOffset = useMemo(
-    () => new THREE.Vector3(-explodeFactor * 1.4, 0, 0),
-    [explodeFactor]
-  );
+  // Single-axis explosion along X axis with perfectly even spacing
+  const spacing = explodeFactor * 1.35;
+  const filterPosX = -1.15 - spacing;
+  const coilPosX = 0.0;
+  const fanPosX = 1.15 + spacing;
 
-  // Subassembly highlight logic
-  const isHvacActive = activeDiscipline === "hvac";
-  const isMechActive = activeDiscipline === "mechanical";
-  const isProductActive = activeDiscipline === "product" || !activeDiscipline;
-  const isSupportActive = activeDiscipline === "support";
+  // Active discipline mapping
+  const isHvac = activeDiscipline === "hvac";
+  const isMech = activeDiscipline === "mechanical";
+  const isSupport = activeDiscipline === "support";
+  const isProduct = activeDiscipline === "product";
 
-  // Exact D2 Color Palette Specification:
-  // - black: #050505
-  // - paper: #F1EEE6
-  // - copper: #F0A06A
-  // - paleBlue: #9DB2FF
-  // - royal: #2347E0
-  // - redline: #E5484D
-  const isBlackSection = surface === "black";
+  // Exact D2 Palette Tokens
+  const COLOR_PAPER = "#F1EEE6";
+  const COLOR_BLACK = "#050505";
+  const COLOR_COPPER = "#F0A06A";
 
-  const colors = {
-    shellLines: isBlackSection ? "#9DB2FF" : "#F1EEE6",
-    shellOpacity: isBlackSection ? 0.25 : 0.30,
-    ductFill: "#F1EEE6",
-    ductOpacity: isBlackSection ? 0.85 : 1.0,
-    blackEdges: "#050505",
-    pipeworkCopper: "#F0A06A",
-    pumpMotorBody: "#050505",
-    pumpMotorAccent: "#9DB2FF",
-    chillerFill: "#9DB2FF",
-    fanBlack: "#050505",
-    floorShadow: "#050505",
-    flowDashes: "#F1EEE6",
-    redline: "#E5484D",
-  };
+  // Dynamic fills: copper when highlighted, paper otherwise
+  const skidFill = isMech ? COLOR_COPPER : COLOR_PAPER;
+  const casingFill = isMech || isSupport ? COLOR_COPPER : COLOR_PAPER;
+  const coilFill = isHvac ? COLOR_COPPER : COLOR_PAPER;
+  const fanFill = isHvac ? COLOR_COPPER : COLOR_PAPER;
+  const filterFill = isProduct ? COLOR_COPPER : COLOR_PAPER;
+
+  // Pipework copper: always copper for HVAC or hero highlight
+  const pipeCopper = COLOR_COPPER;
 
   return (
-    <group ref={rootRef} position={[0, -0.4, 0]} scale={1.2}>
-      {/* 0. Floor Shadow Plane */}
-      <mesh position={[0, -1.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[4.8, 2.4]} />
+    <group ref={rootRef} position={[0, -0.1, 0]}>
+      {/* 0. Flat Contact Shadow Under Unit: Black at 20% opacity, depthWrite=false (Zero z-fighting) */}
+      <mesh position={[0, -0.78, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[5.8, 2.4]} />
         <meshBasicMaterial
-          color={colors.floorShadow}
+          color={COLOR_BLACK}
           transparent
-          opacity={0.22}
+          opacity={0.20}
+          depthWrite={false}
           toneMapped={false}
         />
       </mesh>
 
-      {/* 1. Structural Base Skid Frame (ISMC Channels) */}
-      <group position={[0, -0.9, 0]}>
-        {/* Longitudinal skid beams: black body with pale-blue or black edges */}
-        <mesh position={[0, 0, 0.75]}>
-          <boxGeometry args={[4.2, 0.15, 0.15]} />
-          <meshBasicMaterial
-            color={colors.pumpMotorBody}
-            toneMapped={false}
-            polygonOffset
-            polygonOffsetFactor={1}
-          />
-        </mesh>
-        <lineSegments>
-          <edgesGeometry args={[new THREE.BoxGeometry(4.2, 0.15, 0.15)]} />
-          <lineBasicMaterial
-            color={isMechActive || isProductActive ? colors.pumpMotorAccent : colors.blackEdges}
-            linewidth={1.5}
-          />
-        </lineSegments>
-
-        <mesh position={[0, 0, -0.75]}>
-          <boxGeometry args={[4.2, 0.15, 0.15]} />
-          <meshBasicMaterial
-            color={colors.pumpMotorBody}
-            toneMapped={false}
-            polygonOffset
-            polygonOffsetFactor={1}
-          />
-        </mesh>
-        <lineSegments>
-          <edgesGeometry args={[new THREE.BoxGeometry(4.2, 0.15, 0.15)]} />
-          <lineBasicMaterial
-            color={isMechActive || isProductActive ? colors.pumpMotorAccent : colors.blackEdges}
-            linewidth={1.5}
-          />
-        </lineSegments>
+      {/* 1. Base Skid Frame (ISMC C-Channels) */}
+      <group position={[0, -0.7, 0]}>
+        {/* Longitudinal beams */}
+        {[-0.55, 0.55].map((z, idx) => (
+          <group key={`skid-long-${idx}`} position={[0, 0, z]}>
+            <mesh>
+              <boxGeometry args={[3.8, 0.12, 0.1]} />
+              <meshBasicMaterial color={skidFill} toneMapped={false} />
+            </mesh>
+            <lineSegments>
+              <edgesGeometry args={[new THREE.BoxGeometry(3.8, 0.12, 0.1)]} />
+              <lineBasicMaterial color={COLOR_BLACK} linewidth={1.5} />
+            </lineSegments>
+          </group>
+        ))}
 
         {/* Transverse crossmembers */}
-        {[-1.8, -0.6, 0.6, 1.8].map((x, i) => (
-          <group key={`cross-${i}`} position={[x, 0, 0]}>
+        {[-1.6, -0.8, 0, 0.8, 1.6].map((x, idx) => (
+          <group key={`skid-cross-${idx}`} position={[x, 0, 0]}>
             <mesh>
-              <boxGeometry args={[0.15, 0.15, 1.5]} />
-              <meshBasicMaterial
-                color={colors.pumpMotorBody}
-                toneMapped={false}
-                polygonOffset
-                polygonOffsetFactor={1}
-              />
+              <boxGeometry args={[0.1, 0.12, 1.0]} />
+              <meshBasicMaterial color={skidFill} toneMapped={false} />
             </mesh>
             <lineSegments>
-              <edgesGeometry args={[new THREE.BoxGeometry(0.15, 0.15, 1.5)]} />
-              <lineBasicMaterial
-                color={isMechActive || isProductActive ? colors.pumpMotorAccent : colors.blackEdges}
-              />
+              <edgesGeometry args={[new THREE.BoxGeometry(0.1, 0.12, 1.0)]} />
+              <lineBasicMaterial color={COLOR_BLACK} linewidth={1.5} />
             </lineSegments>
           </group>
         ))}
       </group>
 
-      {/* 2. Outer Casing Enclosure (Building shell lines & Ducts) */}
-      <group position={[casingOffset.x, casingOffset.y, casingOffset.z]}>
-        {/* Ducts: flat --paper fill with --black edges */}
+      {/* 2. Filter Bank Section (Module 1, Left) */}
+      <group position={[filterPosX, 0, 0]}>
+        {/* Outer Casing Cabinet */}
         <mesh position={[0, 0, 0]}>
-          <boxGeometry args={[3.8, 1.6, 1.6]} />
-          <meshBasicMaterial
-            color={colors.ductFill}
-            transparent={isBlackSection}
-            opacity={colors.ductOpacity}
-            toneMapped={false}
-            polygonOffset
-            polygonOffsetFactor={1}
-            polygonOffsetUnits={1}
-          />
-        </mesh>
-        {/* Black edges around duct box */}
-        <lineSegments>
-          <edgesGeometry args={[new THREE.BoxGeometry(3.8, 1.6, 1.6)]} />
-          <lineBasicMaterial color={colors.blackEdges} linewidth={2} />
-        </lineSegments>
-
-        {/* Building shell edge lines outside casing */}
-        <lineSegments position={[0, 0, 0]}>
-          <edgesGeometry args={[new THREE.BoxGeometry(4.0, 1.8, 1.8)]} />
-          <lineBasicMaterial
-            color={colors.shellLines}
-            transparent
-            opacity={colors.shellOpacity}
-          />
-        </lineSegments>
-
-        {/* Access Doors & Inspection Window */}
-        <group position={[0.2, 0, 0.81]}>
-          <mesh>
-            <planeGeometry args={[1.2, 1.3]} />
-            <meshBasicMaterial
-              color={colors.ductFill}
-              toneMapped={false}
-            />
-          </mesh>
-          <lineSegments>
-            <edgesGeometry args={[new THREE.PlaneGeometry(1.2, 1.3)]} />
-            <lineBasicMaterial color={colors.blackEdges} />
-          </lineSegments>
-          {/* Inspection Viewport */}
-          <lineSegments position={[0, 0.3, 0.01]}>
-            <edgesGeometry args={[new THREE.CircleGeometry(0.15, 16)]} />
-            <lineBasicMaterial color={colors.pumpMotorAccent} />
-          </lineSegments>
-        </group>
-      </group>
-
-      {/* 3. Chilled Water Heat Exchanger Coil Assembly */}
-      <group position={[coilOffset.x - 0.2, coilOffset.y, coilOffset.z]}>
-        {/* Coil Casing Header */}
-        <mesh position={[0, 0, 0]}>
-          <boxGeometry args={[0.3, 1.3, 1.4]} />
-          <meshBasicMaterial
-            color={colors.pumpMotorBody}
-            toneMapped={false}
-            polygonOffset
-            polygonOffsetFactor={1}
-          />
+          <boxGeometry args={[1.12, 1.3, 1.15]} />
+          <meshBasicMaterial color={filterFill} toneMapped={false} />
         </mesh>
         <lineSegments>
-          <edgesGeometry args={[new THREE.BoxGeometry(0.3, 1.3, 1.4)]} />
-          <lineBasicMaterial
-            color={isHvacActive ? colors.pumpMotorAccent : colors.blackEdges}
-            linewidth={2}
-          />
+          <edgesGeometry args={[new THREE.BoxGeometry(1.12, 1.3, 1.15)]} />
+          <lineBasicMaterial color={COLOR_BLACK} linewidth={1.5} />
         </lineSegments>
 
-        {/* Thermal Aluminum Fin Rows */}
-        {[-0.5, -0.3, -0.1, 0.1, 0.3, 0.5].map((y, i) => (
-          <lineSegments key={`fin-${i}`} position={[0, y, 0]}>
-            <edgesGeometry args={[new THREE.PlaneGeometry(0.28, 0.02)]} />
-            <lineBasicMaterial
-              color={colors.pumpMotorAccent}
-              opacity={0.6}
-            />
-          </lineSegments>
-        ))}
-
-        {/* Coil Pipework: --copper (#F0A06A) */}
-        <group position={[0.18, 0.2, 0.5]}>
-          <mesh>
-            <cylinderGeometry args={[0.06, 0.06, 0.8, 16]} />
-            <meshBasicMaterial
-              color={colors.pipeworkCopper}
-              toneMapped={false}
-            />
-          </mesh>
-          {/* Flow dashes on pipes: --paper */}
-          <lineSegments position={[0.08, 0, 0]}>
-            <edgesGeometry args={[new THREE.PlaneGeometry(0.01, 0.6)]} />
-            <lineBasicMaterial color={colors.flowDashes} />
-          </lineSegments>
-        </group>
-      </group>
-
-      {/* 4. Centrifugal Blower Fan Assembly (Chillers & Fans) */}
-      <group position={[fanOffset.x + 1.1, fanOffset.y - 0.1, fanOffset.z]}>
-        {/* Fan Scroll Housing (Chillers: --pale-blue fill with --black edges) */}
-        <mesh position={[0, 0, 0]} rotation={[0, 0, 0]}>
-          <cylinderGeometry args={[0.55, 0.55, 0.7, 24]} />
-          <meshBasicMaterial
-            color={colors.chillerFill}
-            toneMapped={false}
-            polygonOffset
-            polygonOffsetFactor={1}
-          />
-        </mesh>
-        <lineSegments>
-          <edgesGeometry args={[new THREE.CylinderGeometry(0.55, 0.55, 0.7, 24)]} />
-          <lineBasicMaterial color={colors.blackEdges} linewidth={2} />
-        </lineSegments>
-
-        {/* Fan Impeller Hub (Fans: --black) */}
-        <mesh position={[0, 0, 0]}>
-          <cylinderGeometry args={[0.2, 0.2, 0.72, 16]} />
-          <meshBasicMaterial
-            color={colors.fanBlack}
-            toneMapped={false}
-          />
-        </mesh>
-        <lineSegments position={[0, 0, 0]}>
-          <edgesGeometry args={[new THREE.CylinderGeometry(0.2, 0.2, 0.72, 16)]} />
-          <lineBasicMaterial color={colors.pumpMotorAccent} />
-        </lineSegments>
-
-        {/* Fan Discharge Duct: --paper fill with --black edges */}
-        <mesh position={[0.2, 0.45, 0]}>
-          <boxGeometry args={[0.4, 0.3, 0.65]} />
-          <meshBasicMaterial
-            color={colors.ductFill}
-            toneMapped={false}
-            polygonOffset
-            polygonOffsetFactor={1}
-          />
-        </mesh>
-        <lineSegments position={[0.2, 0.45, 0]}>
-          <edgesGeometry args={[new THREE.BoxGeometry(0.4, 0.3, 0.65)]} />
-          <lineBasicMaterial color={colors.blackEdges} />
-        </lineSegments>
-      </group>
-
-      {/* 5. Air Intake Damper Assembly (Louver Blades) */}
-      <group position={[damperOffset.x - 1.6, damperOffset.y, damperOffset.z]}>
-        <mesh position={[0, 0, 0]}>
-          <boxGeometry args={[0.2, 1.4, 1.4]} />
-          <meshBasicMaterial
-            color={colors.pumpMotorBody}
-            toneMapped={false}
-            polygonOffset
-            polygonOffsetFactor={1}
-          />
-        </mesh>
-        <lineSegments>
-          <edgesGeometry args={[new THREE.BoxGeometry(0.2, 1.4, 1.4)]} />
-          <lineBasicMaterial color={colors.blackEdges} />
-        </lineSegments>
-
-        {/* Opposed Damper Louver Blades */}
-        {[-0.5, -0.25, 0, 0.25, 0.5].map((y, i) => (
-          <group key={`louver-${i}`} position={[0, y, 0]} rotation={[0.4, 0, 0]}>
+        {/* Left Intake Air Louvers (End Wall) */}
+        {[-0.4, -0.2, 0, 0.2, 0.4].map((y, idx) => (
+          <group key={`louver-${idx}`} position={[-0.57, y, 0]} rotation={[0, 0, 0.35]}>
             <mesh>
-              <boxGeometry args={[0.02, 0.05, 1.3]} />
-              <meshBasicMaterial color={colors.ductFill} toneMapped={false} />
+              <boxGeometry args={[0.02, 0.06, 0.9]} />
+              <meshBasicMaterial color={COLOR_BLACK} toneMapped={false} />
             </mesh>
-            <lineSegments>
-              <edgesGeometry args={[new THREE.BoxGeometry(0.02, 0.05, 1.3)]} />
-              <lineBasicMaterial color={colors.blackEdges} />
-            </lineSegments>
           </group>
         ))}
+
+        {/* Internal Pleated Filter Bank Pack (visible when exploded) */}
+        <group position={[0.2, 0, 0]}>
+          <mesh>
+            <boxGeometry args={[0.15, 1.05, 0.95]} />
+            <meshBasicMaterial color={COLOR_BLACK} toneMapped={false} />
+          </mesh>
+          {/* Pleated Filter Lines */}
+          {[-0.4, -0.2, 0, 0.2, 0.4].map((z, idx) => (
+            <lineSegments key={`pleat-${idx}`} position={[0.08, 0, z]}>
+              <edgesGeometry args={[new THREE.PlaneGeometry(0.02, 1.0)]} />
+              <lineBasicMaterial color={COLOR_PAPER} />
+            </lineSegments>
+          ))}
+        </group>
+
+        {/* Front Access Door Panel Seam & Handle */}
+        <group position={[0, 0, 0.58]}>
+          <lineSegments>
+            <edgesGeometry args={[new THREE.PlaneGeometry(0.9, 1.1)]} />
+            <lineBasicMaterial color={COLOR_BLACK} />
+          </lineSegments>
+          {/* Door Handle */}
+          <mesh position={[0.35, 0, 0.02]}>
+            <boxGeometry args={[0.04, 0.16, 0.03]} />
+            <meshBasicMaterial color={COLOR_BLACK} toneMapped={false} />
+          </mesh>
+        </group>
       </group>
 
-      {/* 6. Delta Revision / Support Callout Markers (Active on Support Hover) */}
-      {isSupportActive && (
-        <group position={[0, 1.2, 0]}>
+      {/* 3. Cooling Coil Section (Module 2, Center) */}
+      <group position={[coilPosX, 0, 0]}>
+        {/* Outer Casing Cabinet */}
+        <mesh position={[0, 0, 0]}>
+          <boxGeometry args={[1.12, 1.3, 1.15]} />
+          <meshBasicMaterial color={coilFill} toneMapped={false} />
+        </mesh>
+        <lineSegments>
+          <edgesGeometry args={[new THREE.BoxGeometry(1.12, 1.3, 1.15)]} />
+          <lineBasicMaterial color={COLOR_BLACK} linewidth={1.5} />
+        </lineSegments>
+
+        {/* Cooling Fin Block (Finned Tube Core) */}
+        <group position={[0, -0.05, 0]}>
+          <mesh>
+            <boxGeometry args={[0.7, 0.95, 0.85]} />
+            <meshBasicMaterial color={COLOR_BLACK} toneMapped={false} />
+          </mesh>
+          {/* Aluminum Fin Rows */}
+          {[-0.35, -0.15, 0.05, 0.25].map((y, idx) => (
+            <lineSegments key={`coil-fin-${idx}`} position={[0, y, 0.43]}>
+              <edgesGeometry args={[new THREE.PlaneGeometry(0.68, 0.04)]} />
+              <lineBasicMaterial color={COLOR_PAPER} />
+            </lineSegments>
+          ))}
+        </group>
+
+        {/* Copper Header Manifold & Pipework */}
+        <group position={[0.25, 0, 0.59]}>
+          {/* Supply Header Cylinder */}
+          <mesh position={[-0.1, 0, 0]}>
+            <cylinderGeometry args={[0.04, 0.04, 0.8, 16]} />
+            <meshBasicMaterial color={pipeCopper} toneMapped={false} />
+          </mesh>
+          {/* Return Header Cylinder */}
+          <mesh position={[0.1, 0, 0]}>
+            <cylinderGeometry args={[0.04, 0.04, 0.8, 16]} />
+            <meshBasicMaterial color={pipeCopper} toneMapped={false} />
+          </mesh>
+          {/* Connection Nozzles */}
+          <mesh position={[-0.1, 0.25, 0.06]} rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.035, 0.035, 0.12, 16]} />
+            <meshBasicMaterial color={pipeCopper} toneMapped={false} />
+          </mesh>
+          <mesh position={[0.1, -0.25, 0.06]} rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.035, 0.035, 0.12, 16]} />
+            <meshBasicMaterial color={pipeCopper} toneMapped={false} />
+          </mesh>
+        </group>
+
+        {/* Front Access Panel Outline */}
+        <group position={[0, 0, 0.58]}>
           <lineSegments>
-            <edgesGeometry args={[new THREE.OctahedronGeometry(0.15)]} />
-            <lineBasicMaterial color={colors.redline} linewidth={2} />
+            <edgesGeometry args={[new THREE.PlaneGeometry(0.9, 1.1)]} />
+            <lineBasicMaterial color={COLOR_BLACK} />
+          </lineSegments>
+          <mesh position={[-0.35, 0, 0.02]}>
+            <boxGeometry args={[0.04, 0.16, 0.03]} />
+            <meshBasicMaterial color={COLOR_BLACK} toneMapped={false} />
+          </mesh>
+        </group>
+      </group>
+
+      {/* 4. Fan & Blower Section (Module 3, Right) */}
+      <group position={[fanPosX, 0, 0]}>
+        {/* Outer Casing Cabinet */}
+        <mesh position={[0, 0, 0]}>
+          <boxGeometry args={[1.12, 1.3, 1.15]} />
+          <meshBasicMaterial color={fanFill} toneMapped={false} />
+        </mesh>
+        <lineSegments>
+          <edgesGeometry args={[new THREE.BoxGeometry(1.12, 1.3, 1.15)]} />
+          <lineBasicMaterial color={COLOR_BLACK} linewidth={1.5} />
+        </lineSegments>
+
+        {/* Top Discharge Duct Collar */}
+        <group position={[0.15, 0.72, 0]}>
+          <mesh>
+            <boxGeometry args={[0.55, 0.14, 0.65]} />
+            <meshBasicMaterial color={casingFill} toneMapped={false} />
+          </mesh>
+          <lineSegments>
+            <edgesGeometry args={[new THREE.BoxGeometry(0.55, 0.14, 0.65)]} />
+            <lineBasicMaterial color={COLOR_BLACK} linewidth={1.5} />
           </lineSegments>
         </group>
-      )}
+
+        {/* Centrifugal Fan Scroll Housing */}
+        <group position={[0.05, 0, 0]}>
+          <mesh rotation={[0, 0, 0]}>
+            <cylinderGeometry args={[0.42, 0.42, 0.55, 24]} />
+            <meshBasicMaterial color={COLOR_BLACK} toneMapped={false} />
+          </mesh>
+          <lineSegments>
+            <edgesGeometry args={[new THREE.CylinderGeometry(0.42, 0.42, 0.55, 24)]} />
+            <lineBasicMaterial color={COLOR_PAPER} />
+          </lineSegments>
+
+          {/* Visible Fan Wheel / Impeller with Curved Blades */}
+          <group position={[0, 0, 0.29]}>
+            {/* Center Impeller Hub */}
+            <mesh>
+              <cylinderGeometry args={[0.12, 0.12, 0.06, 16]} />
+              <meshBasicMaterial color={isHvac ? COLOR_COPPER : COLOR_PAPER} toneMapped={false} />
+            </mesh>
+            {/* 8 Radial Impeller Blades */}
+            {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
+              <group key={`blade-${deg}`} rotation={[0, 0, (deg * Math.PI) / 180]}>
+                <mesh position={[0.22, 0, 0]}>
+                  <boxGeometry args={[0.18, 0.02, 0.04]} />
+                  <meshBasicMaterial color={isHvac ? COLOR_COPPER : COLOR_PAPER} toneMapped={false} />
+                </mesh>
+              </group>
+            ))}
+          </group>
+
+          {/* Electric Drive Motor */}
+          <group position={[-0.32, -0.25, 0]}>
+            <mesh rotation={[0, 0, Math.PI / 2]}>
+              <cylinderGeometry args={[0.15, 0.15, 0.35, 16]} />
+              <meshBasicMaterial color={COLOR_BLACK} toneMapped={false} />
+            </mesh>
+            <lineSegments rotation={[0, 0, Math.PI / 2]}>
+              <edgesGeometry args={[new THREE.CylinderGeometry(0.15, 0.15, 0.35, 16)]} />
+              <lineBasicMaterial color={COLOR_PAPER} />
+            </lineSegments>
+          </group>
+        </group>
+
+        {/* Front Circular Inspection Viewport Window */}
+        <group position={[0, 0, 0.58]}>
+          <lineSegments>
+            <edgesGeometry args={[new THREE.PlaneGeometry(0.9, 1.1)]} />
+            <lineBasicMaterial color={COLOR_BLACK} />
+          </lineSegments>
+          {/* Glass Viewport showing fan inside */}
+          <lineSegments position={[0.05, 0, 0.01]}>
+            <edgesGeometry args={[new THREE.CircleGeometry(0.24, 24)]} />
+            <lineBasicMaterial color={COLOR_BLACK} />
+          </lineSegments>
+          <mesh position={[-0.35, 0, 0.02]}>
+            <boxGeometry args={[0.04, 0.16, 0.03]} />
+            <meshBasicMaterial color={COLOR_BLACK} toneMapped={false} />
+          </mesh>
+        </group>
+      </group>
     </group>
   );
 }

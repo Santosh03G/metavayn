@@ -71,30 +71,33 @@ export function SelfBuildingDrawing({ surface = "paper" }: SelfBuildingDrawingPr
                     ? "bg-royal text-paper border-royal font-semibold"
                     : "bg-paper text-black border-paper font-semibold"
                   : isPaper
-                  ? "border-paper-line text-black/60 hover:border-black"
-                  : "border-paper/30 text-paper/60 hover:border-paper"
+                  ? "bg-transparent text-black/70 border-paper-line hover:border-black"
+                  : "bg-transparent text-paper/70 border-paper/30 hover:border-paper"
               }`}
             >
               {s.label}
             </button>
           ))}
+
           <button
             type="button"
             onClick={() => setIsPlaying(!isPlaying)}
-            className={`px-2.5 py-1 border text-[10px] font-semibold transition-colors ${
-              isPaper
-                ? "bg-paper border-black text-black hover:bg-black/5"
-                : "bg-transparent border-paper text-paper hover:bg-paper/10"
+            className={`px-2 py-1 border text-[10px] font-semibold transition-colors ${
+              isPlaying
+                ? "bg-copper text-black border-copper"
+                : isPaper
+                ? "border-paper-line text-black hover:bg-black/5"
+                : "border-paper/30 text-paper hover:bg-paper/10"
             }`}
           >
-            {isPlaying ? "❚❚ PAUSE" : "▶ AUTO BUILD"}
+            {isPlaying ? "PAUSE" : "PLAY"}
           </button>
         </div>
       </div>
 
-      {/* Main Drawing Canvas / Sheet */}
-      <div className={`border ${dividerClass} p-4 sm:p-6 min-h-[360px] flex flex-col justify-between relative overflow-hidden bg-transparent`}>
-        {/* Step 1: Orthographic Views Materialize */}
+      {/* SVG Drawing Canvas Canvas Sheet */}
+      <div className="relative min-h-[320px] select-none">
+        {/* Step 1: Orthographic Views appear */}
         <div
           className={`transition-opacity duration-normal ${
             step >= 1 ? "opacity-100" : "opacity-0"
@@ -104,7 +107,7 @@ export function SelfBuildingDrawing({ surface = "paper" }: SelfBuildingDrawingPr
             {/* Front & Top Orthographic Projections */}
             <div className={`border ${dividerClass} p-4`}>
               <span className={`text-[9px] uppercase block mb-2 ${isPaper ? "text-black/60" : "text-paper/60"}`}>
-                ORTHOGRAPHIC PROJECTION (FIRST ANGLE ISO 128)
+                ORTHOGRAPHIC PROJECTION (FIRST ANGLE)
               </span>
               <svg
                 className="w-full h-36"
@@ -126,13 +129,13 @@ export function SelfBuildingDrawing({ surface = "paper" }: SelfBuildingDrawingPr
                 {/* Step 2: Dimension Leaders Draw In */}
                 {step >= 2 && (
                   <g stroke={dimColor} fill={dimColor} fontSize="7" opacity="0.9">
-                    {/* Width Dimension: 80.00 */}
+                    {/* Width Dimension */}
                     <line x1="20" y1="85" x2="100" y2="85" />
                     <line x1="20" y1="75" x2="20" y2="90" />
                     <line x1="100" y1="75" x2="100" y2="90" />
-                    <text x="60" y="95" textAnchor="middle">80.00 ±0.02</text>
+                    <text x="60" y="95" textAnchor="middle">80.00</text>
 
-                    {/* Height Dimension: 50.00 */}
+                    {/* Height Dimension */}
                     <line x1="195" y1="20" x2="195" y2="70" />
                     <line x1="185" y1="20" x2="200" y2="20" />
                     <line x1="185" y1="70" x2="200" y2="70" />
@@ -160,9 +163,9 @@ export function SelfBuildingDrawing({ surface = "paper" }: SelfBuildingDrawingPr
           }`}
         >
           <div className="flex items-center space-x-3">
-            <RedlineCallout surface={surface} revision="01" note="ALL TOLERANCES VALIDATED" />
+            <RedlineCallout surface={surface} revision="01" note="ALL TOLERANCES APPLIED" />
             <span className={isPaper ? "text-black/70" : "text-paper/70"}>
-              CAD AUDIT: GD&T COMPLIANT (ASME Y14.5M)
+              DRAWING AUDIT: GEOMETRIC TOLERANCES APPLIED
             </span>
           </div>
           <span className={`text-[10px] mt-1 sm:mt-0 ${isPaper ? "text-black/60" : "text-paper/60"}`}>

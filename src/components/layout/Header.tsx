@@ -51,18 +51,15 @@ export function Header() {
             className="flex items-center space-x-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper focus-visible:ring-offset-2 focus-visible:ring-offset-royal"
             aria-label="Metavayn Technologies Home"
           >
-            {/* CAD Monogram Mark */}
-            <div className="w-9 h-9 border border-paper bg-royal flex items-center justify-center relative font-mono text-xs font-bold text-paper group-hover:bg-white group-hover:text-royal transition-colors duration-fast">
-              <span className="relative z-10">M</span>
-              {/* Drafting Crosshairs */}
-              <div className="absolute inset-x-0 top-1/2 h-[1px] bg-paper/40 -translate-y-1/2 pointer-events-none" />
-              <div className="absolute inset-y-0 left-1/2 w-[1px] bg-paper/40 -translate-x-1/2 pointer-events-none" />
+            {/* Monogram Mark */}
+            <div className="w-9 h-9 border border-paper bg-royal flex items-center justify-center relative font-display text-sm font-bold text-paper group-hover:bg-white group-hover:text-royal transition-colors duration-fast">
+              <span>M</span>
             </div>
             <div>
               <span className="font-display font-semibold tracking-wider text-sm sm:text-base text-paper block leading-tight">
                 METAVAYN
               </span>
-              <span className="font-mono text-[9px] text-paper/80 uppercase tracking-widest block">
+              <span className="font-sans text-[10px] text-paper/80 uppercase tracking-widest block font-medium">
                 TECHNOLOGIES
               </span>
             </div>
@@ -110,8 +107,8 @@ export function Header() {
             aria-controls="mobile-navigation-menu"
             aria-label="Toggle navigation menu"
           >
-            <span className="font-mono text-xs">
-              {mobileMenuOpen ? "[CLOSE]" : "[MENU]"}
+            <span className="font-sans text-xs font-medium">
+              {mobileMenuOpen ? "Close" : "Menu"}
             </span>
           </button>
         </div>
@@ -127,10 +124,6 @@ export function Header() {
           aria-label="Navigation Menu"
           className="lg:hidden border-t border-paper/20 bg-royal px-4 pt-4 pb-6 space-y-2 animate-in fade-in slide-in-from-top-1 duration-normal"
         >
-          <div className="text-[10px] font-mono text-paper/80 uppercase tracking-widest pb-1 border-b border-paper/20">
-            INDEX NAVIGATION
-          </div>
-
           <div className="grid grid-cols-1 divide-y divide-paper/15">
             {NAV_LINKS.map((link) => {
               const isActive = pathname === link.href;
@@ -146,9 +139,6 @@ export function Header() {
                   }`}
                 >
                   <span>{link.label}</span>
-                  <span className="font-mono text-[10px] text-paper/70">
-                    {isActive ? "[CURRENT]" : "VIEW"}
-                  </span>
                 </Link>
               );
             })}

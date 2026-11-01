@@ -10,11 +10,11 @@ export interface BomItem {
 }
 
 export const AHU_BOM_DATA: BomItem[] = [
-  { item: 1, qty: 1, partNo: "MV-AHU-CS-01", description: "Main Casing Assembly", material: "GI Sheet 1.6mm", spec: "ASTM A653" },
-  { item: 2, qty: 1, partNo: "MV-AHU-CL-02", description: "Chilled Water Coil Assembly", material: "Cu Tubes / Al Fins", spec: "AHRI 410" },
-  { item: 3, qty: 2, partNo: "MV-AHU-FN-03", description: "Centrifugal Blower Fan", material: "Welded Steel Impeller", spec: "AMCA 210" },
-  { item: 4, qty: 1, partNo: "MV-AHU-SK-04", description: "Structural Skid Base Frame", material: "ISMC 100 Channel", spec: "IS 2062" },
-  { item: 5, qty: 1, partNo: "MV-AHU-DM-05", description: "Opposed Blade Damper", material: "Extruded Aluminum", spec: "AMCA 500-D" },
+  { item: 1, qty: 1, partNo: "AHU-CS-01", description: "Main Casing Assembly", material: "GI Sheet 1.6mm", spec: "Industrial Sheet" },
+  { item: 2, qty: 1, partNo: "AHU-CL-02", description: "Chilled Water Coil Assembly", material: "Cu Tubes / Al Fins", spec: "Finned Coil Spec" },
+  { item: 3, qty: 2, partNo: "AHU-FN-03", description: "Centrifugal Blower Fan", material: "Welded Steel Impeller", spec: "Centrifugal Spec" },
+  { item: 4, qty: 1, partNo: "AHU-SK-04", description: "Structural Skid Base Frame", material: "ISMC 100 Channel", spec: "Structural Channel" },
+  { item: 5, qty: 1, partNo: "AHU-DM-05", description: "Opposed Blade Damper", material: "Extruded Aluminum", spec: "Louver Damper" },
 ];
 
 interface BomTableProps {
@@ -101,7 +101,7 @@ export function BomTable({ surface = "black", className = "" }: BomTableProps) {
           TABLE 1: BILL OF MATERIALS (BOM) — M1 AIR HANDLING UNIT
         </span>
         <span className={`text-[10px] ${s.metaText}`}>
-          DOC: MV-BOM-AHU-01 • REV 01
+          BOM SPECIFICATION • REV 01
         </span>
       </div>
 
@@ -134,7 +134,7 @@ export function BomTable({ surface = "black", className = "" }: BomTableProps) {
 
       <div className={`mt-3 pt-2 border-t ${s.footer} flex justify-between text-[10px]`}>
         <span>ALL DIMENSIONS IN MILLIMETERS</span>
-        <span>VERIFIED: METAVAYN DOCUMENTATION TEAM</span>
+        <span>METAVAYN DOCUMENTATION TEAM</span>
       </div>
     </div>
   );
