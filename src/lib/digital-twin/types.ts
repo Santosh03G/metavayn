@@ -1,7 +1,9 @@
 export type CameraPreset = "ISO" | "FRONT" | "PLAN" | "END";
 
+export type SubAssemblyId = "filter-bank" | "cooling-coil" | "centrifugal-fan" | "skid-base";
+
 export interface SubAssemblyMetadata {
-  id: "filter-bank" | "cooling-coil" | "centrifugal-fan" | "skid-base";
+  id: SubAssemblyId;
   num: string;
   name: string;
   discipline: string;
