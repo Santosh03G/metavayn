@@ -7,9 +7,13 @@ export interface IdeaToProductGraphicProps {
   className?: string;
 }
 
-const X0 = 350;
-const Y0 = 260;
-const COS30 = Math.cos(Math.PI / 6); // 0.866
+// Calibrated Isometric Projection Constants:
+// ViewBox: 0 0 760 480
+// Center: X0 = 360, Y0 = 300
+// Yields bounding box: X in [140, 580], Y in [20, 440]
+const X0 = 360;
+const Y0 = 300;
+const COS30 = Math.cos(Math.PI / 6); // ~0.866
 const SIN30 = Math.sin(Math.PI / 6); // 0.5
 
 function pt(x: number, y: number, z: number): [number, number] {
@@ -30,7 +34,7 @@ export function IdeaToProductGraphic({
   const clampedProgress = Math.max(0, Math.min(1, progress));
 
   // State Opacity Transitions
-  // State 1: 0.00 to 0.35 (Sketch) -> fades out between 0.35 and 0.45
+  // State 1: 0.00 to 0.35 (Rough Sketch) -> fades out 0.35 to 0.45
   const sketchOpacity =
     clampedProgress < 0.35
       ? 1
@@ -38,7 +42,6 @@ export function IdeaToProductGraphic({
       ? 1 - (clampedProgress - 0.35) / 0.1
       : 0;
 
-  // Sketch draw-on stroke offset factor (0 to 1 in 0.00 to 0.30)
   const sketchDraw = Math.min(1, clampedProgress / 0.3);
 
   // State 2: 0.35 to 0.65 (Clean black line drawing + dimension lines)
@@ -56,9 +59,9 @@ export function IdeaToProductGraphic({
       ? (clampedProgress - 0.42) / 0.13
       : clampedProgress < 0.85
       ? 1
-      : Math.max(0.4, 1 - (clampedProgress - 0.85) / 0.15); // soft reference at end
+      : Math.max(0.4, 1 - (clampedProgress - 0.85) / 0.15);
 
-  // State 3: 0.65 to 1.00 (Tonal Royal Shading & Copper Handles)
+  // State 3: 0.65 to 1.00 (Tonal Royal Shading & Copper Accents)
   const fillOpacity =
     clampedProgress < 0.65
       ? 0
@@ -69,45 +72,138 @@ export function IdeaToProductGraphic({
       ? 0
       : Math.min(1, (clampedProgress - 0.75) / 0.2);
 
-  // Geometries matching M1AirHandlingUnit
+  // Structural Isometric Geometry matching M1AirHandlingUnit
   const geom = useMemo(() => {
-    // 1. Skid Frame
-    const skidTop = polyStr([pt(-190, 0, -60), pt(190, 0, -60), pt(190, 0, 60), pt(-190, 0, 60)]);
-    const skidFront = polyStr([pt(-190, -18, 60), pt(190, -18, 60), pt(190, 0, 60), pt(-190, 0, 60)]);
-    const skidSide = polyStr([pt(190, -18, 60), pt(190, -18, -60), pt(190, 0, -60), pt(190, 0, 60)]);
+    // 0. Base Contact Shadow
+    const shadow = polyStr([
+      pt(-200, -20, -68),
+      pt(200, -20, -68),
+      pt(200, -20, 68),
+      pt(-200, -20, 68),
+    ]);
 
-    // 2. Module 1: Filter Bank
-    const m1Top = polyStr([pt(-180, 150, -60), pt(-65, 150, -60), pt(-65, 150, 60), pt(-180, 150, 60)]);
-    const m1Front = polyStr([pt(-180, 0, 60), pt(-65, 0, 60), pt(-65, 150, 60), pt(-180, 150, 60)]);
-    const m1Door = polyStr([pt(-165, 15, 61), pt(-80, 15, 61), pt(-80, 135, 61), pt(-165, 135, 61)]);
+    // 1. Skid Frame (ISMC C-Channels)
+    const skidTop = polyStr([
+      pt(-190, 0, -60),
+      pt(190, 0, -60),
+      pt(190, 0, 60),
+      pt(-190, 0, 60),
+    ]);
+    const skidFront = polyStr([
+      pt(-190, -18, 60),
+      pt(190, -18, 60),
+      pt(190, 0, 60),
+      pt(-190, 0, 60),
+    ]);
+    const skidSide = polyStr([
+      pt(190, -18, 60),
+      pt(190, -18, -60),
+      pt(190, 0, -60),
+      pt(190, 0, 60),
+    ]);
 
-    // 3. Module 2: Cooling Coil
-    const m2Top = polyStr([pt(-60, 150, -60), pt(55, 150, -60), pt(55, 150, 60), pt(-60, 150, 60)]);
-    const m2Front = polyStr([pt(-60, 0, 60), pt(55, 0, 60), pt(55, 150, 60), pt(-60, 150, 60)]);
-    const m2Door = polyStr([pt(-45, 15, 61), pt(40, 15, 61), pt(40, 135, 61), pt(-45, 135, 61)]);
+    // 2. Module 1: Filter Bank (Intake)
+    const m1Top = polyStr([
+      pt(-180, 150, -60),
+      pt(-65, 150, -60),
+      pt(-65, 150, 60),
+      pt(-180, 150, 60),
+    ]);
+    const m1Front = polyStr([
+      pt(-180, 0, 60),
+      pt(-65, 0, 60),
+      pt(-65, 150, 60),
+      pt(-180, 150, 60),
+    ]);
+    const m1Door = polyStr([
+      pt(-165, 15, 61),
+      pt(-80, 15, 61),
+      pt(-80, 135, 61),
+      pt(-165, 135, 61),
+    ]);
 
-    // 4. Module 3: Fan & Blower
-    const m3Top = polyStr([pt(60, 150, -60), pt(180, 150, -60), pt(180, 150, 60), pt(60, 150, 60)]);
-    const m3Front = polyStr([pt(60, 0, 60), pt(180, 0, 60), pt(180, 150, 60), pt(60, 150, 60)]);
-    const m3Side = polyStr([pt(180, 0, 60), pt(180, 0, -60), pt(180, 150, -60), pt(180, 150, 60)]);
+    // 3. Module 2: Cooling Coil (Center)
+    const m2Top = polyStr([
+      pt(-60, 150, -60),
+      pt(55, 150, -60),
+      pt(55, 150, 60),
+      pt(-60, 150, 60),
+    ]);
+    const m2Front = polyStr([
+      pt(-60, 0, 60),
+      pt(55, 0, 60),
+      pt(55, 150, 60),
+      pt(-60, 150, 60),
+    ]);
+    const m2Door = polyStr([
+      pt(-45, 15, 61),
+      pt(40, 15, 61),
+      pt(40, 135, 61),
+      pt(-45, 135, 61),
+    ]);
 
-    // 5. Discharge Collar
-    const collarTop = polyStr([pt(85, 175, -35), pt(155, 175, -35), pt(155, 175, 35), pt(85, 175, 35)]);
-    const collarFront = polyStr([pt(85, 150, 35), pt(155, 150, 35), pt(155, 175, 35), pt(85, 175, 35)]);
-    const collarSide = polyStr([pt(155, 150, 35), pt(155, 150, -35), pt(155, 175, -35), pt(155, 175, 35)]);
+    // 4. Module 3: Fan & Blower (Discharge)
+    const m3Top = polyStr([
+      pt(60, 150, -60),
+      pt(180, 150, -60),
+      pt(180, 150, 60),
+      pt(60, 150, 60),
+    ]);
+    const m3Front = polyStr([
+      pt(60, 0, 60),
+      pt(180, 0, 60),
+      pt(180, 150, 60),
+      pt(60, 150, 60),
+    ]);
+    const m3Side = polyStr([
+      pt(180, 0, 60),
+      pt(180, 0, -60),
+      pt(180, 150, -60),
+      pt(180, 150, 60),
+    ]);
 
-    // 6. Handles (Copper)
+    // 5. Discharge Collar on Module 3
+    const collarTop = polyStr([
+      pt(85, 175, -35),
+      pt(155, 175, -35),
+      pt(155, 175, 35),
+      pt(85, 175, 35),
+    ]);
+    const collarFront = polyStr([
+      pt(85, 150, 35),
+      pt(155, 150, 35),
+      pt(155, 175, 35),
+      pt(85, 175, 35),
+    ]);
+    const collarSide = polyStr([
+      pt(155, 150, 35),
+      pt(155, 150, -35),
+      pt(155, 175, -35),
+      pt(155, 175, 35),
+    ]);
+
+    // 6. Copper Handles & Pipe Manifolds
     const h1 = pt(-90, 75, 62);
     const h2 = pt(30, 75, 62);
     const h3 = pt(75, 75, 62);
 
-    // 7. Dimension Reference Points
+    // Pipe manifold headers on Module 2 front
+    const pipe1Top = pt(-5, 120, 63);
+    const pipe1Bot = pt(-5, 30, 63);
+    const pipe2Top = pt(15, 120, 63);
+    const pipe2Bot = pt(15, 30, 63);
+
+    // 7. Dimension Reference Points (calibrated for zero clipping)
     const dTopStart = pt(-180, 150, -60);
     const dTopEnd = pt(180, 150, -60);
     const dSideStart = pt(180, 0, -60);
     const dSideEnd = pt(180, 150, -60);
 
+    // Inspection circle on Module 3 front
+    const fanCenter = pt(120, 75, 61);
+
     return {
+      shadow,
       skidTop,
       skidFront,
       skidSide,
@@ -126,24 +222,29 @@ export function IdeaToProductGraphic({
       h1,
       h2,
       h3,
+      pipe1Top,
+      pipe1Bot,
+      pipe2Top,
+      pipe2Bot,
       dTopStart,
       dTopEnd,
       dSideStart,
       dSideEnd,
+      fanCenter,
     };
   }, []);
 
   return (
-    <div className={`relative w-full aspect-[16/11] max-w-[620px] select-none ${className}`}>
+    <div className={`relative w-full aspect-[16/10] max-w-[620px] select-none mx-auto ${className}`}>
       <svg
-        viewBox="0 0 700 480"
+        viewBox="0 0 760 480"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-full overflow-visible"
+        className="w-full h-full overflow-hidden"
         aria-hidden="true"
       >
         <defs>
-          {/* Rough Sketch wobble filter */}
+          {/* Subtle Hand-Drawn Wobble Noise Filter */}
           <filter id={`sketch-wobble-${filterId}`} x="-10%" y="-10%" width="120%" height="120%">
             <feTurbulence
               type="fractalNoise"
@@ -154,7 +255,7 @@ export function IdeaToProductGraphic({
             <feDisplacementMap
               in="SourceGraphic"
               in2="noise"
-              scale="3.2"
+              scale="2.8"
               xChannelSelector="R"
               yChannelSelector="G"
             />
@@ -167,6 +268,9 @@ export function IdeaToProductGraphic({
             ----------------------------------------------------------- */}
         {fillOpacity > 0 && (
           <g opacity={fillOpacity} style={{ willChange: "opacity" }}>
+            {/* Flat Contact Shadow */}
+            <polygon points={geom.shadow} fill="#050505" opacity="0.09" />
+
             {/* Skid Base */}
             <polygon points={geom.skidTop} fill="#DCE3FC" />
             <polygon points={geom.skidFront} fill="#8FA3F5" />
@@ -188,7 +292,7 @@ export function IdeaToProductGraphic({
             <polygon points={geom.m3Side} fill="#8FA3F5" />
             <polygon points={geom.collarSide} fill="#8FA3F5" />
 
-            {/* Inner Doors */}
+            {/* Access Door Panels */}
             <polygon points={geom.m1Door} fill="#C6D2FC" stroke="#050505" strokeWidth="1" />
             <polygon points={geom.m2Door} fill="#C6D2FC" stroke="#050505" strokeWidth="1" />
           </g>
@@ -201,7 +305,7 @@ export function IdeaToProductGraphic({
           <g
             opacity={cleanLineOpacity}
             stroke="#050505"
-            strokeWidth="1.6"
+            strokeWidth="1.5"
             strokeLinejoin="round"
             strokeLinecap="round"
             style={{ willChange: "opacity" }}
@@ -213,11 +317,11 @@ export function IdeaToProductGraphic({
             {/* Module Outlines */}
             <polygon points={geom.m1Top} />
             <polygon points={geom.m1Front} />
-            <polygon points={geom.m1Door} strokeWidth="1.2" strokeDasharray="3 2" />
+            <polygon points={geom.m1Door} strokeWidth="1.2" />
 
             <polygon points={geom.m2Top} />
             <polygon points={geom.m2Front} />
-            <polygon points={geom.m2Door} strokeWidth="1.2" strokeDasharray="3 2" />
+            <polygon points={geom.m2Door} strokeWidth="1.2" />
 
             <polygon points={geom.m3Top} />
             <polygon points={geom.m3Front} />
@@ -227,14 +331,40 @@ export function IdeaToProductGraphic({
             <polygon points={geom.collarFront} />
             <polygon points={geom.collarSide} />
 
+            {/* Circular Fan Viewport on Module 3 */}
+            <ellipse
+              cx={geom.fanCenter[0]}
+              cy={geom.fanCenter[1]}
+              rx="24"
+              ry="14"
+              stroke="#050505"
+              strokeWidth="1.2"
+              fill={fillOpacity > 0 ? "#C6D2FC" : "none"}
+            />
+
             {/* Vertical Module Seams */}
-            <line x1={geom.m1Front.split(" ")[1].split(",")[0]} y1={geom.m1Front.split(" ")[1].split(",")[1]} x2={geom.m1Front.split(" ")[2].split(",")[0]} y2={geom.m1Front.split(" ")[2].split(",")[1]} stroke="#050505" strokeWidth="1.8" />
-            <line x1={geom.m2Front.split(" ")[1].split(",")[0]} y1={geom.m2Front.split(" ")[1].split(",")[1]} x2={geom.m2Front.split(" ")[2].split(",")[0]} y2={geom.m2Front.split(" ")[2].split(",")[1]} stroke="#050505" strokeWidth="1.8" />
+            <line
+              x1={geom.m1Front.split(" ")[1].split(",")[0]}
+              y1={geom.m1Front.split(" ")[1].split(",")[1]}
+              x2={geom.m1Front.split(" ")[2].split(",")[0]}
+              y2={geom.m1Front.split(" ")[2].split(",")[1]}
+              stroke="#050505"
+              strokeWidth="1.8"
+            />
+            <line
+              x1={geom.m2Front.split(" ")[1].split(",")[0]}
+              y1={geom.m2Front.split(" ")[1].split(",")[1]}
+              x2={geom.m2Front.split(" ")[2].split(",")[0]}
+              y2={geom.m2Front.split(" ")[2].split(",")[1]}
+              stroke="#050505"
+              strokeWidth="1.8"
+            />
           </g>
         )}
 
         {/* -----------------------------------------------------------
-            STAGE 2 WITNESS & DIMENSION LINES: ROYAL #2347E0 (NO NUMBERS)
+            STAGE 2 & 3: ROYAL CAD DIMENSION LINES (#2347E0, NO NUMBERS)
+            Calibrated with generous clearance from quote text
             ----------------------------------------------------------- */}
         {dimensionOpacity > 0 && (
           <g
@@ -244,29 +374,89 @@ export function IdeaToProductGraphic({
             style={{ willChange: "opacity" }}
           >
             {/* Top Length Dimension Line */}
-            {/* Witness Projection Lines */}
-            <line x1={geom.dTopStart[0]} y1={geom.dTopStart[1]} x2={geom.dTopStart[0]} y2={geom.dTopStart[1] - 45} strokeDasharray="2 2" />
-            <line x1={geom.dTopEnd[0]} y1={geom.dTopEnd[1]} x2={geom.dTopEnd[0]} y2={geom.dTopEnd[1] - 45} strokeDasharray="2 2" />
+            <line
+              x1={geom.dTopStart[0]}
+              y1={geom.dTopStart[1]}
+              x2={geom.dTopStart[0]}
+              y2={geom.dTopStart[1] - 32}
+              strokeDasharray="2 3"
+            />
+            <line
+              x1={geom.dTopEnd[0]}
+              y1={geom.dTopEnd[1]}
+              x2={geom.dTopEnd[0]}
+              y2={geom.dTopEnd[1] - 32}
+              strokeDasharray="2 3"
+            />
             {/* Dimension Span Line along isometric angle */}
-            <line x1={geom.dTopStart[0]} y1={geom.dTopStart[1] - 38} x2={geom.dTopEnd[0]} y2={geom.dTopEnd[1] - 38} strokeWidth="1.4" />
+            <line
+              x1={geom.dTopStart[0]}
+              y1={geom.dTopStart[1] - 26}
+              x2={geom.dTopEnd[0]}
+              y2={geom.dTopEnd[1] - 26}
+              strokeWidth="1.3"
+            />
             {/* 45-degree architectural slash ticks */}
-            <line x1={geom.dTopStart[0] - 4} y1={geom.dTopStart[1] - 34} x2={geom.dTopStart[0] + 4} y2={geom.dTopStart[1] - 42} strokeWidth="1.8" />
-            <line x1={geom.dTopEnd[0] - 4} y1={geom.dTopEnd[1] - 34} x2={geom.dTopEnd[0] + 4} y2={geom.dTopEnd[1] - 42} strokeWidth="1.8" />
+            <line
+              x1={geom.dTopStart[0] - 3.5}
+              y1={geom.dTopStart[1] - 22.5}
+              x2={geom.dTopStart[0] + 3.5}
+              y2={geom.dTopStart[1] - 29.5}
+              strokeWidth="1.8"
+            />
+            <line
+              x1={geom.dTopEnd[0] - 3.5}
+              y1={geom.dTopEnd[1] - 22.5}
+              x2={geom.dTopEnd[0] + 3.5}
+              y2={geom.dTopEnd[1] - 29.5}
+              strokeWidth="1.8"
+            />
 
             {/* Height Dimension Line (Right Side) */}
-            <line x1={geom.dSideStart[0]} y1={geom.dSideStart[1]} x2={geom.dSideStart[0] + 45} y2={geom.dSideStart[1]} strokeDasharray="2 2" />
-            <line x1={geom.dSideEnd[0]} y1={geom.dSideEnd[1]} x2={geom.dSideEnd[0] + 45} y2={geom.dSideEnd[1]} strokeDasharray="2 2" />
-            <line x1={geom.dSideStart[0] + 38} y1={geom.dSideStart[1]} x2={geom.dSideEnd[0] + 38} y2={geom.dSideEnd[1]} strokeWidth="1.4" />
-            <line x1={geom.dSideStart[0] + 34} y1={geom.dSideStart[1] + 4} x2={geom.dSideStart[0] + 42} y2={geom.dSideStart[1] - 4} strokeWidth="1.8" />
-            <line x1={geom.dSideEnd[0] + 34} y1={geom.dSideEnd[1] + 4} x2={geom.dSideEnd[0] + 42} y2={geom.dSideEnd[1] - 4} strokeWidth="1.8" />
+            <line
+              x1={geom.dSideStart[0]}
+              y1={geom.dSideStart[1]}
+              x2={geom.dSideStart[0] + 32}
+              y2={geom.dSideStart[1]}
+              strokeDasharray="2 3"
+            />
+            <line
+              x1={geom.dSideEnd[0]}
+              y1={geom.dSideEnd[1]}
+              x2={geom.dSideEnd[0] + 32}
+              y2={geom.dSideEnd[1]}
+              strokeDasharray="2 3"
+            />
+            <line
+              x1={geom.dSideStart[0] + 26}
+              y1={geom.dSideStart[1]}
+              x2={geom.dSideEnd[0] + 26}
+              y2={geom.dSideEnd[1]}
+              strokeWidth="1.3"
+            />
+            <line
+              x1={geom.dSideStart[0] + 22.5}
+              y1={geom.dSideStart[1] + 3.5}
+              x2={geom.dSideStart[0] + 29.5}
+              y2={geom.dSideStart[1] - 3.5}
+              strokeWidth="1.8"
+            />
+            <line
+              x1={geom.dSideEnd[0] + 22.5}
+              y1={geom.dSideEnd[1] + 3.5}
+              x2={geom.dSideEnd[0] + 29.5}
+              y2={geom.dSideEnd[1] - 3.5}
+              strokeWidth="1.8"
+            />
           </g>
         )}
 
         {/* -----------------------------------------------------------
-            STAGE 3: COPPER HANDLES (#F0A06A) (Fades in p: 0.75 -> 1.00)
+            STAGE 3: COPPER DETAILS (#F0A06A) (Handles & Manifold Pipes)
             ----------------------------------------------------------- */}
         {copperOpacity > 0 && (
           <g opacity={copperOpacity} style={{ willChange: "opacity" }}>
+            {/* Door Handles */}
             <rect
               x={geom.h1[0] - 3}
               y={geom.h1[1] - 12}
@@ -297,12 +487,31 @@ export function IdeaToProductGraphic({
               stroke="#050505"
               strokeWidth="0.8"
             />
+
+            {/* Copper Pipe Manifolds on Module 2 Front */}
+            <line
+              x1={geom.pipe1Top[0]}
+              y1={geom.pipe1Top[1]}
+              x2={geom.pipe1Bot[0]}
+              y2={geom.pipe1Bot[1]}
+              stroke="#F0A06A"
+              strokeWidth="3.2"
+              strokeLinecap="round"
+            />
+            <line
+              x1={geom.pipe2Top[0]}
+              y1={geom.pipe2Top[1]}
+              x2={geom.pipe2Bot[0]}
+              y2={geom.pipe2Bot[1]}
+              stroke="#F0A06A"
+              strokeWidth="3.2"
+              strokeLinecap="round"
+            />
           </g>
         )}
 
         {/* -----------------------------------------------------------
-            STAGE 1: ROUGH HAND-DRAWN SKETCH (Royal strokes, wobble filter, double strokes)
-            (p: 0.00 -> 0.35, fades out 0.35 -> 0.45)
+            STAGE 1: ROUGH HAND-DRAWN SKETCH (p: 0.00 -> 0.35)
             ----------------------------------------------------------- */}
         {sketchOpacity > 0 && (
           <g
@@ -316,8 +525,8 @@ export function IdeaToProductGraphic({
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeDasharray="1200"
-              strokeDashoffset={1200 * (1 - sketchDraw)}
+              strokeDasharray="1400"
+              strokeDashoffset={1400 * (1 - sketchDraw)}
             >
               <polygon points={geom.skidFront} />
               <polygon points={geom.m1Top} />
@@ -331,14 +540,14 @@ export function IdeaToProductGraphic({
               <polygon points={geom.collarTop} />
             </g>
 
-            {/* Double Stroke (Slightly offset architectural pencil double-lines) */}
+            {/* Double Stroke (Architectural draft pencil lines) */}
             <g
               stroke="#2347E0"
               strokeWidth="1.2"
               opacity="0.65"
               transform="translate(1.5, -1)"
-              strokeDasharray="1200"
-              strokeDashoffset={1200 * (1 - sketchDraw)}
+              strokeDasharray="1400"
+              strokeDashoffset={1400 * (1 - sketchDraw)}
             >
               <polygon points={geom.m1Front} />
               <polygon points={geom.m2Front} />

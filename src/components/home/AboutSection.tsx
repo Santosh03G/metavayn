@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Container } from "@/components/ui/Container";
@@ -47,8 +47,6 @@ export function AboutSection() {
 
     const container = containerRef.current;
     const isDesktop = window.innerWidth >= 1280;
-
-    const proxy = { progress: 0 };
 
     let trigger: ScrollTrigger;
 
@@ -124,11 +122,11 @@ export function AboutSection() {
     >
       <div
         ref={pinTargetRef}
-        className="py-12 sm:py-20 lg:py-24 w-full flex flex-col justify-center"
+        className="py-12 sm:py-16 lg:py-20 w-full flex flex-col justify-center min-h-[calc(100vh-64px)]"
       >
         <Container>
-          <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 xl:gap-12 items-start">
-            {/* Left Column: Anchored information (columns 1 to 5 at 1280+) */}
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-10 xl:gap-14 items-center">
+            {/* Left Column: Anchored narrative & 3-stage capability milestones (columns 1 to 5) */}
             <div className="xl:col-span-5 space-y-6">
               <div className="space-y-2">
                 <h2 className="font-display text-display-xl sm:text-display-2xl text-black">
@@ -148,13 +146,43 @@ export function AboutSection() {
                 mechanical engineering, engineering documentation, product
                 development, and manufacturing readiness.
               </p>
+
+              {/* 3 Core Transformation Stages: Directly mirrors the right visual evolution */}
+              <div className="pt-6 border-t border-paper-line space-y-4">
+                <div className="space-y-1">
+                  <h4 className="font-display text-body-base font-semibold text-black">
+                    Engineering Concept & Architecture
+                  </h4>
+                  <p className="font-sans text-body-sm text-black/75 leading-relaxed">
+                    Translating high-level product vision into robust mechanical architecture and functional layouts.
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <h4 className="font-display text-body-base font-semibold text-black">
+                    Precision CAD & Design Validation
+                  </h4>
+                  <p className="font-sans text-body-sm text-black/75 leading-relaxed">
+                    Detailed modeling, tolerance analysis, structural integrity verification, and production drafting.
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <h4 className="font-display text-body-base font-semibold text-black">
+                    Manufacturing-Ready Delivery
+                  </h4>
+                  <p className="font-sans text-body-sm text-black/75 leading-relaxed">
+                    Validated fabrication packages, vendor-ready BOMs, and seamless engineering transition to shop floor.
+                  </p>
+                </div>
+              </div>
             </div>
 
-            {/* Right Column: Quote word reveal + 3-stage SVG AHU Graphic (columns 7 to 12) */}
-            <div className="xl:col-span-6 xl:col-start-7 flex flex-col space-y-8 items-start">
-              {/* Quote Words: Real HTML spans, 20% to 100% opacity interpolation */}
+            {/* Right Column: Statement-size Quote + Calibrated 3-Stage SVG AHU Graphic (columns 7 to 12) */}
+            <div className="xl:col-span-7 xl:col-start-6 flex flex-col items-center xl:items-start space-y-8">
+              {/* Quote Words: 3-line statement size, comfortable measure, real HTML spans */}
               <blockquote
-                className="font-display text-[26px] sm:text-[32px] xl:text-[38px] 2xl:text-[42px] font-medium text-black leading-tight border-t xl:border-t-0 border-paper-line pt-6 xl:pt-0"
+                className="font-display text-[24px] sm:text-[28px] lg:text-[32px] font-medium text-black leading-[1.3] max-w-[46ch] border-t xl:border-t-0 border-paper-line pt-6 xl:pt-0"
                 aria-label="Help businesses transform engineering ideas into production-ready products — faster, smarter, and with greater confidence."
               >
                 {QUOTE_WORDS.map((word, idx) => (
@@ -175,7 +203,7 @@ export function AboutSection() {
                 ))}
               </blockquote>
 
-              {/* 3-State SVG AHU Evolution (Sketch -> Drafting lines + dimensions -> Shaded CAD with copper handles) */}
+              {/* 3-State SVG AHU Evolution: Generous breathing margin, zero clipping, zero quote collision */}
               <div className="w-full flex justify-center pt-2">
                 <IdeaToProductGraphic
                   progress={prefersReduced ? 1 : scrollProgress}
