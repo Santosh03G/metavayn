@@ -7,6 +7,7 @@ import {
   Suspense,
   type ReactNode,
 } from "react";
+import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 
 interface SceneContainerProps {
@@ -70,14 +71,13 @@ export function SceneContainer({
     };
   }, []);
 
-  // Use fallback if WebGL is unavailable, reduced motion requested, or during initial SSR
   const shouldUseFallback =
     hasWebGL === false || reducedMotion || hasWebGL === null;
 
   return (
     <div
       ref={containerRef}
-      className={`relative w-full ${aspectRatio} overflow-hidden border border-[rgba(127,178,255,0.2)] bg-blueprint-deep/80 ${className}`}
+      className={`relative w-full ${aspectRatio} overflow-hidden border border-pale-blue/20 bg-black/80 ${className}`}
     >
       {shouldUseFallback ? (
         <div className="w-full h-full flex items-center justify-center p-4">
@@ -100,22 +100,25 @@ export function SceneContainer({
               powerPreference: "high-performance",
               alpha: true,
             }}
+            onCreated={({ gl }) => {
+              gl.toneMapping = THREE.NoToneMapping;
+              gl.outputColorSpace = THREE.SRGBColorSpace;
+            }}
           >
             {children}
           </Canvas>
         </Suspense>
       ) : (
-        // Keep fallback visible when off-screen to conserve GPU resources
         <div className="w-full h-full flex items-center justify-center p-4">
           {fallback}
         </div>
       )}
 
       {/* CAD Datum corners */}
-      <div className="absolute top-1 left-1 font-mono text-[8px] text-blueprint-dimension/40 pointer-events-none">
+      <div className="absolute top-1 left-1 font-mono text-[8px] text-pale-blue/40 pointer-events-none">
         +0,0
       </div>
-      <div className="absolute bottom-1 right-1 font-mono text-[8px] text-blueprint-dimension/40 pointer-events-none">
+      <div className="absolute bottom-1 right-1 font-mono text-[8px] text-pale-blue/40 pointer-events-none">
         R3F/GL
       </div>
     </div>

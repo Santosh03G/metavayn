@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import {
   Bricolage_Grotesque,
   IBM_Plex_Sans,
@@ -30,11 +30,36 @@ const ibmPlexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
+export const viewport: Viewport = {
+  themeColor: "#2347E0",
+};
+
 export const metadata: Metadata = {
   title: "Metavayn Technologies Pvt. Ltd. | Engineering the Next Dimension",
   description:
     "We help global OEMs and engineering-driven businesses accelerate product development, expand engineering capacity, and deliver better products faster.",
   metadataBase: new URL("https://metavayn.com"),
+  icons: {
+    icon: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
+  openGraph: {
+    title: "Metavayn Technologies | Engineering the Next Dimension",
+    description:
+      "Engineering services for product development, mechanical design, HVAC, manufacturing, and OEM engineering support.",
+    url: "https://metavayn.com",
+    siteName: "Metavayn Technologies",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Metavayn Technologies D2 Engineering Portal",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
   robots: {
     index: true,
     follow: true,
@@ -51,7 +76,7 @@ export default function RootLayout({
       lang="en"
       className={`${bricolageGrotesque.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable}`}
     >
-      <body className="min-h-screen flex flex-col bg-blueprint-deep text-blueprint-linen antialiased selection:bg-blueprint-signal selection:text-white">
+      <body className="min-h-screen flex flex-col bg-black text-paper antialiased selection:bg-royal selection:text-paper">
         <SmoothScroll>
           <Header />
           <PageTransition>

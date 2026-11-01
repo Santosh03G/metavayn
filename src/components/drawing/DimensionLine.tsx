@@ -1,6 +1,9 @@
+import { type SurfaceType } from "@/components/ui/Button";
+
 interface DimensionLineProps {
   value: string;
   tolerance?: string;
+  surface?: SurfaceType;
   orientation?: "horizontal" | "vertical";
   length?: number | string;
   bgClassName?: string;
@@ -10,16 +13,36 @@ interface DimensionLineProps {
 export function DimensionLine({
   value,
   tolerance,
+  surface = "royal",
   orientation = "horizontal",
   length = "100%",
-  bgClassName = "bg-blueprint-deep",
+  bgClassName,
   className = "",
 }: DimensionLineProps) {
   const isHorizontal = orientation === "horizontal";
 
+  // Dimension lines and annotations: --paper on royal, --black on paper, --pale-blue on black
+  const surfaceConfig: Record<SurfaceType, { text: string; bg: string }> = {
+    royal: {
+      text: "text-paper",
+      bg: "bg-royal",
+    },
+    paper: {
+      text: "text-black",
+      bg: "bg-paper",
+    },
+    black: {
+      text: "text-pale-blue",
+      bg: "bg-black",
+    },
+  };
+
+  const config = surfaceConfig[surface];
+  const effectiveBg = bgClassName || config.bg;
+
   return (
     <div
-      className={`font-mono text-[10px] text-blueprint-dimension select-none flex items-center justify-center ${className}`}
+      className={`font-mono text-[10px] select-none flex items-center justify-center ${config.text} ${className}`}
       style={{
         width: isHorizontal ? length : "auto",
         height: !isHorizontal ? length : "auto",
@@ -35,7 +58,7 @@ export function DimensionLine({
           {/* Line before text */}
           <div className="flex-1 h-[1px] bg-current opacity-40" />
           {/* Dimension Value */}
-          <div className={`px-1.5 whitespace-nowrap flex items-center space-x-1 ${bgClassName}`}>
+          <div className={`px-1.5 whitespace-nowrap flex items-center space-x-1 ${effectiveBg}`}>
             <span>{value}</span>
             {tolerance && (
               <span className="text-[8px] opacity-70">
@@ -59,7 +82,7 @@ export function DimensionLine({
           {/* Line before text */}
           <div className="flex-1 w-[1px] bg-current opacity-40" />
           {/* Dimension Value (vertical) */}
-          <div className={`py-1.5 whitespace-nowrap writing-vertical-lr text-center ${bgClassName}`}>
+          <div className={`py-1.5 whitespace-nowrap writing-vertical-lr text-center ${effectiveBg}`}>
             <span>{value}</span>
             {tolerance && (
               <span className="text-[8px] opacity-70 block">

@@ -9,15 +9,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        blueprint: {
-          deep: "var(--color-deep)",          // #06142B Section Deep (darkest background)
-          cyanotype: "var(--color-cyanotype)", // #0D2B52 Cyanotype (blueprint surface)
-          signal: "var(--color-signal)",       // #2F7BFF Signal Blue (interactive/accent)
-          dimension: "var(--color-dimension)", // #7FB2FF Dimension Line (drafting line)
-          linen: "var(--color-linen)",         // #EEF2F6 Linen (light section cut)
-          graphite: "var(--color-graphite)",   // #1B2430 Graphite (text on light)
-          redline: "var(--color-redline)",     // #E5484D Redline (revision callouts & QA)
-        },
+        black: "var(--black)",
+        royal: "var(--royal)",
+        "royal-hover": "var(--royal-hover)",
+        paper: "var(--paper)",
+        "paper-line": "var(--paper-line)",
+        copper: "var(--copper)",
+        "pale-blue": "var(--pale-blue)",
+        redline: "var(--redline)",
+        "redline-text": "var(--redline-text)",
       },
       fontFamily: {
         display: ["var(--font-bricolage)", "sans-serif"],

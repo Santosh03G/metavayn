@@ -1,0 +1,761 @@
+{
+  "totalFindings": 104,
+  "uniqueColorMatches": 10,
+  "colorFrequencies": {
+    "#050505": 23,
+    "#2347E0": 13,
+    "#1B3AC4": 4,
+    "#F1EEE6": 21,
+    "rgba(5,5,5,0.14)": 1,
+    "#F0A06A": 14,
+    "#9DB2FF": 13,
+    "#E5484D": 8,
+    "#B3261E": 5,
+    "rgba(5, 5, 5, 0.14)": 2
+  },
+  "filesAuditedCount": 12,
+  "fileFrequencies": {
+    "src/app/dev/styleguide/page.tsx": 13,
+    "src/app/layout.tsx": 1,
+    "src/components/approach/ApproachSequenceViewer.tsx": 14,
+    "src/components/canvas/CADModelView.tsx": 12,
+    "src/components/canvas/M1AirHandlingUnit.tsx": 19,
+    "src/components/canvas/M1DrawingFallback.tsx": 5,
+    "src/components/canvas/M2SheetMetalUnfold.tsx": 6,
+    "src/components/canvas/M3WeldmentCallout.tsx": 7,
+    "src/components/drawing/RedlineCallout.tsx": 3,
+    "src/components/drawing/SelfBuildingDrawing.tsx": 6,
+    "src/lib/tokens.ts": 9,
+    "src/styles/globals.css": 9
+  },
+  "findings": [
+    {
+      "file": "src/app/dev/styleguide/page.tsx",
+      "line": 19,
+      "match": "#050505",
+      "role": "general",
+      "rawLine": "{ name: \"Black\", hex: \"#050505\", variable: \"--black\", desc: \"Contrast sections, footer, headings on paper\" },"
+    },
+    {
+      "file": "src/app/dev/styleguide/page.tsx",
+      "line": 20,
+      "match": "#2347E0",
+      "role": "graphics / vector / material",
+      "rawLine": "{ name: \"Royal\", hex: \"#2347E0\", variable: \"--royal\", desc: \"Hero and key section fields, primary fills on paper\" },"
+    },
+    {
+      "file": "src/app/dev/styleguide/page.tsx",
+      "line": 21,
+      "match": "#1B3AC4",
+      "role": "graphics / vector / material",
+      "rawLine": "{ name: \"Royal Hover\", hex: \"#1B3AC4\", variable: \"--royal-hover\", desc: \"Hover/pressed for royal fills\" },"
+    },
+    {
+      "file": "src/app/dev/styleguide/page.tsx",
+      "line": 22,
+      "match": "#F1EEE6",
+      "role": "general",
+      "rawLine": "{ name: \"Paper\", hex: \"#F1EEE6\", variable: \"--paper\", desc: \"Light sections, text on royal and black\" },"
+    },
+    {
+      "file": "src/app/dev/styleguide/page.tsx",
+      "line": 23,
+      "match": "rgba(5,5,5,0.14)",
+      "role": "general",
+      "rawLine": "{ name: \"Paper Line\", hex: \"rgba(5,5,5,0.14)\", variable: \"--paper-line\", desc: \"Hairlines and dividers on paper\" },"
+    },
+    {
+      "file": "src/app/dev/styleguide/page.tsx",
+      "line": 24,
+      "match": "#F0A06A",
+      "role": "general",
+      "rawLine": "{ name: \"Copper\", hex: \"#F0A06A\", variable: \"--copper\", desc: \"Accent: pipework, one highlight per screen\" },"
+    },
+    {
+      "file": "src/app/dev/styleguide/page.tsx",
+      "line": 25,
+      "match": "#9DB2FF",
+      "role": "general",
+      "rawLine": "{ name: \"Pale Blue\", hex: \"#9DB2FF\", variable: \"--pale-blue\", desc: \"Thin lines, links and small graphics on black\" },"
+    },
+    {
+      "file": "src/app/dev/styleguide/page.tsx",
+      "line": 26,
+      "match": "#E5484D",
+      "role": "general",
+      "rawLine": "{ name: \"Redline\", hex: \"#E5484D\", variable: \"--redline\", desc: \"Graphics only (revision clouds)\" },"
+    },
+    {
+      "file": "src/app/dev/styleguide/page.tsx",
+      "line": 27,
+      "match": "#B3261E",
+      "role": "general",
+      "rawLine": "{ name: \"Redline Text\", hex: \"#B3261E\", variable: \"--redline-text\", desc: \"Red text on paper only (5.6:1 contrast)\" },"
+    },
+    {
+      "file": "src/app/dev/styleguide/page.tsx",
+      "line": 72,
+      "match": "#050505",
+      "role": "typography / text",
+      "rawLine": "color: c.hex === \"#050505\" || c.hex === \"#2347E0\" || c.hex === \"#1B3AC4\" ? \"#F1EEE6\" : \"#050505\","
+    },
+    {
+      "file": "src/app/dev/styleguide/page.tsx",
+      "line": 72,
+      "match": "#2347E0",
+      "role": "typography / text",
+      "rawLine": "color: c.hex === \"#050505\" || c.hex === \"#2347E0\" || c.hex === \"#1B3AC4\" ? \"#F1EEE6\" : \"#050505\","
+    },
+    {
+      "file": "src/app/dev/styleguide/page.tsx",
+      "line": 72,
+      "match": "#1B3AC4",
+      "role": "typography / text",
+      "rawLine": "color: c.hex === \"#050505\" || c.hex === \"#2347E0\" || c.hex === \"#1B3AC4\" ? \"#F1EEE6\" : \"#050505\","
+    },
+    {
+      "file": "src/app/dev/styleguide/page.tsx",
+      "line": 72,
+      "match": "#F1EEE6",
+      "role": "typography / text",
+      "rawLine": "color: c.hex === \"#050505\" || c.hex === \"#2347E0\" || c.hex === \"#1B3AC4\" ? \"#F1EEE6\" : \"#050505\","
+    },
+    {
+      "file": "src/app/layout.tsx",
+      "line": 34,
+      "match": "#2347E0",
+      "role": "general",
+      "rawLine": "themeColor: \"#2347E0\","
+    },
+    {
+      "file": "src/components/approach/ApproachSequenceViewer.tsx",
+      "line": 190,
+      "match": "#F1EEE6",
+      "role": "graphics / vector / material",
+      "rawLine": "<line x1=\"70\" y1=\"40\" x2=\"250\" y2=\"120\" stroke=\"#F1EEE6\" strokeWidth=\"0.8\" opacity=\"0.5\" />"
+    },
+    {
+      "file": "src/components/approach/ApproachSequenceViewer.tsx",
+      "line": 191,
+      "match": "#F1EEE6",
+      "role": "graphics / vector / material",
+      "rawLine": "<line x1=\"70\" y1=\"120\" x2=\"250\" y2=\"40\" stroke=\"#F1EEE6\" strokeWidth=\"0.8\" opacity=\"0.5\" />"
+    },
+    {
+      "file": "src/components/approach/ApproachSequenceViewer.tsx",
+      "line": 192,
+      "match": "#F0A06A",
+      "role": "graphics / vector / material",
+      "rawLine": "<circle cx=\"105\" cy=\"80\" r=\"6\" stroke=\"#F0A06A\" strokeDasharray=\"2,2\" />"
+    },
+    {
+      "file": "src/components/approach/ApproachSequenceViewer.tsx",
+      "line": 193,
+      "match": "#F0A06A",
+      "role": "graphics / vector / material",
+      "rawLine": "<circle cx=\"215\" cy=\"80\" r=\"6\" stroke=\"#F0A06A\" strokeDasharray=\"2,2\" />"
+    },
+    {
+      "file": "src/components/approach/ApproachSequenceViewer.tsx",
+      "line": 253,
+      "match": "#050505",
+      "role": "graphics / vector / material",
+      "rawLine": "stroke=\"#050505\""
+    },
+    {
+      "file": "src/components/approach/ApproachSequenceViewer.tsx",
+      "line": 257,
+      "match": "#050505",
+      "role": "graphics / vector / material",
+      "rawLine": "<rect x=\"60\" y=\"40\" width=\"200\" height=\"80\" stroke=\"#050505\" opacity=\"0.6\" />"
+    },
+    {
+      "file": "src/components/approach/ApproachSequenceViewer.tsx",
+      "line": 258,
+      "match": "#050505",
+      "role": "graphics / vector / material",
+      "rawLine": "<circle cx=\"160\" cy=\"80\" r=\"25\" stroke=\"#050505\" opacity=\"0.6\" />"
+    },
+    {
+      "file": "src/components/approach/ApproachSequenceViewer.tsx",
+      "line": 260,
+      "match": "#E5484D",
+      "role": "general",
+      "rawLine": "{/* Revision Cloud 1: Scalloped Redline (#E5484D) turning to Royal (#2347E0) on paper */}"
+    },
+    {
+      "file": "src/components/approach/ApproachSequenceViewer.tsx",
+      "line": 260,
+      "match": "#2347E0",
+      "role": "general",
+      "rawLine": "{/* Revision Cloud 1: Scalloped Redline (#E5484D) turning to Royal (#2347E0) on paper */}"
+    },
+    {
+      "file": "src/components/approach/ApproachSequenceViewer.tsx",
+      "line": 263,
+      "match": "#2347E0",
+      "role": "graphics / vector / material",
+      "rawLine": "stroke={isResolved ? \"#2347E0\" : \"#E5484D\"}"
+    },
+    {
+      "file": "src/components/approach/ApproachSequenceViewer.tsx",
+      "line": 263,
+      "match": "#E5484D",
+      "role": "graphics / vector / material",
+      "rawLine": "stroke={isResolved ? \"#2347E0\" : \"#E5484D\"}"
+    },
+    {
+      "file": "src/components/approach/ApproachSequenceViewer.tsx",
+      "line": 273,
+      "match": "#2347E0",
+      "role": "graphics / vector / material",
+      "rawLine": "stroke={isResolved ? \"#2347E0\" : \"#E5484D\"}"
+    },
+    {
+      "file": "src/components/approach/ApproachSequenceViewer.tsx",
+      "line": 273,
+      "match": "#E5484D",
+      "role": "graphics / vector / material",
+      "rawLine": "stroke={isResolved ? \"#2347E0\" : \"#E5484D\"}"
+    },
+    {
+      "file": "src/components/approach/ApproachSequenceViewer.tsx",
+      "line": 282,
+      "match": "#B3261E",
+      "role": "border / divider",
+      "rawLine": "On paper: border --redline, text --redline-text (#B3261E, 5.6:1 contrast) */}"
+    },
+    {
+      "file": "src/components/canvas/CADModelView.tsx",
+      "line": 83,
+      "match": "#F1EEE6",
+      "role": "graphics / vector / material",
+      "rawLine": "fill: color || \"#F1EEE6\",      // --paper"
+    },
+    {
+      "file": "src/components/canvas/CADModelView.tsx",
+      "line": 84,
+      "match": "#050505",
+      "role": "general",
+      "rawLine": "edge: edgeColor || \"#050505\",  // --black"
+    },
+    {
+      "file": "src/components/canvas/CADModelView.tsx",
+      "line": 85,
+      "match": "#2347E0",
+      "role": "general",
+      "rawLine": "occlude: \"#2347E0\",           // --royal"
+    },
+    {
+      "file": "src/components/canvas/CADModelView.tsx",
+      "line": 86,
+      "match": "#F1EEE6",
+      "role": "general",
+      "rawLine": "wire: \"#F1EEE6\",              // --paper"
+    },
+    {
+      "file": "src/components/canvas/CADModelView.tsx",
+      "line": 91,
+      "match": "#F1EEE6",
+      "role": "graphics / vector / material",
+      "rawLine": "fill: color || \"#F1EEE6\",      // --paper"
+    },
+    {
+      "file": "src/components/canvas/CADModelView.tsx",
+      "line": 92,
+      "match": "#050505",
+      "role": "general",
+      "rawLine": "edge: edgeColor || \"#050505\",  // --black"
+    },
+    {
+      "file": "src/components/canvas/CADModelView.tsx",
+      "line": 93,
+      "match": "#050505",
+      "role": "general",
+      "rawLine": "occlude: \"#050505\",           // --black"
+    },
+    {
+      "file": "src/components/canvas/CADModelView.tsx",
+      "line": 94,
+      "match": "#9DB2FF",
+      "role": "general",
+      "rawLine": "wire: \"#9DB2FF\",              // --pale-blue"
+    },
+    {
+      "file": "src/components/canvas/CADModelView.tsx",
+      "line": 99,
+      "match": "#2347E0",
+      "role": "graphics / vector / material",
+      "rawLine": "fill: color || \"#2347E0\",        // --royal"
+    },
+    {
+      "file": "src/components/canvas/CADModelView.tsx",
+      "line": 100,
+      "match": "#050505",
+      "role": "general",
+      "rawLine": "edge: edgeColor || \"#050505\",    // --black"
+    },
+    {
+      "file": "src/components/canvas/CADModelView.tsx",
+      "line": 101,
+      "match": "#F1EEE6",
+      "role": "general",
+      "rawLine": "occlude: \"#F1EEE6\",             // --paper"
+    },
+    {
+      "file": "src/components/canvas/CADModelView.tsx",
+      "line": 102,
+      "match": "#050505",
+      "role": "general",
+      "rawLine": "wire: \"#050505\",                // --black"
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 72,
+      "match": "#050505",
+      "role": "general",
+      "rawLine": "// - black: #050505"
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 73,
+      "match": "#F1EEE6",
+      "role": "general",
+      "rawLine": "// - paper: #F1EEE6"
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 74,
+      "match": "#F0A06A",
+      "role": "general",
+      "rawLine": "// - copper: #F0A06A"
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 75,
+      "match": "#9DB2FF",
+      "role": "general",
+      "rawLine": "// - paleBlue: #9DB2FF"
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 76,
+      "match": "#2347E0",
+      "role": "general",
+      "rawLine": "// - royal: #2347E0"
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 77,
+      "match": "#E5484D",
+      "role": "general",
+      "rawLine": "// - redline: #E5484D"
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 81,
+      "match": "#9DB2FF",
+      "role": "general",
+      "rawLine": "shellLines: isBlackSection ? \"#9DB2FF\" : \"#F1EEE6\","
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 81,
+      "match": "#F1EEE6",
+      "role": "general",
+      "rawLine": "shellLines: isBlackSection ? \"#9DB2FF\" : \"#F1EEE6\","
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 83,
+      "match": "#F1EEE6",
+      "role": "general",
+      "rawLine": "ductFill: \"#F1EEE6\","
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 85,
+      "match": "#050505",
+      "role": "general",
+      "rawLine": "blackEdges: \"#050505\","
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 86,
+      "match": "#F0A06A",
+      "role": "general",
+      "rawLine": "pipeworkCopper: \"#F0A06A\","
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 87,
+      "match": "#050505",
+      "role": "general",
+      "rawLine": "pumpMotorBody: \"#050505\","
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 88,
+      "match": "#9DB2FF",
+      "role": "general",
+      "rawLine": "pumpMotorAccent: \"#9DB2FF\","
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 89,
+      "match": "#9DB2FF",
+      "role": "general",
+      "rawLine": "chillerFill: \"#9DB2FF\","
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 90,
+      "match": "#050505",
+      "role": "general",
+      "rawLine": "fanBlack: \"#050505\","
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 91,
+      "match": "#050505",
+      "role": "general",
+      "rawLine": "floorShadow: \"#050505\","
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 92,
+      "match": "#F1EEE6",
+      "role": "general",
+      "rawLine": "flowDashes: \"#F1EEE6\","
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 93,
+      "match": "#E5484D",
+      "role": "general",
+      "rawLine": "redline: \"#E5484D\","
+    },
+    {
+      "file": "src/components/canvas/M1AirHandlingUnit.tsx",
+      "line": 251,
+      "match": "#F0A06A",
+      "role": "general",
+      "rawLine": "{/* Coil Pipework: --copper (#F0A06A) */}"
+    },
+    {
+      "file": "src/components/canvas/M1DrawingFallback.tsx",
+      "line": 18,
+      "match": "#F1EEE6",
+      "role": "graphics / vector / material",
+      "rawLine": "const strokeColor = isRoyal ? \"#F1EEE6\" : isBlack ? \"#9DB2FF\" : \"#050505\";"
+    },
+    {
+      "file": "src/components/canvas/M1DrawingFallback.tsx",
+      "line": 18,
+      "match": "#9DB2FF",
+      "role": "graphics / vector / material",
+      "rawLine": "const strokeColor = isRoyal ? \"#F1EEE6\" : isBlack ? \"#9DB2FF\" : \"#050505\";"
+    },
+    {
+      "file": "src/components/canvas/M1DrawingFallback.tsx",
+      "line": 18,
+      "match": "#050505",
+      "role": "graphics / vector / material",
+      "rawLine": "const strokeColor = isRoyal ? \"#F1EEE6\" : isBlack ? \"#9DB2FF\" : \"#050505\";"
+    },
+    {
+      "file": "src/components/canvas/M1DrawingFallback.tsx",
+      "line": 19,
+      "match": "#F0A06A",
+      "role": "general",
+      "rawLine": "const accentColor = isRoyal || isBlack ? \"#F0A06A\" : \"#2347E0\";"
+    },
+    {
+      "file": "src/components/canvas/M1DrawingFallback.tsx",
+      "line": 19,
+      "match": "#2347E0",
+      "role": "general",
+      "rawLine": "const accentColor = isRoyal || isBlack ? \"#F0A06A\" : \"#2347E0\";"
+    },
+    {
+      "file": "src/components/canvas/M2SheetMetalUnfold.tsx",
+      "line": 15,
+      "match": "#F1EEE6",
+      "role": "graphics / vector / material",
+      "rawLine": "color = \"#F1EEE6\",      // --paper"
+    },
+    {
+      "file": "src/components/canvas/M2SheetMetalUnfold.tsx",
+      "line": 16,
+      "match": "#050505",
+      "role": "general",
+      "rawLine": "edgeColor = \"#050505\",  // --black"
+    },
+    {
+      "file": "src/components/canvas/M2SheetMetalUnfold.tsx",
+      "line": 109,
+      "match": "#F0A06A",
+      "role": "general",
+      "rawLine": "{/* Bend Line: Accent --copper (#F0A06A) */}"
+    },
+    {
+      "file": "src/components/canvas/M2SheetMetalUnfold.tsx",
+      "line": 112,
+      "match": "#F0A06A",
+      "role": "graphics / vector / material",
+      "rawLine": "<lineBasicMaterial color=\"#F0A06A\" />"
+    },
+    {
+      "file": "src/components/canvas/M2SheetMetalUnfold.tsx",
+      "line": 131,
+      "match": "#F0A06A",
+      "role": "general",
+      "rawLine": "{/* Bend Line: Accent --copper (#F0A06A) */}"
+    },
+    {
+      "file": "src/components/canvas/M2SheetMetalUnfold.tsx",
+      "line": 134,
+      "match": "#F0A06A",
+      "role": "graphics / vector / material",
+      "rawLine": "<lineBasicMaterial color=\"#F0A06A\" />"
+    },
+    {
+      "file": "src/components/canvas/M3WeldmentCallout.tsx",
+      "line": 16,
+      "match": "#F1EEE6",
+      "role": "graphics / vector / material",
+      "rawLine": "const strokeColor = isRoyal ? \"#F1EEE6\" : isBlack ? \"#9DB2FF\" : \"#050505\";"
+    },
+    {
+      "file": "src/components/canvas/M3WeldmentCallout.tsx",
+      "line": 16,
+      "match": "#9DB2FF",
+      "role": "graphics / vector / material",
+      "rawLine": "const strokeColor = isRoyal ? \"#F1EEE6\" : isBlack ? \"#9DB2FF\" : \"#050505\";"
+    },
+    {
+      "file": "src/components/canvas/M3WeldmentCallout.tsx",
+      "line": 16,
+      "match": "#050505",
+      "role": "graphics / vector / material",
+      "rawLine": "const strokeColor = isRoyal ? \"#F1EEE6\" : isBlack ? \"#9DB2FF\" : \"#050505\";"
+    },
+    {
+      "file": "src/components/canvas/M3WeldmentCallout.tsx",
+      "line": 17,
+      "match": "#2347E0",
+      "role": "general",
+      "rawLine": "const plateFill = isRoyal ? \"#2347E0\" : isBlack ? \"#050505\" : \"#F1EEE6\";"
+    },
+    {
+      "file": "src/components/canvas/M3WeldmentCallout.tsx",
+      "line": 17,
+      "match": "#050505",
+      "role": "general",
+      "rawLine": "const plateFill = isRoyal ? \"#2347E0\" : isBlack ? \"#050505\" : \"#F1EEE6\";"
+    },
+    {
+      "file": "src/components/canvas/M3WeldmentCallout.tsx",
+      "line": 17,
+      "match": "#F1EEE6",
+      "role": "general",
+      "rawLine": "const plateFill = isRoyal ? \"#2347E0\" : isBlack ? \"#050505\" : \"#F1EEE6\";"
+    },
+    {
+      "file": "src/components/canvas/M3WeldmentCallout.tsx",
+      "line": 62,
+      "match": "#F0A06A",
+      "role": "graphics / vector / material",
+      "rawLine": "<polygon points=\"60,45 60,35 70,45\" fill=\"#F0A06A\" stroke=\"#F0A06A\" />"
+    },
+    {
+      "file": "src/components/drawing/RedlineCallout.tsx",
+      "line": 18,
+      "match": "#B3261E",
+      "role": "general",
+      "rawLine": "// For text on paper: use --redline-text (#B3261E) -> 5.6:1 contrast."
+    },
+    {
+      "file": "src/components/drawing/RedlineCallout.tsx",
+      "line": 19,
+      "match": "#F1EEE6",
+      "role": "general",
+      "rawLine": "// For text on royal: use --paper (#F1EEE6) -> 5.9:1 contrast."
+    },
+    {
+      "file": "src/components/drawing/RedlineCallout.tsx",
+      "line": 20,
+      "match": "#9DB2FF",
+      "role": "general",
+      "rawLine": "// For text on black: use --pale-blue (#9DB2FF) -> 9.9:1 contrast."
+    },
+    {
+      "file": "src/components/drawing/SelfBuildingDrawing.tsx",
+      "line": 27,
+      "match": "#050505",
+      "role": "graphics / vector / material",
+      "rawLine": "const strokeColor = isPaper ? \"#050505\" : isRoyal ? \"#F1EEE6\" : \"#9DB2FF\";"
+    },
+    {
+      "file": "src/components/drawing/SelfBuildingDrawing.tsx",
+      "line": 27,
+      "match": "#F1EEE6",
+      "role": "graphics / vector / material",
+      "rawLine": "const strokeColor = isPaper ? \"#050505\" : isRoyal ? \"#F1EEE6\" : \"#9DB2FF\";"
+    },
+    {
+      "file": "src/components/drawing/SelfBuildingDrawing.tsx",
+      "line": 27,
+      "match": "#9DB2FF",
+      "role": "graphics / vector / material",
+      "rawLine": "const strokeColor = isPaper ? \"#050505\" : isRoyal ? \"#F1EEE6\" : \"#9DB2FF\";"
+    },
+    {
+      "file": "src/components/drawing/SelfBuildingDrawing.tsx",
+      "line": 28,
+      "match": "#050505",
+      "role": "general",
+      "rawLine": "const dimColor = isPaper ? \"#050505\" : isRoyal ? \"#F1EEE6\" : \"#9DB2FF\";"
+    },
+    {
+      "file": "src/components/drawing/SelfBuildingDrawing.tsx",
+      "line": 28,
+      "match": "#F1EEE6",
+      "role": "general",
+      "rawLine": "const dimColor = isPaper ? \"#050505\" : isRoyal ? \"#F1EEE6\" : \"#9DB2FF\";"
+    },
+    {
+      "file": "src/components/drawing/SelfBuildingDrawing.tsx",
+      "line": 28,
+      "match": "#9DB2FF",
+      "role": "general",
+      "rawLine": "const dimColor = isPaper ? \"#050505\" : isRoyal ? \"#F1EEE6\" : \"#9DB2FF\";"
+    },
+    {
+      "file": "src/lib/tokens.ts",
+      "line": 8,
+      "match": "#050505",
+      "role": "general",
+      "rawLine": "black: \"#050505\",          // Contrast sections, footer, headings on paper"
+    },
+    {
+      "file": "src/lib/tokens.ts",
+      "line": 9,
+      "match": "#2347E0",
+      "role": "graphics / vector / material",
+      "rawLine": "royal: \"#2347E0\",          // Hero and key section fields, primary fills on paper"
+    },
+    {
+      "file": "src/lib/tokens.ts",
+      "line": 10,
+      "match": "#1B3AC4",
+      "role": "graphics / vector / material",
+      "rawLine": "royalHover: \"#1B3AC4\",     // Hover/pressed for royal fills"
+    },
+    {
+      "file": "src/lib/tokens.ts",
+      "line": 11,
+      "match": "#F1EEE6",
+      "role": "general",
+      "rawLine": "paper: \"#F1EEE6\",          // Light sections, text on royal and black"
+    },
+    {
+      "file": "src/lib/tokens.ts",
+      "line": 12,
+      "match": "rgba(5, 5, 5, 0.14)",
+      "role": "general",
+      "rawLine": "paperLine: \"rgba(5, 5, 5, 0.14)\", // Hairlines and dividers on paper"
+    },
+    {
+      "file": "src/lib/tokens.ts",
+      "line": 13,
+      "match": "#F0A06A",
+      "role": "general",
+      "rawLine": "copper: \"#F0A06A\",         // Accent: pipework, one highlight per screen"
+    },
+    {
+      "file": "src/lib/tokens.ts",
+      "line": 14,
+      "match": "#9DB2FF",
+      "role": "general",
+      "rawLine": "paleBlue: \"#9DB2FF\",       // Thin lines, links and small graphics on black"
+    },
+    {
+      "file": "src/lib/tokens.ts",
+      "line": 15,
+      "match": "#E5484D",
+      "role": "general",
+      "rawLine": "redline: \"#E5484D\",        // Graphics only (revision clouds)"
+    },
+    {
+      "file": "src/lib/tokens.ts",
+      "line": 16,
+      "match": "#B3261E",
+      "role": "general",
+      "rawLine": "redlineText: \"#B3261E\",    // Red text on paper only"
+    },
+    {
+      "file": "src/styles/globals.css",
+      "line": 7,
+      "match": "#050505",
+      "role": "general",
+      "rawLine": "--black: #050505;"
+    },
+    {
+      "file": "src/styles/globals.css",
+      "line": 8,
+      "match": "#2347E0",
+      "role": "general",
+      "rawLine": "--royal: #2347E0;"
+    },
+    {
+      "file": "src/styles/globals.css",
+      "line": 9,
+      "match": "#1B3AC4",
+      "role": "general",
+      "rawLine": "--royal-hover: #1B3AC4;"
+    },
+    {
+      "file": "src/styles/globals.css",
+      "line": 10,
+      "match": "#F1EEE6",
+      "role": "general",
+      "rawLine": "--paper: #F1EEE6;"
+    },
+    {
+      "file": "src/styles/globals.css",
+      "line": 11,
+      "match": "rgba(5, 5, 5, 0.14)",
+      "role": "general",
+      "rawLine": "--paper-line: rgba(5, 5, 5, 0.14);"
+    },
+    {
+      "file": "src/styles/globals.css",
+      "line": 12,
+      "match": "#F0A06A",
+      "role": "general",
+      "rawLine": "--copper: #F0A06A;"
+    },
+    {
+      "file": "src/styles/globals.css",
+      "line": 13,
+      "match": "#9DB2FF",
+      "role": "general",
+      "rawLine": "--pale-blue: #9DB2FF;"
+    },
+    {
+      "file": "src/styles/globals.css",
+      "line": 14,
+      "match": "#E5484D",
+      "role": "general",
+      "rawLine": "--redline: #E5484D;"
+    },
+    {
+      "file": "src/styles/globals.css",
+      "line": 15,
+      "match": "#B3261E",
+      "role": "general",
+      "rawLine": "--redline-text: #B3261E;"
+    }
+  ]
+}

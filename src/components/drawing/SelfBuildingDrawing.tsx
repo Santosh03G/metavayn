@@ -3,9 +3,14 @@
 import { useState, useEffect } from "react";
 import { BomTable } from "./BomTable";
 import { RedlineCallout } from "./RedlineCallout";
+import { type SurfaceType } from "@/components/ui/Button";
 
-export function SelfBuildingDrawing() {
-  const [step, setStep] = useState<number>(4); // default to complete view, can be stepped through
+interface SelfBuildingDrawingProps {
+  surface?: SurfaceType;
+}
+
+export function SelfBuildingDrawing({ surface = "paper" }: SelfBuildingDrawingProps) {
+  const [step, setStep] = useState<number>(4);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   useEffect(() => {
@@ -16,13 +21,31 @@ export function SelfBuildingDrawing() {
     return () => clearInterval(interval);
   }, [isPlaying]);
 
+  const isPaper = surface === "paper";
+  const isRoyal = surface === "royal";
+
+  const strokeColor = isPaper ? "#050505" : isRoyal ? "#F1EEE6" : "#9DB2FF";
+  const dimColor = isPaper ? "#050505" : isRoyal ? "#F1EEE6" : "#9DB2FF";
+
+  const containerClass = isPaper
+    ? "border-paper-line bg-paper text-black"
+    : isRoyal
+    ? "border-paper/30 bg-royal/90 text-paper"
+    : "border-pale-blue/30 bg-black text-paper";
+
+  const dividerClass = isPaper
+    ? "border-paper-line"
+    : isRoyal
+    ? "border-paper/20"
+    : "border-pale-blue/20";
+
   return (
-    <div className="border border-[rgba(127,178,255,0.3)] bg-blueprint-deep p-4 sm:p-6 font-mono">
+    <div className={`border p-4 sm:p-6 font-mono ${containerClass}`}>
       {/* Control Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[rgba(127,178,255,0.2)] pb-3 mb-4 gap-3 text-mono-xs">
+      <div className={`flex flex-col sm:flex-row sm:items-center justify-between border-b ${dividerClass} pb-3 mb-4 gap-3 text-mono-xs`}>
         <div className="flex items-center space-x-2">
-          <span className="w-2 h-2 rounded-full bg-blueprint-signal animate-pulse" />
-          <span className="text-blueprint-dimension font-semibold">
+          <span className={`w-2 h-2 rounded-full ${isPaper ? "bg-royal" : "bg-paper"} animate-pulse`} />
+          <span className="font-semibold">
             DRAWING BUILD SEQUENCE: STEP {step} OF 4
           </span>
         </div>
@@ -42,10 +65,14 @@ export function SelfBuildingDrawing() {
                 setIsPlaying(false);
                 setStep(s.num);
               }}
-              className={`px-2 py-1 border text-[10px] transition-colors ${
+              className={`px-2 py-1 border text-[10px] transition-colors focus-visible:outline-none ${
                 step >= s.num
-                  ? "bg-blueprint-signal/20 border-blueprint-signal text-blueprint-linen"
-                  : "border-blueprint-dimension/30 text-blueprint-dimension/50 hover:border-blueprint-dimension"
+                  ? isPaper
+                    ? "bg-royal text-paper border-royal font-semibold"
+                    : "bg-paper text-black border-paper font-semibold"
+                  : isPaper
+                  ? "border-paper-line text-black/60 hover:border-black"
+                  : "border-paper/30 text-paper/60 hover:border-paper"
               }`}
             >
               {s.label}
@@ -54,7 +81,11 @@ export function SelfBuildingDrawing() {
           <button
             type="button"
             onClick={() => setIsPlaying(!isPlaying)}
-            className="px-2.5 py-1 bg-blueprint-cyanotype border border-blueprint-dimension/40 text-[10px] text-blueprint-linen hover:border-blueprint-signal"
+            className={`px-2.5 py-1 border text-[10px] font-semibold transition-colors ${
+              isPaper
+                ? "bg-paper border-black text-black hover:bg-black/5"
+                : "bg-transparent border-paper text-paper hover:bg-paper/10"
+            }`}
           >
             {isPlaying ? "❚❚ PAUSE" : "▶ AUTO BUILD"}
           </button>
@@ -62,7 +93,7 @@ export function SelfBuildingDrawing() {
       </div>
 
       {/* Main Drawing Canvas / Sheet */}
-      <div className="border border-[rgba(127,178,255,0.2)] bg-blueprint-deep/80 p-4 sm:p-6 min-h-[360px] flex flex-col justify-between relative overflow-hidden">
+      <div className={`border ${dividerClass} p-4 sm:p-6 min-h-[360px] flex flex-col justify-between relative overflow-hidden bg-transparent`}>
         {/* Step 1: Orthographic Views Materialize */}
         <div
           className={`transition-opacity duration-normal ${
@@ -71,30 +102,30 @@ export function SelfBuildingDrawing() {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
             {/* Front & Top Orthographic Projections */}
-            <div className="border border-[rgba(127,178,255,0.15)] p-4 bg-blueprint-deep">
-              <span className="text-[9px] text-blueprint-dimension/60 uppercase block mb-2">
+            <div className={`border ${dividerClass} p-4`}>
+              <span className={`text-[9px] uppercase block mb-2 ${isPaper ? "text-black/60" : "text-paper/60"}`}>
                 ORTHOGRAPHIC PROJECTION (FIRST ANGLE ISO 128)
               </span>
               <svg
-                className="w-full h-36 text-blueprint-dimension"
+                className="w-full h-36"
                 viewBox="0 0 240 120"
                 fill="none"
-                stroke="currentColor"
+                stroke={strokeColor}
                 strokeWidth="1.2"
               >
                 {/* Front Elevation View */}
-                <rect x="20" y="20" width="80" height="50" stroke="#7FB2FF" />
-                <circle cx="60" cy="45" r="12" stroke="#7FB2FF" strokeDasharray="2,2" />
-                <line x1="10" y1="45" x2="110" y2="45" stroke="#7FB2FF" strokeDasharray="4,4" opacity="0.4" />
-                <line x1="60" y1="10" x2="60" y2="80" stroke="#7FB2FF" strokeDasharray="4,4" opacity="0.4" />
+                <rect x="20" y="20" width="80" height="50" stroke={strokeColor} />
+                <circle cx="60" cy="45" r="12" stroke={strokeColor} strokeDasharray="2,2" />
+                <line x1="10" y1="45" x2="110" y2="45" stroke={strokeColor} strokeDasharray="4,4" opacity="0.4" />
+                <line x1="60" y1="10" x2="60" y2="80" stroke={strokeColor} strokeDasharray="4,4" opacity="0.4" />
 
                 {/* Right Side View */}
-                <rect x="130" y="20" width="50" height="50" stroke="#7FB2FF" />
-                <rect x="130" y="33" width="50" height="24" stroke="#7FB2FF" strokeDasharray="2,2" />
+                <rect x="130" y="20" width="50" height="50" stroke={strokeColor} />
+                <rect x="130" y="33" width="50" height="24" stroke={strokeColor} strokeDasharray="2,2" />
 
                 {/* Step 2: Dimension Leaders Draw In */}
                 {step >= 2 && (
-                  <g stroke="#2F7BFF" fill="#2F7BFF" fontSize="7" opacity="0.9">
+                  <g stroke={dimColor} fill={dimColor} fontSize="7" opacity="0.9">
                     {/* Width Dimension: 80.00 */}
                     <line x1="20" y1="85" x2="100" y2="85" />
                     <line x1="20" y1="75" x2="20" y2="90" />
@@ -117,24 +148,24 @@ export function SelfBuildingDrawing() {
                 step >= 3 ? "opacity-100 translate-y-0" : "opacity-20 translate-y-2"
               }`}
             >
-              <BomTable />
+              <BomTable surface={surface} />
             </div>
           </div>
         </div>
 
         {/* Step 4: Revision Block Updates */}
         <div
-          className={`mt-6 pt-3 border-t border-[rgba(127,178,255,0.2)] flex flex-col sm:flex-row items-center justify-between text-mono-xs transition-opacity duration-normal ${
+          className={`mt-6 pt-3 border-t ${dividerClass} flex flex-col sm:flex-row items-center justify-between text-mono-xs transition-opacity duration-normal ${
             step >= 4 ? "opacity-100" : "opacity-30"
           }`}
         >
           <div className="flex items-center space-x-3">
-            <RedlineCallout revision="01" note="ALL TOLERANCES VALIDATED" />
-            <span className="text-blueprint-dimension/70">
+            <RedlineCallout surface={surface} revision="01" note="ALL TOLERANCES VALIDATED" />
+            <span className={isPaper ? "text-black/70" : "text-paper/70"}>
               CAD AUDIT: GD&T COMPLIANT (ASME Y14.5M)
             </span>
           </div>
-          <span className="text-[10px] text-blueprint-dimension/60 mt-1 sm:mt-0">
+          <span className={`text-[10px] mt-1 sm:mt-0 ${isPaper ? "text-black/60" : "text-paper/60"}`}>
             METAVAYN DOCUMENTATION RELEASE STAMP
           </span>
         </div>

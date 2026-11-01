@@ -3,21 +3,19 @@
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
+import { type SurfaceType } from "@/components/ui/Button";
 
 export type CADRenderMode = "shaded" | "wireframe" | "drawing";
 
 interface CADModelViewProps {
   mode?: CADRenderMode;
+  surface?: SurfaceType;
   geometry?: THREE.BufferGeometry;
   autoRotate?: boolean;
   color?: string;
   edgeColor?: string;
 }
 
-/**
- * Procedurally generates a precision engineering flange component
- * with central bore, counterbore, and 4 mounting holes.
- */
 function createParametricFlangeGeometry(): THREE.BufferGeometry {
   const shape = new THREE.Shape();
   const outerRadius = 1.6;
@@ -60,10 +58,11 @@ function createParametricFlangeGeometry(): THREE.BufferGeometry {
 
 export function CADModelView({
   mode = "shaded",
+  surface = "royal",
   geometry: customGeometry,
   autoRotate = true,
-  color = "#0D2B52",
-  edgeColor = "#7FB2FF",
+  color,
+  edgeColor,
 }: CADModelViewProps) {
   const groupRef = useRef<THREE.Group>(null);
 
@@ -72,12 +71,39 @@ export function CADModelView({
     return customGeometry || createParametricFlangeGeometry();
   }, [customGeometry]);
 
-  // Generate crisp CAD edge lines using EdgesGeometry
+  // Edges
   const edgesGeometry = useMemo(() => {
-    return new THREE.EdgesGeometry(geometry, 25); // 25 degree threshold for CAD feature edges
+    return new THREE.EdgesGeometry(geometry, 25);
   }, [geometry]);
 
-  // Slowly rotate if autoRotate enabled
+  // Resolve D2 surface color tokens
+  const palette = useMemo(() => {
+    if (surface === "royal") {
+      return {
+        fill: color || "#F1EEE6",      // --paper
+        edge: edgeColor || "#050505",  // --black
+        occlude: "#2347E0",           // --royal
+        wire: "#F1EEE6",              // --paper
+      };
+    }
+    if (surface === "black") {
+      return {
+        fill: color || "#F1EEE6",      // --paper
+        edge: edgeColor || "#050505",  // --black
+        occlude: "#050505",           // --black
+        wire: "#9DB2FF",              // --pale-blue
+      };
+    }
+    // paper
+    return {
+      fill: color || "#2347E0",        // --royal
+      edge: edgeColor || "#050505",    // --black
+      occlude: "#F1EEE6",             // --paper
+      wire: "#050505",                // --black
+    };
+  }, [surface, color, edgeColor]);
+
+  // Rotate
   useFrame((_, delta) => {
     if (autoRotate && groupRef.current) {
       groupRef.current.rotation.y += delta * 0.4;
@@ -87,52 +113,49 @@ export function CADModelView({
 
   return (
     <group ref={groupRef}>
-      {/* 1. Shaded Mode: Matte CAD physical material + subtle edge highlights */}
+      {/* 1. Shaded Mode: Flat token colors with toneMapped={false} */}
       {mode === "shaded" && (
         <>
           <mesh geometry={geometry}>
-            <meshStandardMaterial
-              color={color}
-              roughness={0.4}
-              metalness={0.3}
+            <meshBasicMaterial
+              color={palette.fill}
+              toneMapped={false}
               polygonOffset
               polygonOffsetFactor={1}
               polygonOffsetUnits={1}
             />
           </mesh>
           <lineSegments geometry={edgesGeometry}>
-            <lineBasicMaterial color={edgeColor} transparent opacity={0.7} />
+            <lineBasicMaterial color={palette.edge} />
           </lineSegments>
         </>
       )}
 
-      {/* 2. Wireframe Mode: Pure CAD lattice */}
+      {/* 2. Wireframe Mode */}
       {mode === "wireframe" && (
         <mesh geometry={geometry}>
           <meshBasicMaterial
-            color={edgeColor}
+            color={palette.wire}
             wireframe
-            transparent
-            opacity={0.8}
+            toneMapped={false}
           />
         </mesh>
       )}
 
-      {/* 3. Drawing Mode (Hidden-Line Blueprint):
-          Faces render background color to occlude hidden lines,
-          while foreground edges render crisp CAD blueprint strokes */}
+      {/* 3. Drawing Mode (Hidden-Line Occlusion) */}
       {mode === "drawing" && (
         <>
           <mesh geometry={geometry}>
             <meshBasicMaterial
-              color="#06142B" // Matches --color-deep background
+              color={palette.occlude}
+              toneMapped={false}
               polygonOffset
               polygonOffsetFactor={1}
               polygonOffsetUnits={1}
             />
           </mesh>
           <lineSegments geometry={edgesGeometry}>
-            <lineBasicMaterial color={edgeColor} linewidth={1.5} />
+            <lineBasicMaterial color={palette.wire} linewidth={1.5} />
           </lineSegments>
         </>
       )}

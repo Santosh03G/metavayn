@@ -1,3 +1,5 @@
+import { type SurfaceType } from "@/components/ui/Button";
+
 export interface BomItem {
   item: number;
   qty: number;
@@ -16,17 +18,89 @@ export const AHU_BOM_DATA: BomItem[] = [
 ];
 
 interface BomTableProps {
+  surface?: SurfaceType;
   className?: string;
 }
 
-export function BomTable({ className = "" }: BomTableProps) {
+export function BomTable({ surface = "black", className = "" }: BomTableProps) {
+  const stylesBySurface: Record<
+    SurfaceType,
+    {
+      container: string;
+      headerBorder: string;
+      headerLabel: string;
+      metaText: string;
+      th: string;
+      divide: string;
+      hover: string;
+      itemCol: string;
+      qtyCol: string;
+      partCol: string;
+      descCol: string;
+      matCol: string;
+      specCol: string;
+      footer: string;
+    }
+  > = {
+    royal: {
+      container: "border border-paper/30 bg-royal/90 text-paper",
+      headerBorder: "border-paper/20",
+      headerLabel: "text-paper font-semibold",
+      metaText: "text-paper/70",
+      th: "border-paper/20 text-paper/80",
+      divide: "divide-paper/15",
+      hover: "hover:bg-paper/10",
+      itemCol: "text-paper",
+      qtyCol: "text-paper",
+      partCol: "text-paper font-semibold",
+      descCol: "text-paper",
+      matCol: "text-paper",
+      specCol: "text-paper/70",
+      footer: "border-paper/15 text-paper/70",
+    },
+    black: {
+      container: "border border-pale-blue/30 bg-black text-paper",
+      headerBorder: "border-pale-blue/20",
+      headerLabel: "text-pale-blue font-semibold",
+      metaText: "text-pale-blue/70",
+      th: "border-pale-blue/20 text-pale-blue/80",
+      divide: "divide-pale-blue/15",
+      hover: "hover:bg-pale-blue/10",
+      itemCol: "text-pale-blue",
+      qtyCol: "text-paper",
+      partCol: "text-pale-blue font-semibold",
+      descCol: "text-paper",
+      matCol: "text-paper",
+      specCol: "text-pale-blue/70",
+      footer: "border-pale-blue/15 text-pale-blue/70",
+    },
+    paper: {
+      container: "border border-paper-line bg-paper text-black",
+      headerBorder: "border-paper-line",
+      headerLabel: "text-black font-semibold",
+      metaText: "text-black/60",
+      th: "border-paper-line text-black/70",
+      divide: "divide-paper-line",
+      hover: "hover:bg-black/[0.03]",
+      itemCol: "text-black",
+      qtyCol: "text-black font-semibold",
+      partCol: "text-royal font-semibold",
+      descCol: "text-black",
+      matCol: "text-black",
+      specCol: "text-black/70",
+      footer: "border-paper-line text-black/60",
+    },
+  };
+
+  const s = stylesBySurface[surface];
+
   return (
-    <div className={`border border-[rgba(127,178,255,0.3)] bg-blueprint-deep p-4 font-mono text-xs ${className}`}>
-      <div className="flex items-center justify-between border-b border-[rgba(127,178,255,0.2)] pb-2 mb-3">
-        <span className="text-mono-xs text-blueprint-dimension uppercase tracking-wider font-semibold">
+    <div className={`p-4 font-mono text-xs ${s.container} ${className}`}>
+      <div className={`flex items-center justify-between border-b ${s.headerBorder} pb-2 mb-3`}>
+        <span className={`text-mono-xs uppercase tracking-wider ${s.headerLabel}`}>
           TABLE 1: BILL OF MATERIALS (BOM) — M1 AIR HANDLING UNIT
         </span>
-        <span className="text-[10px] text-blueprint-dimension/60">
+        <span className={`text-[10px] ${s.metaText}`}>
           DOC: MV-BOM-AHU-01 • REV 01
         </span>
       </div>
@@ -34,7 +108,7 @@ export function BomTable({ className = "" }: BomTableProps) {
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse text-[11px]">
           <thead>
-            <tr className="border-b border-[rgba(127,178,255,0.25)] text-blueprint-dimension/80">
+            <tr className={`border-b ${s.headerBorder} ${s.th}`}>
               <th className="py-1.5 px-2 font-semibold w-10">ITEM</th>
               <th className="py-1.5 px-2 font-semibold w-10">QTY</th>
               <th className="py-1.5 px-2 font-semibold">PART NO.</th>
@@ -43,22 +117,22 @@ export function BomTable({ className = "" }: BomTableProps) {
               <th className="py-1.5 px-2 font-semibold">SPECIFICATION</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[rgba(127,178,255,0.1)]">
+          <tbody className={`divide-y ${s.divide}`}>
             {AHU_BOM_DATA.map((row) => (
-              <tr key={row.item} className="hover:bg-blueprint-cyanotype/30 transition-colors">
-                <td className="py-2 px-2 text-blueprint-dimension">{row.item}</td>
-                <td className="py-2 px-2 text-blueprint-linen">{row.qty}</td>
-                <td className="py-2 px-2 text-blueprint-dimension font-semibold">{row.partNo}</td>
-                <td className="py-2 px-2 text-blueprint-linen">{row.description}</td>
-                <td className="py-2 px-2 text-blueprint-linen/80">{row.material}</td>
-                <td className="py-2 px-2 text-blueprint-dimension/70">{row.spec}</td>
+              <tr key={row.item} className={`${s.hover} transition-colors`}>
+                <td className={`py-2 px-2 ${s.itemCol}`}>{row.item}</td>
+                <td className={`py-2 px-2 ${s.qtyCol}`}>{row.qty}</td>
+                <td className={`py-2 px-2 ${s.partCol}`}>{row.partNo}</td>
+                <td className={`py-2 px-2 ${s.descCol}`}>{row.description}</td>
+                <td className={`py-2 px-2 ${s.matCol}`}>{row.material}</td>
+                <td className={`py-2 px-2 ${s.specCol}`}>{row.spec}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <div className="mt-3 pt-2 border-t border-[rgba(127,178,255,0.15)] flex justify-between text-[10px] text-blueprint-dimension/60">
+      <div className={`mt-3 pt-2 border-t ${s.footer} flex justify-between text-[10px]`}>
         <span>ALL DIMENSIONS IN MILLIMETERS</span>
         <span>VERIFIED: METAVAYN DOCUMENTATION TEAM</span>
       </div>

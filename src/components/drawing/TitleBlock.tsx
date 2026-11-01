@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { type SurfaceType } from "@/components/ui/Button";
 
 interface TitleBlockProps {
   drawingTitle?: string;
@@ -9,6 +10,7 @@ interface TitleBlockProps {
   totalSheets?: string;
   scale?: string;
   revision?: string;
+  surface?: SurfaceType;
   className?: string;
 }
 
@@ -19,15 +21,15 @@ export function TitleBlock({
   totalSheets = "07",
   scale = "1:1",
   revision = "01",
+  surface = "royal",
   className = "",
 }: TitleBlockProps) {
   const [coords, setCoords] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      // Normalize to drafting millimeters relative to viewport
-      const xMm = Math.round((e.clientX / window.innerWidth) * 420); // A3 sheet width (420mm)
-      const yMm = Math.round((e.clientY / window.innerHeight) * 297); // A3 sheet height (297mm)
+      const xMm = Math.round((e.clientX / window.innerWidth) * 420);
+      const yMm = Math.round((e.clientY / window.innerHeight) * 297);
       setCoords({ x: xMm, y: yMm });
     };
 
@@ -35,21 +37,60 @@ export function TitleBlock({
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  const stylesBySurface: Record<
+    SurfaceType,
+    {
+      container: string;
+      dividers: string;
+      label: string;
+      title: string;
+      docId: string;
+      badge: string;
+    }
+  > = {
+    royal: {
+      container: "border border-paper/30 bg-royal/90 text-paper",
+      dividers: "divide-paper/20",
+      label: "text-paper/70",
+      title: "text-paper",
+      docId: "text-paper",
+      badge: "bg-paper/15 border-paper text-paper",
+    },
+    black: {
+      container: "border border-pale-blue/30 bg-black text-paper",
+      dividers: "divide-pale-blue/20",
+      label: "text-pale-blue",
+      title: "text-paper",
+      docId: "text-pale-blue",
+      badge: "bg-pale-blue/15 border-pale-blue text-pale-blue",
+    },
+    paper: {
+      container: "border border-paper-line bg-paper text-black",
+      dividers: "divide-paper-line",
+      label: "text-black/70",
+      title: "text-black",
+      docId: "text-royal",
+      badge: "bg-redline/10 border-redline text-redline-text",
+    },
+  };
+
+  const currentStyles = stylesBySurface[surface];
+
   return (
     <div
-      className={`border border-[rgba(127,178,255,0.3)] bg-blueprint-deep/95 text-blueprint-linen font-mono text-xs select-none ${className}`}
+      className={`font-mono text-xs select-none ${currentStyles.container} ${className}`}
       aria-label="Engineering Drawing Title Block"
     >
-      <div className="grid grid-cols-1 md:grid-cols-12 divide-y md:divide-y-0 md:divide-x divide-[rgba(127,178,255,0.2)]">
+      <div className={`grid grid-cols-1 md:grid-cols-12 divide-y md:divide-y-0 md:divide-x ${currentStyles.dividers}`}>
         {/* Company & Standard */}
         <div className="md:col-span-4 p-2.5 space-y-1">
-          <div className="text-[10px] uppercase tracking-wider text-blueprint-dimension/80">
+          <div className={`text-[10px] uppercase tracking-wider ${currentStyles.label}`}>
             ORGANIZATION / STANDARDS
           </div>
-          <div className="font-semibold tracking-wide text-sm text-blueprint-linen">
+          <div className={`font-semibold tracking-wide text-sm ${currentStyles.title}`}>
             METAVAYN TECHNOLOGIES PVT. LTD.
           </div>
-          <div className="text-[10px] text-blueprint-dimension/60">
+          <div className={`text-[10px] ${currentStyles.label}`}>
             ISO 128 / ASME Y14.5M COMPLIANT
           </div>
         </div>
@@ -57,12 +98,12 @@ export function TitleBlock({
         {/* Drawing Title & Projection */}
         <div className="md:col-span-5 p-2.5 space-y-1">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase tracking-wider text-blueprint-dimension/80">
+            <span className={`text-[10px] uppercase tracking-wider ${currentStyles.label}`}>
               DRAWING TITLE
             </span>
             {/* First Angle Projection Symbol (ISO) */}
             <svg
-              className="w-10 h-4 text-blueprint-dimension/80"
+              className={`w-10 h-4 ${currentStyles.label}`}
               viewBox="0 0 40 16"
               fill="none"
               stroke="currentColor"
@@ -79,17 +120,17 @@ export function TitleBlock({
               <line x1="28" y1="0" x2="28" y2="16" strokeDasharray="2,2" />
             </svg>
           </div>
-          <div className="text-xs font-medium text-blueprint-linen truncate">
+          <div className={`text-xs font-medium truncate ${currentStyles.title}`}>
             {drawingTitle}
           </div>
-          <div className="flex items-center space-x-3 text-[10px] text-blueprint-dimension/70">
+          <div className={`flex items-center space-x-3 text-[10px] ${currentStyles.label}`}>
             <span>SCALE: {scale}</span>
             <span>•</span>
             <span>
               SHEET: {sheetNumber} OF {totalSheets}
             </span>
             <span>•</span>
-            <span className="text-blueprint-dimension">
+            <span>
               X: {coords.x}mm Y: {coords.y}mm
             </span>
           </div>
@@ -98,16 +139,16 @@ export function TitleBlock({
         {/* DWG No & Revision */}
         <div className="md:col-span-3 p-2.5 flex flex-col justify-between">
           <div>
-            <div className="text-[10px] uppercase tracking-wider text-blueprint-dimension/80">
+            <div className={`text-[10px] uppercase tracking-wider ${currentStyles.label}`}>
               DOCUMENT IDENTIFIER
             </div>
-            <div className="text-xs font-bold text-blueprint-dimension tracking-wider">
+            <div className={`text-xs font-bold tracking-wider ${currentStyles.docId}`}>
               {drawingNumber}
             </div>
           </div>
-          <div className="flex items-center justify-between pt-1 border-t border-[rgba(127,178,255,0.15)] text-[10px]">
-            <span className="text-blueprint-dimension/70">REV: {revision}</span>
-            <span className="px-1.5 py-0.5 bg-blueprint-redline/15 border border-blueprint-redline/40 text-blueprint-redline text-[9px] font-bold">
+          <div className={`flex items-center justify-between pt-1 border-t ${currentStyles.dividers} text-[10px]`}>
+            <span className={currentStyles.label}>REV: {revision}</span>
+            <span className={`px-1.5 py-0.5 border text-[9px] font-bold ${currentStyles.badge}`}>
               VALIDATED
             </span>
           </div>

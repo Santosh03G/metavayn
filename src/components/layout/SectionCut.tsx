@@ -1,7 +1,9 @@
 import { ReactNode } from "react";
+import { type SurfaceType } from "@/components/ui/Button";
 
 interface SectionCutProps {
   id?: string;
+  surface?: SurfaceType;
   theme?: "dark" | "light";
   sectionLabel?: string;
   sheetCode?: string;
@@ -11,27 +13,47 @@ interface SectionCutProps {
 
 export function SectionCut({
   id,
-  theme = "dark",
+  surface,
+  theme,
   sectionLabel,
   sheetCode,
   children,
   className = "",
 }: SectionCutProps) {
-  const isDark = theme === "dark";
+  const effectiveSurface: SurfaceType =
+    surface || (theme === "light" ? "paper" : "black");
+
+  const surfaceClasses: Record<SurfaceType, { section: string; border: string; text: string }> = {
+    royal: {
+      section: "bg-royal text-paper border-b border-paper/30",
+      border: "border-paper/20",
+      text: "text-paper/80",
+    },
+    black: {
+      section: "bg-black text-paper border-b border-pale-blue/20",
+      border: "border-pale-blue/20",
+      text: "text-pale-blue",
+    },
+    paper: {
+      section: "bg-paper text-black border-b border-paper-line",
+      border: "border-paper-line",
+      text: "text-black/70",
+    },
+  };
+
+  const currentConfig = surfaceClasses[effectiveSurface];
 
   return (
     <section
       id={id}
-      className={`relative py-16 sm:py-24 border-b border-[rgba(127,178,255,0.2)] ${
-        isDark
-          ? "bg-blueprint-deep text-blueprint-linen bg-cad-grid"
-          : "bg-blueprint-linen text-blueprint-graphite"
-      } ${className}`}
+      className={`relative py-16 sm:py-24 ${currentConfig.section} ${className}`}
     >
       {/* Section Cut Header Callout */}
       {(sectionLabel || sheetCode) && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-          <div className="flex items-center justify-between border-b pb-2 font-mono text-[10px] tracking-wider uppercase select-none opacity-80 border-current/20">
+          <div
+            className={`flex items-center justify-between border-b pb-2 font-mono text-[10px] tracking-wider uppercase select-none ${currentConfig.border} ${currentConfig.text}`}
+          >
             <div className="flex items-center space-x-2">
               <span className="w-2 h-2 rounded-full border border-current" />
               <span>{sectionLabel || "SECTION CUT"}</span>
@@ -41,9 +63,7 @@ export function SectionCut({
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {children}
-      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">{children}</div>
     </section>
   );
 }

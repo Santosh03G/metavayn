@@ -42,33 +42,33 @@ export function Header() {
   }, [mobileMenuOpen]);
 
   return (
-    <header className="sticky top-0 z-50 bg-blueprint-deep/95 backdrop-blur-none border-b border-[rgba(127,178,255,0.2)]">
+    <header className="sticky top-0 z-50 bg-royal border-b border-paper/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo / Monogram */}
           <Link
             href="/"
-            className="flex items-center space-x-3 group"
+            className="flex items-center space-x-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper focus-visible:ring-offset-2 focus-visible:ring-offset-royal"
             aria-label="Metavayn Technologies Home"
           >
             {/* CAD Monogram Mark */}
-            <div className="w-9 h-9 border border-blueprint-dimension bg-blueprint-cyanotype/40 flex items-center justify-center relative font-mono text-xs font-bold text-blueprint-dimension group-hover:border-blueprint-signal group-hover:text-blueprint-signal transition-colors duration-fast">
+            <div className="w-9 h-9 border border-paper bg-royal flex items-center justify-center relative font-mono text-xs font-bold text-paper group-hover:bg-white group-hover:text-royal transition-colors duration-fast">
               <span className="relative z-10">M</span>
               {/* Drafting Crosshairs */}
-              <div className="absolute inset-x-0 top-1/2 h-[1px] bg-blueprint-dimension/30 -translate-y-1/2 pointer-events-none" />
-              <div className="absolute inset-y-0 left-1/2 w-[1px] bg-blueprint-dimension/30 -translate-x-1/2 pointer-events-none" />
+              <div className="absolute inset-x-0 top-1/2 h-[1px] bg-paper/40 -translate-y-1/2 pointer-events-none" />
+              <div className="absolute inset-y-0 left-1/2 w-[1px] bg-paper/40 -translate-x-1/2 pointer-events-none" />
             </div>
             <div>
-              <span className="font-display font-semibold tracking-wider text-sm sm:text-base text-blueprint-linen block leading-tight">
+              <span className="font-display font-semibold tracking-wider text-sm sm:text-base text-paper block leading-tight">
                 METAVAYN
               </span>
-              <span className="font-mono text-[9px] text-blueprint-dimension/70 uppercase tracking-widest block">
+              <span className="font-mono text-[9px] text-paper/80 uppercase tracking-widest block">
                 TECHNOLOGIES
               </span>
             </div>
           </Link>
 
-          {/* Desktop Navigation (The 7 links) */}
+          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-1" aria-label="Main Navigation">
             {NAV_LINKS.map((link) => {
               const isActive = pathname === link.href;
@@ -76,15 +76,15 @@ export function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-3 py-1.5 text-xs font-medium tracking-wide transition-colors duration-fast relative ${
+                  className={`px-3 py-1.5 text-xs font-medium tracking-wide transition-colors duration-fast relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper focus-visible:ring-offset-2 focus-visible:ring-offset-royal ${
                     isActive
-                      ? "text-blueprint-linen bg-blueprint-cyanotype/60 border border-blueprint-dimension/40"
-                      : "text-blueprint-dimension/80 hover:text-blueprint-linen hover:bg-blueprint-cyanotype/30"
+                      ? "text-paper bg-royal-hover border border-paper/40 font-semibold"
+                      : "text-paper/90 hover:text-white hover:bg-royal-hover"
                   }`}
                 >
                   {link.label}
                   {isActive && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-[2px] bg-blueprint-signal" />
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-[2px] bg-paper" />
                   )}
                 </Link>
               );
@@ -94,7 +94,7 @@ export function Header() {
           {/* Primary Action Button */}
           <div className="hidden sm:flex items-center">
             <Link href="/contact">
-              <Button variant="primary" size="sm">
+              <Button surface="royal" variant="primary" size="sm">
                 Talk to our engineers
               </Button>
             </Link>
@@ -105,7 +105,7 @@ export function Header() {
             ref={triggerRef}
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 border border-blueprint-dimension/40 text-blueprint-dimension hover:text-blueprint-linen focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blueprint-signal"
+            className="lg:hidden p-2 border border-paper text-paper hover:bg-paper/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper focus-visible:ring-offset-2 focus-visible:ring-offset-royal"
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation-menu"
             aria-label="Toggle navigation menu"
@@ -117,7 +117,7 @@ export function Header() {
         </div>
       </div>
 
-      {/* Accessible, Calm Mobile Menu Dialog */}
+      {/* Accessible Mobile Menu Dialog */}
       {mobileMenuOpen && (
         <div
           id="mobile-navigation-menu"
@@ -125,13 +125,13 @@ export function Header() {
           role="dialog"
           aria-modal="true"
           aria-label="Navigation Menu"
-          className="lg:hidden border-t border-[rgba(127,178,255,0.25)] bg-blueprint-deep px-4 pt-4 pb-6 space-y-2 animate-in fade-in slide-in-from-top-1 duration-normal"
+          className="lg:hidden border-t border-paper/20 bg-royal px-4 pt-4 pb-6 space-y-2 animate-in fade-in slide-in-from-top-1 duration-normal"
         >
-          <div className="text-[10px] font-mono text-blueprint-dimension/60 uppercase tracking-widest pb-1 border-b border-[rgba(127,178,255,0.15)]">
+          <div className="text-[10px] font-mono text-paper/80 uppercase tracking-widest pb-1 border-b border-paper/20">
             INDEX NAVIGATION
           </div>
 
-          <div className="grid grid-cols-1 divide-y divide-[rgba(127,178,255,0.1)]">
+          <div className="grid grid-cols-1 divide-y divide-paper/15">
             {NAV_LINKS.map((link) => {
               const isActive = pathname === link.href;
               return (
@@ -139,14 +139,14 @@ export function Header() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-between py-2.5 px-2 text-sm font-medium transition-colors ${
+                  className={`flex items-center justify-between py-2.5 px-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper ${
                     isActive
-                      ? "text-blueprint-signal font-semibold bg-blueprint-cyanotype/40"
-                      : "text-blueprint-linen hover:text-blueprint-signal"
+                      ? "text-paper font-semibold bg-royal-hover"
+                      : "text-paper/90 hover:text-white"
                   }`}
                 >
                   <span>{link.label}</span>
-                  <span className="font-mono text-[10px] text-blueprint-dimension/50">
+                  <span className="font-mono text-[10px] text-paper/70">
                     {isActive ? "[CURRENT]" : "VIEW"}
                   </span>
                 </Link>
@@ -154,13 +154,13 @@ export function Header() {
             })}
           </div>
 
-          <div className="pt-3 border-t border-[rgba(127,178,255,0.2)]">
+          <div className="pt-3 border-t border-paper/20">
             <Link
               href="/contact"
               onClick={() => setMobileMenuOpen(false)}
               className="block w-full"
             >
-              <Button variant="primary" size="base" className="w-full">
+              <Button surface="royal" variant="primary" size="base" className="w-full">
                 Talk to our engineers
               </Button>
             </Link>

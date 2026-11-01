@@ -1,0 +1,69 @@
+[
+  {
+    "target": "Hero M1 AHU Ducts Flat Fill",
+    "token": "--paper",
+    "expectedHex": "#F1EEE6",
+    "rgb": {
+      "r": 241,
+      "g": 238,
+      "b": 230
+    },
+    "material": "meshBasicMaterial",
+    "toneMapped": false,
+    "tolerance": 6,
+    "status": "PASS"
+  },
+  {
+    "target": "Hero M1 AHU Ducts Edge Outlines",
+    "token": "--black",
+    "expectedHex": "#050505",
+    "rgb": {
+      "r": 5,
+      "g": 5,
+      "b": 5
+    },
+    "material": "lineBasicMaterial",
+    "tolerance": 6,
+    "status": "PASS"
+  },
+  {
+    "target": "Hero M1 AHU Chilled Water Pipework",
+    "token": "--copper",
+    "expectedHex": "#F0A06A",
+    "rgb": {
+      "r": 240,
+      "g": 160,
+      "b": 106
+    },
+    "material": "meshBasicMaterial",
+    "toneMapped": false,
+    "tolerance": 6,
+    "status": "PASS"
+  },
+  {
+    "target": "Hero M1 AHU Blower Housing / Chillers",
+    "token": "--pale-blue",
+    "expectedHex": "#9DB2FF",
+    "rgb": {
+      "r": 157,
+      "g": 178,
+      "b": 255
+    },
+    "material": "meshBasicMaterial",
+    "toneMapped": false,
+    "tolerance": 6,
+    "status": "PASS"
+  },
+  {
+    "target": "Hero Canvas Background (Page Surface Passthrough)",
+    "token": "--royal",
+    "expectedHex": "#2347E0",
+    "rgb": {
+      "r": 35,
+      "g": 71,
+      "b": 224
+    },
+    "tolerance": 6,
+    "status": "PASS"
+  }
+]

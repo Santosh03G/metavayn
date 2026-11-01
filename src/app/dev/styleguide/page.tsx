@@ -3,383 +3,283 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { TextLink } from "@/components/ui/TextLink";
-import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
-import { DrawingSheet } from "@/components/ui/DrawingSheet";
-import { DimensionLine } from "@/components/drawing/DimensionLine";
-import { RedlineCallout } from "@/components/drawing/RedlineCallout";
 import { TitleBlock } from "@/components/drawing/TitleBlock";
 import { Scene } from "@/components/canvas/Scene";
 import { CADModelView, type CADRenderMode } from "@/components/canvas/CADModelView";
-import { MOTION } from "@/lib/motion";
 
 export default function StyleguidePage() {
   const [cadMode, setCadMode] = useState<CADRenderMode>("drawing");
-  const [testTransition, setTestTransition] = useState(false);
+  const [activeSurface, setActiveSurface] = useState<"royal" | "paper" | "black">("royal");
 
-  const colors = [
-    { name: "Section Deep", hex: "#06142B", variable: "--color-deep", desc: "Darkest canvas background" },
-    { name: "Cyanotype", hex: "#0D2B52", variable: "--color-cyanotype", desc: "Blueprint surface / panels" },
-    { name: "Signal Blue", hex: "#2F7BFF", variable: "--color-signal", desc: "Single interactive accent" },
-    { name: "Dimension Line", hex: "#7FB2FF", variable: "--color-dimension", desc: "Drafting lines & borders" },
-    { name: "Linen", hex: "#EEF2F6", variable: "--color-linen", desc: "Cool paper light section cuts" },
-    { name: "Graphite", hex: "#1B2430", variable: "--color-graphite", desc: "Text on light surfaces" },
-    { name: "Redline", hex: "#E5484D", variable: "--color-redline", desc: "Revision markup & QA only" },
+  const d2Tokens = [
+    { name: "Black", hex: "#050505", variable: "--black", desc: "Contrast sections, footer, headings on paper" },
+    { name: "Royal", hex: "#2347E0", variable: "--royal", desc: "Hero and key section fields, primary fills on paper" },
+    { name: "Royal Hover", hex: "#1B3AC4", variable: "--royal-hover", desc: "Hover/pressed for royal fills" },
+    { name: "Paper", hex: "#F1EEE6", variable: "--paper", desc: "Light sections, text on royal and black" },
+    { name: "Paper Line", hex: "rgba(5,5,5,0.14)", variable: "--paper-line", desc: "Hairlines and dividers on paper" },
+    { name: "Copper", hex: "#F0A06A", variable: "--copper", desc: "Accent: pipework, one highlight per screen" },
+    { name: "Pale Blue", hex: "#9DB2FF", variable: "--pale-blue", desc: "Thin lines, links and small graphics on black" },
+    { name: "Redline", hex: "#E5484D", variable: "--redline", desc: "Graphics only (revision clouds)" },
+    { name: "Redline Text", hex: "#B3261E", variable: "--redline-text", desc: "Red text on paper only (5.6:1 contrast)" },
   ];
 
-  const spacingScale = [
-    { name: "cad-1", px: "4px", value: "var(--cad-space-1)" },
-    { name: "cad-2", px: "8px", value: "var(--cad-space-2)" },
-    { name: "cad-3", px: "12px", value: "var(--cad-space-3)" },
-    { name: "cad-4", px: "16px", value: "var(--cad-space-4)" },
-    { name: "cad-6", px: "24px", value: "var(--cad-space-6)" },
-    { name: "cad-8", px: "32px", value: "var(--cad-space-8)" },
-    { name: "cad-12", px: "48px", value: "var(--cad-space-12)" },
-    { name: "cad-16", px: "64px", value: "var(--cad-space-16)" },
-    { name: "cad-24", px: "96px", value: "var(--cad-space-24)" },
+  const allowedPairings = [
+    { foreground: "--paper", bg: "--royal", ratio: "5.9:1", usage: "Body and headings on royal" },
+    { foreground: "--black", bg: "--paper", ratio: "17.6:1", usage: "Body, headings and secondary buttons on paper" },
+    { foreground: "--paper", bg: "--black", ratio: "17.6:1", usage: "Body and headings on black" },
+    { foreground: "--pale-blue", bg: "--black", ratio: "9.9:1", usage: "Links, small labels, thin lines on black" },
+    { foreground: "--royal", bg: "--paper", ratio: "5.9:1", usage: "Links, buttons, large text on paper" },
+    { foreground: "--black", bg: "--copper", ratio: "9.6:1", usage: "Text on copper accent fills" },
+    { foreground: "--redline-text", bg: "--paper", ratio: "5.6:1", usage: "Error messages and revision notes on paper" },
   ];
 
   return (
-    <div className="min-h-screen bg-blueprint-deep text-blueprint-linen py-12">
+    <div className="min-h-screen bg-black text-paper py-12 select-none">
       <Container size="wide">
         {/* Styleguide Header */}
-        <div className="border-b border-[rgba(127,178,255,0.25)] pb-6 mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div className="border-b border-pale-blue/20 pb-6 mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <div className="font-mono text-mono-xs text-blueprint-dimension/70 uppercase tracking-widest mb-1 flex items-center space-x-2">
-              <span className="w-2 h-2 rounded-full bg-blueprint-signal" />
-              <span>INTERNAL DESIGN SYSTEM BENCHMARK</span>
+            <div className="font-mono text-mono-xs text-pale-blue uppercase tracking-widest mb-1 flex items-center space-x-2">
+              <span className="w-2 h-2 rounded-full bg-royal" />
+              <span>THEME D2 DESIGN SYSTEM BENCHMARK</span>
             </div>
-            <h1 className="font-display text-display-2xl sm:text-display-3xl text-blueprint-linen">
-              Metavayn Foundation Styleguide
+            <h1 className="font-display text-display-2xl sm:text-display-3xl text-paper">
+              Metavayn D2 Foundation Styleguide
             </h1>
           </div>
-          <div className="font-mono text-mono-xs text-blueprint-dimension/80 border border-blueprint-dimension/30 px-3 py-1.5 bg-blueprint-cyanotype/30">
-            SPEC: ISO 128 / ASME Y14.5 • REV 01
+          <div className="font-mono text-mono-xs text-pale-blue border border-pale-blue/30 px-3 py-1.5 bg-black">
+            SPEC: D2 PALETTE • 0 GRADIENTS • ISO 128 COMPLIANT
           </div>
         </div>
 
-        {/* 1. 3D FOUNDATION & MATERIAL VIEW MODES (Triple View Pipeline) */}
-        <section className="mb-16">
-          <div className="flex items-center justify-between mb-4 border-b border-[rgba(127,178,255,0.2)] pb-2">
-            <div>
-              <h2 className="font-display text-display-xl text-blueprint-linen">
-                01. 3D Foundation & CAD Material Pipeline
-              </h2>
-              <p className="font-sans text-body-sm text-blueprint-dimension/80">
-                Single WebGL context, DPR capped at 1.75, off-screen pause, accessible 2D blueprint fallback.
-              </p>
+        <div className="space-y-16">
+          {/* 1. D2 Palette Tokens (Clean Graphic Swatches without embedded text) */}
+          <section className="space-y-6">
+            <h2 className="font-mono text-mono-xs uppercase text-pale-blue tracking-wider border-b border-pale-blue/20 pb-2">
+              01 / DESIGN TOKENS (D2 PALETTE)
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {d2Tokens.map((c) => (
+                <div key={c.variable} className="border border-pale-blue/20 bg-black p-4 space-y-3">
+                  <div
+                    className="h-12 w-full border border-pale-blue/30"
+                    style={{
+                      backgroundColor: c.hex.startsWith("rgba") ? "#050505" : c.hex,
+                      borderColor: c.hex.startsWith("rgba") ? "rgba(241,238,230,0.3)" : undefined,
+                    }}
+                  />
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <span className="font-sans font-semibold text-body-base text-paper">{c.name}</span>
+                      <span className="font-mono text-mono-xs text-pale-blue">{c.hex}</span>
+                    </div>
+                    <div className="font-mono text-mono-xs text-pale-blue/80 mt-0.5">{c.variable}</div>
+                    <div className="font-sans text-body-sm text-paper/70 mt-1">{c.desc}</div>
+                  </div>
+                </div>
+              ))}
             </div>
-            {/* Live Mode Toggle Controls */}
-            <div className="flex items-center space-x-2 font-mono text-xs">
-              <span className="text-blueprint-dimension/60 mr-1 hidden sm:inline">VIEW MODE:</span>
-              {(["drawing", "shaded", "wireframe"] as CADRenderMode[]).map((mode) => (
+          </section>
+
+          {/* 2. Strict Contrast & Allowed Pairings */}
+          <section className="space-y-6">
+            <h2 className="font-mono text-mono-xs uppercase text-pale-blue tracking-wider border-b border-pale-blue/20 pb-2">
+              02 / COLOR PAIRINGS & WCAG CONTRAST MATRIX
+            </h2>
+            <div className="border border-pale-blue/20 bg-black overflow-x-auto">
+              <table className="w-full text-left border-collapse font-mono text-xs">
+                <thead>
+                  <tr className="border-b border-pale-blue/20 text-pale-blue">
+                    <th className="py-2.5 px-4 font-semibold">PAIRING</th>
+                    <th className="py-2.5 px-4 font-semibold">CONTRAST</th>
+                    <th className="py-2.5 px-4 font-semibold">WCAG LEVEL</th>
+                    <th className="py-2.5 px-4 font-semibold">ROLE</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-pale-blue/15 text-paper/90">
+                  {allowedPairings.map((p) => (
+                    <tr key={p.usage} className="hover:bg-white/[0.02]">
+                      <td className="py-2.5 px-4 font-semibold text-pale-blue">
+                        {p.foreground} on {p.bg}
+                      </td>
+                      <td className="py-2.5 px-4 font-bold text-paper">{p.ratio}</td>
+                      <td className="py-2.5 px-4 text-emerald-400">PASS (AAA / AA)</td>
+                      <td className="py-2.5 px-4 text-paper/70 font-sans">{p.usage}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          {/* 3. Surface System Demonstration */}
+          <section className="space-y-6">
+            <h2 className="font-mono text-mono-xs uppercase text-pale-blue tracking-wider border-b border-pale-blue/20 pb-2">
+              03 / SECTION SURFACE SYSTEM (ROYAL • PAPER • BLACK)
+            </h2>
+            <div className="flex gap-2 mb-4">
+              {(["royal", "paper", "black"] as const).map((s) => (
                 <button
-                  key={mode}
+                  key={s}
                   type="button"
-                  onClick={() => setCadMode(mode)}
-                  className={`px-3 py-1.5 uppercase font-medium border text-mono-xs transition-colors ${
-                    cadMode === mode
-                      ? "bg-blueprint-signal text-white border-blueprint-signal"
-                      : "bg-blueprint-cyanotype/50 text-blueprint-dimension border-blueprint-dimension/30 hover:border-blueprint-dimension"
+                  onClick={() => setActiveSurface(s)}
+                  className={`px-3 py-1.5 border font-mono text-xs uppercase font-semibold ${
+                    activeSurface === s
+                      ? "bg-paper text-black border-paper"
+                      : "bg-transparent text-pale-blue border-pale-blue/30"
                   }`}
                 >
-                  {mode}
+                  Surface: {s}
                 </button>
               ))}
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-8">
-              <Scene aspectRatio="aspect-[16/10]">
-                <CADModelView mode={cadMode} autoRotate={true} />
-              </Scene>
-            </div>
-
-            <div className="lg:col-span-4 space-y-4">
-              <div className="border border-[rgba(127,178,255,0.2)] bg-blueprint-cyanotype/20 p-4">
-                <span className="font-mono text-mono-xs text-blueprint-dimension block uppercase mb-1">
-                  CURRENT ACTIVE MODE: [{cadMode.toUpperCase()}]
-                </span>
-                <p className="font-sans text-body-sm text-blueprint-linen/90 leading-relaxed">
-                  {cadMode === "drawing" &&
-                    "Hidden-Line Blueprint Mode: Geometry renders background color to occlude lines behind it, while EdgesGeometry draws crisp blueprint lines in #7FB2FF. Gives the authentic 2D CAD look."}
-                  {cadMode === "shaded" &&
-                    "Matte CAD Shaded Mode: Physical PBR material with controlled specular roughness and subtle directional key lighting."}
-                  {cadMode === "wireframe" &&
-                    "Isometric Wireframe Mode: Pure geometric lattice without surface occlusion."}
-                </p>
-              </div>
-
-              <div className="border border-[rgba(127,178,255,0.2)] bg-blueprint-deep p-4 font-mono text-mono-xs space-y-2">
-                <div className="text-blueprint-dimension/60 uppercase">WebGL Performance Checklist</div>
-                <div className="text-blueprint-linen flex items-center space-x-2">
-                  <span className="text-emerald-400">✓</span>
-                  <span>DPR Capped at 1.75</span>
-                </div>
-                <div className="text-blueprint-linen flex items-center space-x-2">
-                  <span className="text-emerald-400">✓</span>
-                  <span>IntersectionObserver Off-Screen Pause</span>
-                </div>
-                <div className="text-blueprint-linen flex items-center space-x-2">
-                  <span className="text-emerald-400">✓</span>
-                  <span>Non-WebGL SVG Fallback Slot</span>
-                </div>
-                <div className="text-blueprint-linen flex items-center space-x-2">
-                  <span className="text-emerald-400">✓</span>
-                  <span>Draco & Meshopt Compression Configured</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 2. COLOR PALETTE TOKENS */}
-        <section className="mb-16">
-          <h2 className="font-display text-display-xl text-blueprint-linen mb-2">
-            02. Disciplined Color System
-          </h2>
-          <p className="font-sans text-body-sm text-blueprint-dimension/80 mb-6">
-            Disciplined material palette. Blue is the material substrate, not a gradient wash.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {colors.map((c) => (
-              <div
-                key={c.name}
-                className="border border-[rgba(127,178,255,0.25)] bg-blueprint-deep p-4 flex flex-col justify-between"
-              >
-                <div
-                  className="w-full h-16 border border-black/20 mb-3"
-                  style={{ backgroundColor: c.hex }}
-                />
+            <div
+              className={`p-6 sm:p-8 border transition-colors ${
+                activeSurface === "royal"
+                  ? "bg-royal text-paper border-paper/30"
+                  : activeSurface === "paper"
+                  ? "bg-paper text-black border-paper-line"
+                  : "bg-black text-paper border-pale-blue/30"
+              }`}
+            >
+              <div className="space-y-6">
                 <div>
-                  <div className="font-display font-semibold text-body-base text-blueprint-linen">
-                    {c.name}
-                  </div>
-                  <div className="font-mono text-mono-xs text-blueprint-dimension/70">
-                    {c.hex} • {c.variable}
-                  </div>
-                  <div className="font-sans text-body-sm text-blueprint-linen/60 mt-1">
-                    {c.desc}
-                  </div>
+                  <h3 className="font-display text-display-xl font-bold">
+                    Surface Preview: {activeSurface.toUpperCase()}
+                  </h3>
+                  <p className="font-sans text-body-base mt-2 max-w-prose opacity-90">
+                    This interactive specimen proves button contrast, focus rings, and link rules under the {activeSurface} surface token.
+                  </p>
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
 
-        {/* 3. TYPOGRAPHY SCALE */}
-        <section className="mb-16">
-          <h2 className="font-display text-display-xl text-blueprint-linen mb-2">
-            03. Type Scale & Measure Limits
-          </h2>
-          <p className="font-sans text-body-sm text-blueprint-dimension/80 mb-6">
-            Distinctive display (Bricolage Grotesque) + Workmanlike body (IBM Plex Sans) + Monospace only for callouts/tables.
-          </p>
-
-          <div className="border border-[rgba(127,178,255,0.2)] bg-blueprint-deep/80 divide-y divide-[rgba(127,178,255,0.15)]">
-            <div className="p-6">
-              <span className="font-mono text-mono-xs text-blueprint-dimension/60 uppercase block mb-1">
-                DISPLAY 3XL • 48px / 52px • Bricolage Grotesque
-              </span>
-              <div className="font-display text-display-3xl text-blueprint-linen">
-                Engineering the Next Dimension
-              </div>
-            </div>
-
-            <div className="p-6">
-              <span className="font-mono text-mono-xs text-blueprint-dimension/60 uppercase block mb-1">
-                DISPLAY 2XL • 36px / 40px • Bricolage Grotesque
-              </span>
-              <div className="font-display text-display-2xl text-blueprint-linen">
-                Precision Product Engineering & Design
-              </div>
-            </div>
-
-            <div className="p-6">
-              <span className="font-mono text-mono-xs text-blueprint-dimension/60 uppercase block mb-1">
-                DISPLAY XL • 28px / 32px • Bricolage Grotesque
-              </span>
-              <div className="font-display text-display-xl text-blueprint-linen">
-                Structured Engineering Process
-              </div>
-            </div>
-
-            <div className="p-6">
-              <span className="font-mono text-mono-xs text-blueprint-dimension/60 uppercase block mb-1">
-                BODY MEASURE & SCALE • Max 75ch Line Length • IBM Plex Sans
-              </span>
-              <p className="font-sans text-body-base max-w-prose text-blueprint-linen/90 leading-relaxed border-l-2 border-blueprint-signal pl-4 my-2">
-                We work as an extension of our clients&apos; engineering teams, supporting them across product design, mechanical engineering, engineering documentation, product development, and manufacturing readiness. Body measure is strictly capped at 75 characters for optimal readability.
-              </p>
-              <div className="mt-3">
-                <DimensionLine value="MAX MEASURE: 75ch" tolerance="0.00" length="100%" />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 4. COMPONENT PRIMITIVES */}
-        <section className="mb-16">
-          <h2 className="font-display text-display-xl text-blueprint-linen mb-2">
-            04. Brand Component Primitives
-          </h2>
-          <p className="font-sans text-body-sm text-blueprint-dimension/80 mb-6">
-            Sharp corners, hairline borders, no pill shapes, sentence case labels.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Button Variants */}
-            <div className="border border-[rgba(127,178,255,0.2)] bg-blueprint-deep p-6 space-y-4">
-              <h3 className="font-mono text-mono-xs text-blueprint-dimension uppercase tracking-wider border-b border-[rgba(127,178,255,0.15)] pb-1">
-                Button Variants
-              </h3>
-              <div className="flex flex-wrap gap-3 items-center">
-                <Button variant="primary" size="base">
-                  Talk to our engineers
-                </Button>
-                <Button variant="secondary" size="base">
-                  Explore our services
-                </Button>
-                <Button variant="blueprint" size="base">
-                  Request support
-                </Button>
-                <Button variant="danger-redline" size="base">
-                  Reject revision
-                </Button>
-                <Button variant="ghost" size="base">
-                  Technical index
-                </Button>
-              </div>
-
-              <div className="pt-4 border-t border-[rgba(127,178,255,0.15)] flex items-center space-x-3">
-                <Button variant="primary" size="sm">Small</Button>
-                <Button variant="primary" size="base">Base</Button>
-                <Button variant="primary" size="lg">Large</Button>
-              </div>
-            </div>
-
-            {/* Links & Revision Callouts */}
-            <div className="border border-[rgba(127,178,255,0.2)] bg-blueprint-deep p-6 space-y-6">
-              <div>
-                <h3 className="font-mono text-mono-xs text-blueprint-dimension uppercase tracking-wider border-b border-[rgba(127,178,255,0.15)] pb-1 mb-3">
-                  Technical TextLink (Dimension Underline Rule)
-                </h3>
-                <div className="space-x-6">
-                  <TextLink href="#">View mechanical specifications</TextLink>
-                  <TextLink href="#">Download 2D drafting BOM</TextLink>
+                {/* Buttons on current surface */}
+                <div className="flex flex-wrap gap-4 items-center pt-2">
+                  <Button surface={activeSurface} variant="primary">
+                    Primary Button
+                  </Button>
+                  <Button surface={activeSurface} variant="secondary">
+                    Secondary Button
+                  </Button>
+                  <Button surface={activeSurface} variant="copper">
+                    Copper Accent (1 Per Screen)
+                  </Button>
                 </div>
-              </div>
 
-              <div>
-                <h3 className="font-mono text-mono-xs text-blueprint-dimension uppercase tracking-wider border-b border-[rgba(127,178,255,0.15)] pb-1 mb-3">
-                  Redline Revision Markers (Validation Only)
-                </h3>
-                <div className="flex flex-wrap gap-4 items-center">
-                  <RedlineCallout revision="01" note="FLANGE THICKNESS ADJUSTED" />
-                  <RedlineCallout revision="02" note="GD&T DATUM B ADDED" />
+                {/* TextLink on current surface */}
+                <div className="pt-2">
+                  <TextLink surface={activeSurface} href="#">
+                    CAD Dimension Underlined TextLink
+                  </TextLink>
                 </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        {/* 5. DRAWING SHEET FRAME & ZONE MARKERS */}
-        <section className="mb-16">
-          <h2 className="font-display text-display-xl text-blueprint-linen mb-2">
-            05. Drawing Sheet Frame with Zone Markers & Title Block
-          </h2>
-          <p className="font-sans text-body-sm text-blueprint-dimension/80 mb-6">
-            ASME Y14.5 drafting frame with corner crosshairs, zone columns 1-8, zone rows A-D, and living Title Block.
-          </p>
-
-          <DrawingSheet
-            drawingTitle="PRECISION BEARING FLANGE - GENERAL SPEC"
-            drawingNumber="MV-2026-FLG-01"
-            sheetNumber="01"
-            totalSheets="04"
-            scale="1:1"
-            revision="01"
-          >
-            <div className="p-4 sm:p-8 flex flex-col justify-center items-center text-center space-y-3">
-              <span className="font-mono text-mono-xs text-blueprint-dimension/70">
-                ZONE B-4 • DRAWING WORKING ENVELOPE
-              </span>
-              <p className="font-display text-display-lg text-blueprint-linen">
-                Full Technical Drawing Working Sheet Primitive
-              </p>
-              <div className="w-full max-w-md pt-2">
-                <DimensionLine value="240.00" tolerance="0.05" />
-              </div>
-            </div>
-          </DrawingSheet>
-        </section>
-
-        {/* 6. SPACING SCALE & DRAFTING GRID */}
-        <section className="mb-16">
-          <h2 className="font-display text-display-xl text-blueprint-linen mb-2">
-            06. Spacing Scale & Drafting Grid
-          </h2>
-          <p className="font-sans text-body-sm text-blueprint-dimension/80 mb-6">
-            CAD drafting module based on 4px increments.
-          </p>
-
-          <div className="border border-[rgba(127,178,255,0.2)] bg-blueprint-deep p-6">
-            <div className="space-y-3">
-              {spacingScale.map((s) => (
-                <div key={s.name} className="flex items-center space-x-4">
-                  <span className="font-mono text-mono-xs text-blueprint-dimension w-20">
-                    {s.name} ({s.px})
-                  </span>
-                  <div
-                    className="h-3 bg-blueprint-signal/60 border border-blueprint-signal"
-                    style={{ width: s.px }}
+                {/* TitleBlock on current surface */}
+                <div className="pt-4">
+                  <TitleBlock
+                    surface={activeSurface}
+                    drawingTitle="FOUNDATION STYLEGUIDE SPECIMEN"
+                    drawingNumber="MV-2026-STY"
                   />
                 </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 4. Form Pattern on Paper (Step 5 Specification) */}
+          <section className="space-y-6">
+            <h2 className="font-mono text-mono-xs uppercase text-pale-blue tracking-wider border-b border-pale-blue/20 pb-2">
+              04 / FORM PATTERN (STEP 5 SPECIFICATION: PAPER SURFACE ONLY)
+            </h2>
+            <div className="border border-paper-line bg-paper p-6 sm:p-8 text-black space-y-6 max-w-2xl">
+              <div>
+                <span className="font-mono text-mono-xs text-black/60 uppercase tracking-widest block">
+                  FORM SYSTEM SPECIFICATION
+                </span>
+                <h3 className="font-display text-display-lg text-black font-semibold mt-1">
+                  Contact Intake Form Pattern
+                </h3>
+              </div>
+
+              <div className="space-y-4 font-sans text-body-sm">
+                <div>
+                  <label className="block font-medium text-black mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    defaultValue="Alex Wright"
+                    className="w-full px-3 py-2 bg-white/60 border border-paper-line rounded-[2px] text-black focus:outline-none focus:border-royal focus:ring-1 focus:ring-royal"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-medium text-black mb-1">Company Email</label>
+                  <input
+                    type="email"
+                    defaultValue="alex@oem-corp.com"
+                    className="w-full px-3 py-2 bg-white/60 border border-paper-line rounded-[2px] text-black focus:outline-none focus:border-royal focus:ring-1 focus:ring-royal"
+                  />
+                </div>
+
+                {/* Field with Error state complying with Step 5 */}
+                <div>
+                  <label className="block font-medium text-black mb-1">Engineering Domain</label>
+                  <input
+                    type="text"
+                    defaultValue=""
+                    placeholder="Required domain selection"
+                    className="w-full px-3 py-2 bg-white/60 border border-redline-text rounded-[2px] text-black focus:outline-none focus:border-redline-text"
+                  />
+                  <div className="mt-1 flex items-center space-x-1 font-mono text-[11px] text-redline-text">
+                    <span>⚠</span>
+                    <span>ERROR: Please specify your engineering discipline</span>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex items-center justify-between">
+                  <Button surface="paper" variant="primary">
+                    Submit Project Inquiry
+                  </Button>
+                  <span className="font-mono text-[11px] text-royal font-semibold">
+                    ✓ SECURE SUBMISSION (24H RESPONSE)
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 5. 3D WebGL Flat Material Specimen */}
+          <section className="space-y-6">
+            <h2 className="font-mono text-mono-xs uppercase text-pale-blue tracking-wider border-b border-pale-blue/20 pb-2">
+              05 / 3D CAD MODEL SPECIMEN (FLAT-COLOUR sRGB OUTPUT)
+            </h2>
+            <div className="flex gap-2">
+              {(["drawing", "shaded", "wireframe"] as const).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setCadMode(m)}
+                  className={`px-3 py-1 border font-mono text-xs uppercase font-semibold ${
+                    cadMode === m
+                      ? "bg-pale-blue text-black border-pale-blue"
+                      : "bg-transparent text-pale-blue border-pale-blue/30"
+                  }`}
+                >
+                  {m}
+                </button>
               ))}
             </div>
-          </div>
-        </section>
 
-        {/* 7. MOTION SYSTEM */}
-        <section className="mb-16">
-          <h2 className="font-display text-display-xl text-blueprint-linen mb-2">
-            07. Motion System Tokens
-          </h2>
-          <p className="font-sans text-body-sm text-blueprint-dimension/80 mb-6">
-            Calm, eased deceleration. No bounce, no overshoot.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="border border-[rgba(127,178,255,0.2)] p-4 bg-blueprint-deep">
-              <span className="font-mono text-mono-xs text-blueprint-dimension block uppercase">
-                FAST • 150ms
-              </span>
-              <div className="font-display text-display-base text-blueprint-linen mt-1">
-                Micro-interactions, button hover, focus rings.
+            <div className="border border-pale-blue/30 bg-black p-4 sm:p-6">
+              <Scene surface="black" aspectRatio="aspect-[16/9]" cameraPosition={[2.8, 2.2, 3.6]}>
+                <CADModelView surface="black" mode={cadMode} autoRotate={true} />
+              </Scene>
+              <div className="mt-3 flex justify-between font-mono text-[10px] text-pale-blue/70">
+                <span>OUTPUT: sRGB • TONE MAPPING: NONE (EXACT HEX RENDERING)</span>
+                <span>DRAG TO ORBIT</span>
               </div>
             </div>
-
-            <div className="border border-[rgba(127,178,255,0.2)] p-4 bg-blueprint-deep">
-              <span className="font-mono text-mono-xs text-blueprint-dimension block uppercase">
-                NORMAL • 300ms
-              </span>
-              <div className="font-display text-display-base text-blueprint-linen mt-1">
-                Drawer open, tab switch, filter changes.
-              </div>
-            </div>
-
-            <div className="border border-[rgba(127,178,255,0.2)] p-4 bg-blueprint-deep">
-              <span className="font-mono text-mono-xs text-blueprint-dimension block uppercase">
-                DELIBERATE • 500ms
-              </span>
-              <div className="font-display text-display-base text-blueprint-linen mt-1">
-                Section cut wipe, route transitions.
-              </div>
-            </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </Container>
     </div>
   );

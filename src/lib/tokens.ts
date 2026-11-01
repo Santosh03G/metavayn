@@ -1,17 +1,19 @@
 /**
- * Metavayn Design Tokens
+ * Metavayn Design Tokens - Theme D2 Palette
  * Source of truth for styling, colors, and layout constraints.
  */
 
 export const TOKENS = {
   colors: {
-    sectionDeep: "#06142B",    // Base canvas / darkest surface
-    cyanotype: "#0D2B52",      // Blueprint surface
-    signalBlue: "#2F7BFF",     // Interactive accent
-    dimensionLine: "#7FB2FF",  // Drafting lines & CAD borders
-    linen: "#EEF2F6",          // Light section cuts background
-    graphite: "#1B2430",       // Text on light background
-    redline: "#E5484D",        // Revision markups & validation moments
+    black: "#050505",          // Contrast sections, footer, headings on paper
+    royal: "#2347E0",          // Hero and key section fields, primary fills on paper
+    royalHover: "#1B3AC4",     // Hover/pressed for royal fills
+    paper: "#F1EEE6",          // Light sections, text on royal and black
+    paperLine: "rgba(5, 5, 5, 0.14)", // Hairlines and dividers on paper
+    copper: "#F0A06A",         // Accent: pipework, one highlight per screen
+    paleBlue: "#9DB2FF",       // Thin lines, links and small graphics on black
+    redline: "#E5484D",        // Graphics only (revision clouds)
+    redlineText: "#B3261E",    // Red text on paper only
   },
   typography: {
     maxMeasure: "75ch",        // Maximum line length for readability

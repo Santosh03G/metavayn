@@ -12,8 +12,8 @@ interface M2SheetMetalUnfoldProps {
 
 export function M2SheetMetalUnfold({
   unfoldProgress = 0,
-  color = "#06142B",
-  edgeColor = "#7FB2FF",
+  color = "#F1EEE6",      // --paper
+  edgeColor = "#050505",  // --black
 }: M2SheetMetalUnfoldProps) {
   const rootRef = useRef<THREE.Group>(null);
 
@@ -81,7 +81,12 @@ export function M2SheetMetalUnfold({
     <group ref={rootRef} position={[0, -0.2, 0]} rotation={[0.45, -0.3, 0]}>
       {/* 1. Base Center Web */}
       <mesh geometry={baseGeom}>
-        <meshBasicMaterial color={color} polygonOffset polygonOffsetFactor={1} />
+        <meshBasicMaterial
+          color={color}
+          toneMapped={false}
+          polygonOffset
+          polygonOffsetFactor={1}
+        />
       </mesh>
       <lineSegments geometry={baseEdges}>
         <lineBasicMaterial color={edgeColor} linewidth={2} />
@@ -90,16 +95,21 @@ export function M2SheetMetalUnfold({
       {/* 2. Right Bent Flange (Pivot on right edge: x = +1.2) */}
       <group position={[1.2, 0, 0.04]} rotation={[0, -bendAngle, 0]}>
         <mesh geometry={flangeGeom}>
-          <meshBasicMaterial color={color} polygonOffset polygonOffsetFactor={1} />
+          <meshBasicMaterial
+            color={color}
+            toneMapped={false}
+            polygonOffset
+            polygonOffsetFactor={1}
+          />
         </mesh>
         <lineSegments geometry={flangeEdges}>
           <lineBasicMaterial color={edgeColor} linewidth={2} />
         </lineSegments>
 
-        {/* Bend Line (Neutral Axis dashed line) */}
+        {/* Bend Line: Accent --copper (#F0A06A) */}
         <lineSegments position={[0, 0, 0.04]}>
           <edgesGeometry args={[new THREE.PlaneGeometry(0.01, 1.8)]} />
-          <lineBasicMaterial color="#2F7BFF" />
+          <lineBasicMaterial color="#F0A06A" />
         </lineSegments>
       </group>
 
@@ -107,16 +117,21 @@ export function M2SheetMetalUnfold({
       <group position={[-1.2, 0, 0.04]} rotation={[0, bendAngle, 0]}>
         <group position={[-0.9, 0, 0]}>
           <mesh geometry={flangeGeom}>
-            <meshBasicMaterial color={color} polygonOffset polygonOffsetFactor={1} />
+            <meshBasicMaterial
+              color={color}
+              toneMapped={false}
+              polygonOffset
+              polygonOffsetFactor={1}
+            />
           </mesh>
           <lineSegments geometry={flangeEdges}>
             <lineBasicMaterial color={edgeColor} linewidth={2} />
           </lineSegments>
 
-          {/* Bend Line */}
+          {/* Bend Line: Accent --copper (#F0A06A) */}
           <lineSegments position={[0.9, 0, 0.04]}>
             <edgesGeometry args={[new THREE.PlaneGeometry(0.01, 1.8)]} />
-            <lineBasicMaterial color="#2F7BFF" />
+            <lineBasicMaterial color="#F0A06A" />
           </lineSegments>
         </group>
       </group>
