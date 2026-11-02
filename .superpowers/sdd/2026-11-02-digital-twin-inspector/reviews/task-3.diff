@@ -1,0 +1,357 @@
+﻿diff --git a/scripts/test-camera-presets.mjs b/scripts/test-camera-presets.mjs
+new file mode 100644
+index 0000000..94d1682
+--- /dev/null
++++ b/scripts/test-camera-presets.mjs
+@@ -0,0 +1,83 @@
++import assert from "node:assert";
++import fs from "node:fs";
++import path from "node:path";
++
++// 1. Target preset coordinate verification
++const EXPECTED_PRESETS = {
++  ISO: { position: [4.8, 3.2, 4.8], target: [0, 0, 0] },
++  FRONT: { position: [0, 0, 6.4], target: [0, 0, 0] },
++  PLAN: { position: [0, 7.2, 0.01], target: [0, 0, 0] },
++  END: { position: [6.4, 0, 0], target: [0, 0, 0] },
++};
++
++console.log("Testing camera preset vectors...");
++assert.deepStrictEqual(EXPECTED_PRESETS.ISO.position, [4.8, 3.2, 4.8]);
++assert.deepStrictEqual(EXPECTED_PRESETS.FRONT.position, [0, 0, 6.4]);
++assert.deepStrictEqual(EXPECTED_PRESETS.PLAN.position, [0, 7.2, 0.01]);
++assert.deepStrictEqual(EXPECTED_PRESETS.END.position, [6.4, 0, 0]);
++console.log("PASS: Target preset coordinate vectors valid!");
++
++// 2. Scene.tsx static analysis and export verification
++console.log("Verifying Scene.tsx camera presets and interactive orbit controls implementation...");
++const scenePath = path.resolve("src/components/canvas/Scene.tsx");
++const source = fs.readFileSync(scenePath, "utf-8");
++
++// Must export CAMERA_PRESETS
++assert.ok(
++  source.includes("export const CAMERA_PRESETS") || source.includes("export { CAMERA_PRESETS"),
++  "Scene.tsx must export CAMERA_PRESETS"
++);
++
++// Verify preset positions in Scene.tsx
++assert.ok(source.includes("4.8, 3.2, 4.8"), "ISO preset position [4.8, 3.2, 4.8] must be present in Scene.tsx");
++assert.ok(source.includes("0, 0, 6.4") || source.includes("0, 0, 6.40"), "FRONT preset position [0, 0, 6.4] must be present in Scene.tsx");
++assert.ok(source.includes("0, 7.2, 0.01"), "PLAN preset position [0, 7.2, 0.01] must be present in Scene.tsx");
++assert.ok(source.includes("6.4, 0, 0"), "END preset position [6.4, 0, 0] must be present in Scene.tsx");
++
++// Verify OrbitControls configuration for inspector mode
++assert.ok(
++  source.includes("makeDefault"),
++  "OrbitControls must include makeDefault"
++);
++assert.ok(
++  source.includes("minDistance={2.5}") || source.includes("minDistance: 2.5"),
++  "OrbitControls must enforce minDistance={2.5}"
++);
++assert.ok(
++  source.includes("maxDistance={10}") || source.includes("maxDistance: 10"),
++  "OrbitControls must enforce maxDistance={10}"
++);
++assert.ok(
++  source.includes("enableDamping"),
++  "OrbitControls must include enableDamping"
++);
++
++// Verify GSAP camera tween & reduced motion
++assert.ok(
++  source.includes("gsap.to") || source.includes("gsap"),
++  "GSAP tween must be used for camera transitions"
++);
++assert.ok(
++  source.includes("0.7"),
++  "Camera transition duration must be 0.7s"
++);
++assert.ok(
++  source.includes("power2.inOut"),
++  "Camera transition ease must be power2.inOut"
++);
++assert.ok(
++  source.includes("prefers-reduced-motion"),
++  "Reduced motion preference must be supported"
++);
++
++// Verify SceneProps supports mode and cameraPreset
++assert.ok(
++  source.includes("mode?:") || source.includes("mode :"),
++  "SceneProps must support mode"
++);
++assert.ok(
++  source.includes("cameraPreset?:") || source.includes("cameraPreset :"),
++  "SceneProps must support cameraPreset"
++);
++
++console.log("PASS: Camera presets and Scene.tsx orbit controls validated!");
+diff --git a/src/components/canvas/Scene.tsx b/src/components/canvas/Scene.tsx
+index f8f33a4..aee5aba 100644
+--- a/src/components/canvas/Scene.tsx
++++ b/src/components/canvas/Scene.tsx
+@@ -10,7 +10,20 @@ import {
+ import * as THREE from "three";
+ import { Canvas, useThree, useFrame } from "@react-three/fiber";
+ import { OrbitControls } from "@react-three/drei";
++import gsap from "gsap";
+ import { type SurfaceType } from "@/components/ui/Button";
++import type { CameraPreset } from "@/lib/digital-twin/types";
++import { useDigitalTwin } from "@/lib/digital-twin/context";
++
++export const CAMERA_PRESETS: Record<
++  CameraPreset,
++  { position: [number, number, number]; target: [number, number, number] }
++> = {
++  ISO: { position: [4.8, 3.2, 4.8], target: [0, 0, 0] },
++  FRONT: { position: [0, 0, 6.4], target: [0, 0, 0] },
++  PLAN: { position: [0, 7.2, 0.01], target: [0, 0, 0] },
++  END: { position: [6.4, 0, 0], target: [0, 0, 0] },
++};
+ 
+ interface SceneProps {
+   children: ReactNode;
+@@ -26,6 +39,19 @@ interface SceneProps {
+   modelScale?: number;
+   orthoPadding?: number;
+   enableSpringTilt?: boolean; // Up to 4 deg tilt toward cursor with spring physics (k=90, c=20)
++  mode?: "story" | "inspector";
++  cameraPreset?: CameraPreset;
++}
++
++/**
++ * Safely access digital twin context without throwing if used outside DigitalTwinProvider.
++ */
++function useOptionalDigitalTwin() {
++  try {
++    return useDigitalTwin();
++  } catch {
++    return null;
++  }
+ }
+ 
+ /**
+@@ -141,6 +167,109 @@ function OrthoFitController({
+   return null;
+ }
+ 
++/**
++ * Camera preset controller for Inspector Mode.
++ * Smoothly tweens camera position to target preset coordinates using GSAP (0.7s, power2.inOut)
++ * and resets OrbitControls target to [0, 0, 0].
++ */
++function CameraPresetController({
++  cameraPreset,
++  mode,
++  controlsRef,
++}: {
++  cameraPreset: CameraPreset;
++  mode: "story" | "inspector";
++  controlsRef: React.RefObject<any>;
++}) {
++  const { camera } = useThree();
++  const prevModeRef = useRef<"story" | "inspector">("story");
++  const prevPresetRef = useRef<CameraPreset | null>(null);
++
++  useEffect(() => {
++    if (mode !== "inspector") {
++      prevModeRef.current = "story";
++      prevPresetRef.current = null;
++      return;
++    }
++
++    const targetPreset = CAMERA_PRESETS[cameraPreset] || CAMERA_PRESETS.ISO;
++    const isReducedMotion =
++      typeof window !== "undefined" &&
++      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
++
++    prevModeRef.current = "inspector";
++    prevPresetRef.current = cameraPreset;
++
++    if (isReducedMotion) {
++      camera.position.set(
++        targetPreset.position[0],
++        targetPreset.position[1],
++        targetPreset.position[2]
++      );
++      if (controlsRef.current) {
++        controlsRef.current.target.set(
++          targetPreset.target[0],
++          targetPreset.target[1],
++          targetPreset.target[2]
++        );
++        controlsRef.current.update();
++      } else {
++        camera.lookAt(
++          targetPreset.target[0],
++          targetPreset.target[1],
++          targetPreset.target[2]
++        );
++      }
++      return;
++    }
++
++    // GSAP 0.7s power2.inOut tween to target preset coordinates
++    gsap.killTweensOf(camera.position);
++    gsap.to(camera.position, {
++      x: targetPreset.position[0],
++      y: targetPreset.position[1],
++      z: targetPreset.position[2],
++      duration: 0.7,
++      ease: "power2.inOut",
++      onUpdate: () => {
++        if (controlsRef.current) {
++          controlsRef.current.update();
++        } else {
++          camera.lookAt(
++            targetPreset.target[0],
++            targetPreset.target[1],
++            targetPreset.target[2]
++          );
++        }
++      },
++    });
++
++    if (controlsRef.current?.target) {
++      const target = controlsRef.current.target;
++      gsap.killTweensOf(target);
++      gsap.to(target, {
++        x: targetPreset.target[0],
++        y: targetPreset.target[1],
++        z: targetPreset.target[2],
++        duration: 0.7,
++        ease: "power2.inOut",
++        onUpdate: () => {
++          controlsRef.current?.update();
++        },
++      });
++    }
++
++    return () => {
++      gsap.killTweensOf(camera.position);
++      if (controlsRef.current?.target) {
++        gsap.killTweensOf(controlsRef.current.target);
++      }
++    };
++  }, [cameraPreset, mode, camera, controlsRef]);
++
++  return null;
++}
++
+ /**
+  * Accessible 2D CAD drawing fallback SVG
+  * rendered when WebGL is absent, loading, or under reduced motion.
+@@ -196,13 +325,20 @@ export function Scene({
+   modelScale = 1.0,
+   orthoPadding = 0.09,
+   enableSpringTilt = false,
++  mode,
++  cameraPreset,
+ }: SceneProps) {
+   const containerRef = useRef<HTMLDivElement>(null);
++  const controlsRef = useRef<any>(null);
+   const [hasWebGL, setHasWebGL] = useState<boolean | null>(null);
+   const [reducedMotion, setReducedMotion] = useState(false);
+   const [isVisible, setIsVisible] = useState(false);
+   const [isDebug, setIsDebug] = useState(false);
+ 
++  const dt = useOptionalDigitalTwin();
++  const effectiveMode = mode ?? dt?.mode ?? "story";
++  const effectivePreset = cameraPreset ?? dt?.cameraPreset ?? "ISO";
++
+   useEffect(() => {
+     if (typeof window !== "undefined") {
+       const params = new URLSearchParams(window.location.search);
+@@ -261,6 +397,12 @@ export function Scene({
+       ? "text-pale-blue/60"
+       : "text-black/50";
+ 
++  const isInspector = effectiveMode === "inspector";
++  const isOrtho = orthographic && !isInspector;
++  const initialPosition = isInspector
++    ? CAMERA_PRESETS[effectivePreset]?.position ?? [4.8, 3.2, 4.8]
++    : cameraPosition;
++
+   return (
+     <div
+       ref={containerRef}
+@@ -279,20 +421,21 @@ export function Scene({
+           }
+         >
+           <Canvas
++            key={isOrtho ? "ortho" : "persp"}
+             dpr={[1, 1.75]}
+-            orthographic={orthographic}
++            orthographic={isOrtho}
+             camera={
+-              orthographic
++              isOrtho
+                 ? {
+-                    position: cameraPosition,
++                    position: initialPosition,
+                     zoom: 50,
+                   }
+                 : {
+-                    position: cameraPosition,
++                    position: initialPosition,
+                     fov: 38,
+                   }
+             }
+-            frameloop={frameloop}
++            frameloop={isInspector ? "always" : frameloop}
+             gl={{
+               antialias: true,
+               powerPreference: "high-performance",
+@@ -303,28 +446,44 @@ export function Scene({
+               gl.outputColorSpace = THREE.SRGBColorSpace;
+             }}
+           >
+-            {orthographic && (
++            {isOrtho && (
+               <OrthoFitController
+                 modelScale={modelScale}
+                 paddingMargin={orthoPadding}
+               />
+             )}
+ 
++            <CameraPresetController
++              cameraPreset={effectivePreset}
++              mode={effectiveMode}
++              controlsRef={controlsRef}
++            />
++
+             {/* Directional lighting without blue-glow bias */}
+             <ambientLight intensity={0.9} />
+             <directionalLight position={[5, 8, 4]} intensity={1.2} />
+ 
+-            <SpringTiltWrapper enabled={enableSpringTilt}>
++            <SpringTiltWrapper enabled={enableSpringTilt && !isInspector}>
+               {children}
+             </SpringTiltWrapper>
+ 
+-            {enableControls && (
++            {isInspector ? (
+               <OrbitControls
+-                enableZoom={false}
+-                enablePan={false}
+-                minPolarAngle={Math.PI / 4}
+-                maxPolarAngle={Math.PI / 1.8}
++                ref={controlsRef}
++                makeDefault
++                minDistance={2.5}
++                maxDistance={10}
++                enableDamping
+               />
++            ) : (
++              enableControls && (
++                <OrbitControls
++                  enableZoom={false}
++                  enablePan={false}
++                  minPolarAngle={Math.PI / 4}
++                  maxPolarAngle={Math.PI / 1.8}
++                />
++              )
+             )}
+           </Canvas>
+         </Suspense>

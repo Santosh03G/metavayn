@@ -1,0 +1,366 @@
+﻿diff --git a/scripts/verify-digital-twin-full.mjs b/scripts/verify-digital-twin-full.mjs
+new file mode 100644
+index 0000000..26de8e3
+--- /dev/null
++++ b/scripts/verify-digital-twin-full.mjs
+@@ -0,0 +1,180 @@
++import { chromium } from "playwright";
++import assert from "node:assert";
++
++async function runVerification() {
++  console.log("=================================================");
++  console.log("Verifying Digital Twin Inspector Mode Switching");
++  console.log("=================================================");
++
++  const browser = await chromium.launch({
++    channel: "msedge",
++    headless: true,
++  });
++
++  try {
++    const page = await browser.newPage();
++    await page.setViewportSize({ width: 1280, height: 800 });
++
++    console.log("1. Navigating to http://localhost:3000/#what-we-do...");
++    await page.goto("http://localhost:3000/#what-we-do", {
++      waitUntil: "domcontentloaded",
++      timeout: 30000,
++    });
++    await page.waitForTimeout(1000);
++
++    const section = page.locator("#what-we-do");
++    await section.waitFor({ state: "visible", timeout: 10000 });
++    console.log("Γ£ô What We Do section is visible");
++
++    // 2. Locate trigger pill
++    console.log("2. Checking for 'Inspect CAD Digital Twin' button...");
++    const inspectBtn = page.locator('button[aria-label="Inspect CAD Digital Twin"]');
++    await inspectBtn.scrollIntoViewIfNeeded();
++    await inspectBtn.waitFor({ state: "visible", timeout: 10000 });
++    console.log("Γ£ô Found 'Inspect CAD Digital Twin' button");
++
++    // 3. Click trigger pill to enter Inspector Mode
++    console.log("3. Clicking 'Inspect CAD Digital Twin'...");
++    await inspectBtn.click();
++    await page.waitForTimeout(800);
++
++    // 4. Assert Resume Story button is visible
++    console.log("4. Verifying HUD and 'Resume Story' button...");
++    const resumeBtn = page.locator('button[aria-label="Resume Story"]');
++    await resumeBtn.waitFor({ state: "visible", timeout: 5000 });
++    const isResumeVisible = await resumeBtn.isVisible();
++    assert.ok(isResumeVisible, "Resume Story button must be visible in Inspector Mode");
++    console.log("Γ£ô 'Resume Story' button is visible");
++
++    // Check HUD title
++    const hudHeader = page.locator('text=LIVE CAD INSPECTION // AHU-M1 MODULAR');
++    assert.ok(await hudHeader.isVisible(), "HUD Header must be visible");
++    console.log("Γ£ô HUD Header is visible");
++
++    // 5. Test Camera View Preset (e.g. FRONT)
++    console.log("5. Testing Camera View Preset buttons...");
++    const frontPresetBtn = page.locator('button[aria-label="FRONT view preset"]');
++    await frontPresetBtn.waitFor({ state: "visible", timeout: 5000 });
++    await frontPresetBtn.click();
++    await page.waitForTimeout(400);
++
++    const isFrontPressed = await frontPresetBtn.getAttribute("aria-pressed");
++    assert.strictEqual(
++      isFrontPressed,
++      "true",
++      "FRONT preset button must have aria-pressed='true' after click"
++    );
++    console.log("Γ£ô FRONT camera preset button active");
++
++    // 6. Test Hotspot Pin click ([data-hotspot-id="cooling-coil"])
++    console.log("6. Testing Hotspot Pin click for cooling-coil...");
++    const hotspotPin = page.locator('[data-hotspot-id="cooling-coil"]');
++    await hotspotPin.waitFor({ state: "visible", timeout: 10000 });
++    await hotspotPin.click();
++    await page.waitForTimeout(500);
++
++    const specCard = page.locator('aside[aria-label*="Cooling Coil"]');
++    await specCard.waitFor({ state: "visible", timeout: 5000 });
++    const isSpecCardVisible = await specCard.isVisible();
++    assert.ok(
++      isSpecCardVisible,
++      "FloatingSpecCard for Cooling Coil must be visible after pin click"
++    );
++    console.log("Γ£ô Cooling Coil FloatingSpecCard opened");
++
++    // 7. Test Escape key dismissal
++    console.log("7. Testing Escape key behavior...");
++    // First Escape: dismiss spec card
++    await page.keyboard.press("Escape");
++    await page.waitForTimeout(400);
++    const specAfterFirstEscape = await specCard.isVisible();
++    assert.strictEqual(
++      specAfterFirstEscape,
++      false,
++      "Spec card must be dismissed on first Escape key"
++    );
++    console.log("Γ£ô First Escape dismissed the spec card");
++
++    // Resume Story button should still be visible (still in inspector mode)
++    assert.ok(
++      await resumeBtn.isVisible(),
++      "Inspector Mode should still be active after dismissing spec card"
++    );
++
++    // Second Escape: exit inspector mode
++    await page.keyboard.press("Escape");
++    await page.waitForTimeout(600);
++
++    const resumeAfterSecondEscape = await resumeBtn.isVisible();
++    assert.strictEqual(
++      resumeAfterSecondEscape,
++      false,
++      "Resume Story button must be dismissed on second Escape key"
++    );
++    console.log("Γ£ô Second Escape exited Inspector Mode");
++
++    // Trigger button should be back
++    await inspectBtn.waitFor({ state: "visible", timeout: 5000 });
++    console.log("Γ£ô 'Inspect CAD Digital Twin' button restored in Story Mode");
++
++    // 8. Test direct Escape exit without active selection
++    console.log("8. Testing direct Escape exit from Inspector Mode...");
++    await inspectBtn.click();
++    await resumeBtn.waitFor({ state: "visible", timeout: 5000 });
++    await page.keyboard.press("Escape");
++    await page.waitForTimeout(600);
++    assert.strictEqual(
++      await resumeBtn.isVisible(),
++      false,
++      "Escape without selection should immediately exit Inspector Mode"
++    );
++    console.log("Γ£ô Direct Escape successfully exited Inspector Mode");
++
++    // 9. Test Resume Story button click
++    console.log("9. Testing 'Resume Story' button click...");
++    await inspectBtn.click();
++    await resumeBtn.waitFor({ state: "visible", timeout: 5000 });
++    await resumeBtn.click();
++    await page.waitForTimeout(600);
++    assert.strictEqual(
++      await resumeBtn.isVisible(),
++      false,
++      "Clicking 'Resume Story' should exit Inspector Mode"
++    );
++    console.log("Γ£ô 'Resume Story' button click exited Inspector Mode");
++
++    // 10. Test Fullscreen toggle
++    console.log("10. Testing Fullscreen toggle in Inspector Mode...");
++    await inspectBtn.click();
++    await resumeBtn.waitFor({ state: "visible", timeout: 5000 });
++
++    const fullscreenBtn = page.locator('button[aria-label="Enter Fullscreen"]');
++    await fullscreenBtn.waitFor({ state: "visible", timeout: 5000 });
++    await fullscreenBtn.click();
++    await page.waitForTimeout(400);
++
++    const exitFullscreenBtn = page.locator('button[aria-label="Exit Fullscreen"]');
++    await exitFullscreenBtn.waitFor({ state: "visible", timeout: 5000 });
++    console.log("Γ£ô Fullscreen toggled on successfully");
++
++    await exitFullscreenBtn.click();
++    await page.waitForTimeout(400);
++    await fullscreenBtn.waitFor({ state: "visible", timeout: 5000 });
++    console.log("Γ£ô Fullscreen toggled off successfully");
++
++    // Clean up to story mode
++    await resumeBtn.click();
++    await page.waitForTimeout(500);
++
++    console.log("\n=================================================");
++    console.log("PASS: All Digital Twin Integration tests passed!");
++    console.log("=================================================");
++  } finally {
++    await browser.close();
++  }
++}
++
++runVerification().catch((err) => {
++  console.error("\nΓ¥î Verification failed:", err);
++  process.exit(1);
++});
+diff --git a/src/components/home/WhatWeDoSection.tsx b/src/components/home/WhatWeDoSection.tsx
+index 5384af9..0d7ac69 100644
+--- a/src/components/home/WhatWeDoSection.tsx
++++ b/src/components/home/WhatWeDoSection.tsx
+@@ -14,6 +14,11 @@ import {
+ } from "@/lib/discipline-highlight-mapping";
+ import { MOTION_TOKENS } from "@/lib/motion/tokens";
+ import { usePrefersReducedMotion } from "@/lib/motion/usePrefersReducedMotion";
++import { DigitalTwinProvider, useDigitalTwin } from "@/lib/digital-twin/context";
++import type { SubAssemblyId } from "@/lib/digital-twin/types";
++import { DigitalTwinHUD } from "@/components/digital-twin/DigitalTwinHUD";
++import { DigitalTwinHotspots } from "@/components/digital-twin/HotspotPin";
++import { useLenis } from "@/components/layout/SmoothScrollProvider";
+ 
+ const DISCIPLINES: DisciplineMapping[] = Object.values(DISCIPLINE_HIGHLIGHT_MAPPINGS);
+ 
+@@ -26,7 +31,10 @@ const DISCIPLINE_EXPLODE_FACTORS: Record<string, number> = {
+   documentation: 0.70,
+ };
+ 
+-export function WhatWeDoSection() {
++function WhatWeDoContent() {
++  const digitalTwin = useDigitalTwin();
++  const lenis = useLenis();
++
+   const [activeId, setActiveId] = useState<string>("product");
+   const [animatedExplode, setAnimatedExplode] = useState<number>(0.68);
+   const [animatedRotationY, setAnimatedRotationY] = useState<number>(0);
+@@ -34,11 +42,65 @@ export function WhatWeDoSection() {
+   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
+   const prefersReduced = usePrefersReducedMotion();
+ 
++  const isInspector = digitalTwin.mode === "inspector";
++  const activeExplode = isInspector ? digitalTwin.explodeFactor : animatedExplode;
++  const activeSelectedId = isInspector ? digitalTwin.selectedAssemblyId : null;
++
++  // Lenis scroll lifecycle: Pause when in inspector mode, resume when in story mode or on unmount
++  useEffect(() => {
++    if (isInspector) {
++      lenis?.stop();
++    } else {
++      lenis?.start();
++    }
++    return () => {
++      lenis?.start();
++    };
++  }, [isInspector, lenis]);
++
++  // Fullscreen support: hide sticky site header while in fullscreen CAD inspection so it does not intercept HUD controls
++  useEffect(() => {
++    if (digitalTwin.isFullscreen) {
++      const header = document.querySelector("header.sticky") as HTMLElement | null;
++      if (header) {
++        const prevVisibility = header.style.visibility;
++        const prevPointerEvents = header.style.pointerEvents;
++        header.style.visibility = "hidden";
++        header.style.pointerEvents = "none";
++        return () => {
++          header.style.visibility = prevVisibility;
++          header.style.pointerEvents = prevPointerEvents;
++        };
++      }
++    }
++  }, [digitalTwin.isFullscreen]);
++
++  // Keyboard listener for Escape key
++  useEffect(() => {
++    const handleKeyDown = (e: KeyboardEvent) => {
++      if (e.key === "Escape") {
++        if (digitalTwin.selectedAssemblyId) {
++          e.preventDefault();
++          digitalTwin.setSelectedAssemblyId(null);
++        } else if (digitalTwin.mode === "inspector") {
++          e.preventDefault();
++          digitalTwin.resetInspector();
++        }
++      }
++    };
++
++    window.addEventListener("keydown", handleKeyDown);
++    return () => {
++      window.removeEventListener("keydown", handleKeyDown);
++    };
++  }, [digitalTwin.selectedAssemblyId, digitalTwin.mode, digitalTwin]);
++
+   const activeDiscipline =
+     DISCIPLINE_HIGHLIGHT_MAPPINGS[activeId] || DISCIPLINES[0];
+ 
+   // Motion Pass 1: Animate 6 to 8 degrees rotation and smooth explode gap on item change
+   useEffect(() => {
++    if (isInspector) return; // In inspector mode, rotation & explosion are controlled by user
+     if (previousActiveRef.current === activeId) return;
+     previousActiveRef.current = activeId;
+ 
+@@ -68,7 +130,7 @@ export function WhatWeDoSection() {
+     return () => {
+       tween.kill();
+     };
+-  }, [activeId, prefersReduced]);
++  }, [activeId, prefersReduced, isInspector]);
+ 
+   // Scroll-driven active item detection using IntersectionObserver
+   useEffect(() => {
+@@ -177,7 +239,7 @@ export function WhatWeDoSection() {
+           {/* Right Column: Sticky Centered Viewport on Black Field (No Border Box) */}
+           <div className="lg:col-span-7 lg:sticky lg:top-[calc(50vh-220px)] self-start py-4">
+             <div className="w-full flex items-center justify-center">
+-              {!activeDiscipline.has3DModel ? (
++              {!activeDiscipline.has3DModel && !isInspector ? (
+                 /* Engineering Documentation: No 3D model; clean 2D drawing sheet & BOM preview */
+                 <div className="w-full space-y-4 animate-in fade-in duration-normal">
+                   <div className="border border-pale-blue/30 bg-black/80 p-4 sm:p-6">
+@@ -186,24 +248,51 @@ export function WhatWeDoSection() {
+                 </div>
+               ) : (
+                 /* 3D AHU Model: Direct on black field, horizontal orientation, same isometric angle as hero, length-axis explode */
+-                <div className="w-full animate-in fade-in duration-normal">
++                <div
++                  className={
++                    digitalTwin.isFullscreen
++                      ? "fixed inset-0 z-50 bg-paper p-4 md:p-8 flex flex-col justify-center items-center"
++                      : "relative w-full animate-in fade-in duration-normal"
++                  }
++                >
++                  {!isInspector && (
++                    <button
++                      type="button"
++                      onClick={() => {
++                        digitalTwin.setMode("inspector");
++                        digitalTwin.setExplodeFactor(0.5); // Open to 50% to invite discovery
++                      }}
++                      aria-label="Inspect CAD Digital Twin"
++                      className="absolute top-4 right-4 z-20 flex items-center gap-2 px-3 py-1.5 rounded-[2px] bg-paper/90 backdrop-blur-sm border border-paper-line text-black text-caption font-semibold hover:bg-black hover:text-white transition-all shadow-sm"
++                    >
++                      <span className="w-2 h-2 rounded-full bg-royal animate-pulse" />
++                      <span>Inspect CAD Assembly</span>
++                    </button>
++                  )}
++
+                   <Scene
+-                    aspectRatio="aspect-[16/10]"
++                    aspectRatio={digitalTwin.isFullscreen ? "aspect-auto h-full w-full" : "aspect-[16/10]"}
+                     surface="black"
+                     orthographic={true}
+                     cameraPosition={[16, 13, 16]}
+                     borderless={true}
+                     modelScale={1.35}
++                    mode={digitalTwin.mode}
++                    cameraPreset={digitalTwin.cameraPreset}
+                     fallback={<M1DrawingFallback surface="black" exploded={true} />}
+                   >
+-                    <group rotation={[0, animatedRotationY, 0]}>
++                    <group rotation={[0, isInspector ? 0 : animatedRotationY, 0]}>
+                       <M1AirHandlingUnit
+                         surface="black"
+-                        explodeFactor={animatedExplode}
++                        explodeFactor={activeExplode}
++                        selectedAssemblyId={activeSelectedId as SubAssemblyId | null}
+                         activeDiscipline={activeId}
+                       />
++                      {isInspector && <DigitalTwinHotspots />}
+                     </group>
+                   </Scene>
++
++                  {isInspector && <DigitalTwinHUD />}
+                 </div>
+               )}
+             </div>
+@@ -213,3 +302,11 @@ export function WhatWeDoSection() {
+     </section>
+   );
+ }
++
++export function WhatWeDoSection() {
++  return (
++    <DigitalTwinProvider>
++      <WhatWeDoContent />
++    </DigitalTwinProvider>
++  );
++}

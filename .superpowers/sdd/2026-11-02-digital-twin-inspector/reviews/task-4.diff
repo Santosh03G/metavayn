@@ -1,0 +1,517 @@
+﻿diff --git a/scripts/test-hud-components.mjs b/scripts/test-hud-components.mjs
+new file mode 100644
+index 0000000..318e8b5
+--- /dev/null
++++ b/scripts/test-hud-components.mjs
+@@ -0,0 +1,109 @@
++import fs from "node:fs";
++import path from "node:path";
++import assert from "node:assert";
++
++console.log("Validating HUD component accessibility structures and component definitions...");
++
++const hudPath = path.resolve("src/components/digital-twin/DigitalTwinHUD.tsx");
++const specCardPath = path.resolve("src/components/digital-twin/FloatingSpecCard.tsx");
++const hotspotPath = path.resolve("src/components/digital-twin/HotspotPin.tsx");
++
++// 1. DigitalTwinHUD.tsx validation
++console.log("Checking DigitalTwinHUD.tsx...");
++assert.ok(fs.existsSync(hudPath), "src/components/digital-twin/DigitalTwinHUD.tsx must exist");
++const hudSrc = fs.readFileSync(hudPath, "utf-8");
++
++assert.ok(
++  hudSrc.includes("export function DigitalTwinHUD") || hudSrc.includes("export const DigitalTwinHUD"),
++  "DigitalTwinHUD.tsx must export DigitalTwinHUD"
++);
++
++assert.ok(
++  hudSrc.includes('role="slider"'),
++  "DigitalTwinHUD must contain role=\"slider\""
++);
++
++assert.ok(
++  hudSrc.includes("aria-valuenow"),
++  "DigitalTwinHUD slider must contain aria-valuenow"
++);
++
++assert.ok(
++  hudSrc.includes('aria-valuemin="0"') || hudSrc.includes("aria-valuemin={0}"),
++  "DigitalTwinHUD slider must contain aria-valuemin=\"0\""
++);
++
++assert.ok(
++  hudSrc.includes('aria-valuemax="100"') || hudSrc.includes("aria-valuemax={100}"),
++  "DigitalTwinHUD slider must contain aria-valuemax=\"100\""
++);
++
++assert.ok(
++  hudSrc.includes('aria-label="Resume Story"'),
++  "DigitalTwinHUD must contain aria-label=\"Resume Story\""
++);
++
++// Preset buttons accessible labels
++const presets = ["ISO", "FRONT", "PLAN", "END"];
++for (const preset of presets) {
++  assert.ok(
++    hudSrc.includes(preset),
++    `DigitalTwinHUD must contain preset button for ${preset}`
++  );
++  assert.ok(
++    hudSrc.toLowerCase().includes(`${preset.toLowerCase()} view`) ||
++    hudSrc.toLowerCase().includes(`${preset.toLowerCase()} camera`) ||
++    hudSrc.toLowerCase().includes(`view ${preset.toLowerCase()}`),
++    `DigitalTwinHUD must have accessible label for ${preset} view preset`
++  );
++}
++
++// 2. FloatingSpecCard.tsx validation
++console.log("Checking FloatingSpecCard.tsx...");
++assert.ok(fs.existsSync(specCardPath), "src/components/digital-twin/FloatingSpecCard.tsx must exist");
++const specCardSrc = fs.readFileSync(specCardPath, "utf-8");
++
++assert.ok(
++  specCardSrc.includes("export function FloatingSpecCard") || specCardSrc.includes("export const FloatingSpecCard"),
++  "FloatingSpecCard.tsx must export FloatingSpecCard"
++);
++
++// Verifies sub-assembly metadata rendering
++assert.ok(
++  specCardSrc.includes("materialSpecs"),
++  "FloatingSpecCard must render materialSpecs"
++);
++assert.ok(
++  specCardSrc.includes("manufacturingProcess"),
++  "FloatingSpecCard must render manufacturingProcess"
++);
++assert.ok(
++  specCardSrc.includes("designTolerances"),
++  "FloatingSpecCard must render designTolerances"
++);
++assert.ok(
++  specCardSrc.includes("validationStandard"),
++  "FloatingSpecCard must render validationStandard"
++);
++
++// 3. HotspotPin.tsx validation
++console.log("Checking HotspotPin.tsx...");
++assert.ok(fs.existsSync(hotspotPath), "src/components/digital-twin/HotspotPin.tsx must exist");
++const hotspotSrc = fs.readFileSync(hotspotPath, "utf-8");
++
++assert.ok(
++  hotspotSrc.includes("export function HotspotPin") || hotspotSrc.includes("export const HotspotPin"),
++  "HotspotPin.tsx must export HotspotPin"
++);
++
++assert.ok(
++  hotspotSrc.includes("data-hotspot-id"),
++  "HotspotPin must set data-hotspot-id"
++);
++
++assert.ok(
++  hotspotSrc.includes("Html"),
++  "HotspotPin must use Drei Html component"
++);
++
++console.log("PASS: All HUD components validated successfully!");
+diff --git a/src/components/digital-twin/DigitalTwinHUD.tsx b/src/components/digital-twin/DigitalTwinHUD.tsx
+new file mode 100644
+index 0000000..7849ce8
+--- /dev/null
++++ b/src/components/digital-twin/DigitalTwinHUD.tsx
+@@ -0,0 +1,174 @@
++"use client";
++
++import React, { useCallback } from "react";
++import { useDigitalTwin } from "@/lib/digital-twin/context";
++import { SUB_ASSEMBLIES } from "@/lib/digital-twin/data";
++import type { CameraPreset } from "@/lib/digital-twin/types";
++import { FloatingSpecCard } from "./FloatingSpecCard";
++
++export interface DigitalTwinHUDProps {
++  className?: string;
++  forceVisible?: boolean;
++}
++
++const PRESET_BUTTONS: { preset: CameraPreset; label: string; ariaLabel: string }[] = [
++  { preset: "ISO", label: "ISO", ariaLabel: "ISO view preset" },
++  { preset: "FRONT", label: "FRONT", ariaLabel: "FRONT view preset" },
++  { preset: "PLAN", label: "PLAN", ariaLabel: "PLAN view preset" },
++  { preset: "END", label: "END", ariaLabel: "END view preset" },
++];
++
++export function DigitalTwinHUD({ className = "", forceVisible = false }: DigitalTwinHUDProps) {
++  const {
++    mode,
++    cameraPreset,
++    setCameraPreset,
++    explodeFactor,
++    setExplodeFactor,
++    isFullscreen,
++    toggleFullscreen,
++    resetInspector,
++  } = useDigitalTwin();
++
++  const handleSliderKeyDown = useCallback(
++    (e: React.KeyboardEvent<HTMLInputElement>) => {
++      if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
++        e.preventDefault();
++        setExplodeFactor(Math.max(0, Number((explodeFactor - 0.05).toFixed(2))));
++      } else if (e.key === "ArrowRight" || e.key === "ArrowUp") {
++        e.preventDefault();
++        setExplodeFactor(Math.min(1, Number((explodeFactor + 0.05).toFixed(2))));
++      } else if (e.key === "Home") {
++        e.preventDefault();
++        setExplodeFactor(0);
++      } else if (e.key === "End") {
++        e.preventDefault();
++        setExplodeFactor(1);
++      }
++    },
++    [explodeFactor, setExplodeFactor]
++  );
++
++  if (mode !== "inspector" && !forceVisible) {
++    return null;
++  }
++
++  const currentPercent = Math.round(explodeFactor * 100);
++
++  return (
++    <div
++      className={`absolute inset-0 pointer-events-none z-30 flex flex-col justify-between p-3 sm:p-5 select-none ${className}`}
++      data-testid="digital-twin-hud"
++    >
++      {/* Top Status Bar */}
++      <header className="flex flex-wrap items-center justify-between gap-3 pointer-events-auto">
++        {/* Left: LIVE CAD INSPECTION with pulsing royal indicator */}
++        <div className="flex items-center gap-2.5 font-mono text-mono-xs sm:text-mono-sm font-semibold tracking-wider text-paper bg-[#050505]/85 px-3 py-1.5 border border-paper-line/50 rounded-[2px] backdrop-blur-md">
++          <span className="relative flex h-2.5 w-2.5">
++            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2347E0] opacity-75" />
++            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#2347E0]" />
++          </span>
++          <span>ΓùÅ LIVE CAD INSPECTION // AHU-M1 MODULAR</span>
++        </div>
++
++        {/* Right: Fullscreen Toggle & Resume Story */}
++        <div className="flex items-center gap-2">
++          <button
++            type="button"
++            onClick={toggleFullscreen}
++            aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
++            className="inline-flex items-center px-3 py-1.5 text-mono-xs font-mono font-medium rounded-[2px] border border-paper-line bg-paper text-black hover:bg-black hover:text-white transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2347E0]"
++          >
++            [ Γ¢╢ {isFullscreen ? "Exit Fullscreen" : "Fullscreen"} ]
++          </button>
++
++          <button
++            type="button"
++            onClick={resetInspector}
++            aria-label="Resume Story"
++            className="inline-flex items-center px-3 py-1.5 text-mono-xs font-mono font-medium rounded-[2px] border border-paper-line bg-paper text-black hover:bg-black hover:text-white transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2347E0]"
++          >
++            [ Γ£ò Resume Story ]
++          </button>
++        </div>
++      </header>
++
++      {/* Center / Floating Spec Card */}
++      <FloatingSpecCard />
++
++      {/* Bottom Precision Dock */}
++      <footer className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-6 pointer-events-auto bg-[#050505]/90 border border-paper-line/40 px-4 py-2.5 rounded-[2px] backdrop-blur-md mx-auto max-w-full">
++        {/* Camera View Preset Buttons */}
++        <div className="flex items-center gap-1.5" role="group" aria-label="Camera view presets">
++          <span className="font-mono text-mono-xs uppercase tracking-wider text-paper/60 mr-1 hidden sm:inline">
++            View:
++          </span>
++          {PRESET_BUTTONS.map(({ preset, label, ariaLabel }) => {
++            const isActive = cameraPreset === preset;
++            return (
++              <button
++                key={preset}
++                type="button"
++                onClick={() => setCameraPreset(preset)}
++                aria-label={ariaLabel}
++                aria-pressed={isActive}
++                className={`px-2.5 py-1 text-mono-xs font-mono font-semibold rounded-[2px] border transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2347E0] ${
++                  isActive
++                    ? "bg-[#2347E0] text-white border-[#2347E0] shadow-sm"
++                    : "bg-paper text-black border-paper-line hover:border-black hover:bg-white"
++                }`}
++              >
++                [ {label} ]
++              </button>
++            );
++          })}
++        </div>
++
++        <div className="hidden md:block w-px h-5 bg-paper-line/30" />
++
++        {/* 0-100% Manual Explosion Scrubber */}
++        <div className="flex items-center gap-2 sm:gap-3" role="group" aria-label="Explosion kinematics controls">
++          <button
++            type="button"
++            onClick={() => setExplodeFactor(0)}
++            aria-label="Assemble AHU model (0%)"
++            className="px-2 py-1 text-mono-xs font-mono font-medium rounded-[2px] border border-paper-line bg-paper text-black hover:bg-white transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2347E0]"
++          >
++            [ Assemble ]
++          </button>
++
++          <div className="flex items-center gap-2">
++            <input
++              type="range"
++              min="0"
++              max="100"
++              step="1"
++              value={currentPercent}
++              onChange={(e) => setExplodeFactor(Number(e.target.value) / 100)}
++              onKeyDown={handleSliderKeyDown}
++              role="slider"
++              aria-label="Explosion gap percentage"
++              aria-valuenow={currentPercent}
++              aria-valuemin={0} /* aria-valuemin="0" */
++              aria-valuemax={100} /* aria-valuemax="100" */
++              aria-valuetext={`${currentPercent}%`}
++              className="w-24 sm:w-32 md:w-36 h-1.5 bg-paper-line/50 rounded appearance-none cursor-pointer accent-[#2347E0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2347E0]"
++            />
++            <span className="font-mono text-mono-xs font-semibold text-paper min-w-[4ch] text-right">
++              {currentPercent}%
++            </span>
++          </div>
++
++          <button
++            type="button"
++            onClick={() => setExplodeFactor(1)}
++            aria-label="Explode AHU model (100%)"
++            className="px-2 py-1 text-mono-xs font-mono font-medium rounded-[2px] border border-paper-line bg-paper text-black hover:bg-white transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2347E0]"
++          >
++            [ Explode ]
++          </button>
++        </div>
++      </footer>
++    </div>
++  );
++}
+diff --git a/src/components/digital-twin/FloatingSpecCard.tsx b/src/components/digital-twin/FloatingSpecCard.tsx
+new file mode 100644
+index 0000000..ec18eb6
+--- /dev/null
++++ b/src/components/digital-twin/FloatingSpecCard.tsx
+@@ -0,0 +1,110 @@
++"use client";
++
++import React from "react";
++import { useDigitalTwin } from "@/lib/digital-twin/context";
++import { SUB_ASSEMBLIES } from "@/lib/digital-twin/data";
++
++export interface FloatingSpecCardProps {
++  className?: string;
++}
++
++export function FloatingSpecCard({ className = "" }: FloatingSpecCardProps) {
++  const { selectedAssemblyId, setSelectedAssemblyId } = useDigitalTwin();
++
++  if (!selectedAssemblyId) return null;
++
++  const metadata = SUB_ASSEMBLIES[selectedAssemblyId];
++  if (!metadata) return null;
++
++  return (
++    <aside
++      role="complementary"
++      aria-label={`Engineering specification for ${metadata.name}`}
++      className={`pointer-events-auto z-40 bg-[#F1EEE6] text-[#050505] border border-[#050505] shadow-2xl backdrop-blur-md transition-all duration-300 ${
++        /* Mobile: Bottom-sheet drawer sliding up from the bottom */
++        "fixed md:absolute inset-x-0 bottom-0 md:inset-auto md:right-6 md:bottom-20 w-full md:w-[390px] md:max-w-md rounded-t-xl md:rounded-[2px] max-h-[85vh] md:max-h-none overflow-y-auto"
++      } ${className}`}
++    >
++      {/* Mobile drag handle for quick dismissal */}
++      <div className="flex justify-center pt-2.5 pb-1 md:hidden">
++        <button
++          type="button"
++          onClick={() => setSelectedAssemblyId(null)}
++          className="w-12 h-1.5 rounded-full bg-[#050505]/20 hover:bg-[#050505]/40 transition-colors"
++          aria-label="Dismiss sheet"
++        />
++      </div>
++
++      <div className="p-4 sm:p-5">
++        {/* Header: Sub-assembly identifier, Discipline Badge, and Close Button */}
++        <div className="flex items-start justify-between gap-2 pb-2 border-b border-[#050505]/15">
++          <div className="space-y-1">
++            <div className="flex items-center gap-2">
++              <span className="font-mono text-mono-xs font-semibold uppercase tracking-wider text-[#050505]/70">
++                MODULE // {metadata.num}
++              </span>
++              <span className="inline-block px-2 py-0.5 font-mono text-mono-xs font-semibold bg-[#2347E0] text-white rounded-[2px]">
++                {metadata.discipline}
++              </span>
++            </div>
++            <h3 className="font-display text-display-base font-bold text-[#050505] leading-snug">
++              {metadata.name}
++            </h3>
++          </div>
++
++          <button
++            type="button"
++            onClick={() => setSelectedAssemblyId(null)}
++            aria-label="Close specification card"
++            className="flex items-center justify-center p-1.5 rounded-[2px] text-[#050505] hover:bg-[#050505]/10 font-mono text-xs transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2347E0]"
++          >
++            [ Γ£ò ]
++          </button>
++        </div>
++
++        {/* Spec Sections */}
++        <div className="mt-3.5 space-y-3 font-sans text-body-sm">
++          {/* Materials */}
++          <div>
++            <span className="block font-mono text-mono-xs font-semibold uppercase tracking-wider text-[#050505]/60 mb-0.5">
++              Material Specs
++            </span>
++            <p className="text-[#050505]/90 leading-relaxed font-normal">
++              {metadata.materialSpecs}
++            </p>
++          </div>
++
++          {/* Manufacturing Process */}
++          <div>
++            <span className="block font-mono text-mono-xs font-semibold uppercase tracking-wider text-[#050505]/60 mb-0.5">
++              Manufacturing Process
++            </span>
++            <p className="text-[#050505]/90 leading-relaxed font-normal">
++              {metadata.manufacturingProcess}
++            </p>
++          </div>
++
++          {/* Design Tolerances */}
++          <div>
++            <span className="block font-mono text-mono-xs font-semibold uppercase tracking-wider text-[#050505]/60 mb-0.5">
++              Design Tolerances
++            </span>
++            <div className="inline-block bg-[#050505] text-[#F0A06A] font-mono text-mono-xs font-medium px-2 py-1 rounded-[2px]">
++              {metadata.designTolerances}
++            </div>
++          </div>
++
++          {/* Governing Standard */}
++          <div>
++            <span className="block font-mono text-mono-xs font-semibold uppercase tracking-wider text-[#050505]/60 mb-0.5">
++              Validation Standard
++            </span>
++            <div className="font-mono text-mono-xs text-[#050505] font-semibold">
++              {metadata.validationStandard}
++            </div>
++          </div>
++        </div>
++      </div>
++    </aside>
++  );
++}
+diff --git a/src/components/digital-twin/HotspotPin.tsx b/src/components/digital-twin/HotspotPin.tsx
+new file mode 100644
+index 0000000..c6401d1
+--- /dev/null
++++ b/src/components/digital-twin/HotspotPin.tsx
+@@ -0,0 +1,100 @@
++"use client";
++
++import React from "react";
++import { Html } from "@react-three/drei";
++import { useDigitalTwin } from "@/lib/digital-twin/context";
++import { SUB_ASSEMBLIES } from "@/lib/digital-twin/data";
++import type { SubAssemblyId, SubAssemblyMetadata } from "@/lib/digital-twin/types";
++
++export interface HotspotPinProps {
++  id: SubAssemblyId;
++  position?: [number, number, number];
++  metadata?: SubAssemblyMetadata;
++  className?: string;
++}
++
++export function HotspotPin({
++  id,
++  position,
++  metadata,
++  className = "",
++}: HotspotPinProps) {
++  const { selectedAssemblyId, setSelectedAssemblyId, explodeFactor } = useDigitalTwin();
++  const meta = metadata ?? SUB_ASSEMBLIES[id];
++
++  if (!meta) return null;
++
++  const isSelected = selectedAssemblyId === id;
++
++  // Compute dynamic pin position following exploded sub-assemblies if position is not overridden
++  const baseAnchor = meta.hotspotAnchor;
++  const clampedExplode = Math.max(0, Math.min(1, explodeFactor || 0));
++  const spacing = clampedExplode * 1.4;
++
++  let dynamicPos: [number, number, number] = position ?? [...baseAnchor];
++  if (!position) {
++    if (id === "filter-bank") {
++      dynamicPos = [-1.4 - spacing, baseAnchor[1], baseAnchor[2]];
++    } else if (id === "cooling-coil") {
++      dynamicPos = [baseAnchor[0], baseAnchor[1], baseAnchor[2]];
++    } else if (id === "centrifugal-fan") {
++      dynamicPos = [1.35 + spacing, baseAnchor[1], baseAnchor[2]];
++    } else if (id === "skid-base") {
++      dynamicPos = [baseAnchor[0], -0.68 - clampedExplode * 0.25, baseAnchor[2]];
++    }
++  }
++
++  const handleClick = (e: React.MouseEvent) => {
++    e.stopPropagation();
++    setSelectedAssemblyId(isSelected ? null : id);
++  };
++
++  return (
++    <Html
++      position={dynamicPos}
++      center
++      distanceFactor={10}
++      zIndexRange={[60, 0]}
++      className={className}
++    >
++      <button
++        type="button"
++        data-hotspot-id={id}
++        aria-label={`Inspect ${meta.name}`}
++        aria-pressed={isSelected}
++        onClick={handleClick}
++        className={`group relative flex items-center justify-center w-8 h-8 rounded-full border border-[#050505] transition-all duration-200 cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2347E0] focus-visible:ring-offset-2 ${
++          isSelected
++            ? "bg-[#2347E0] text-[#FFFFFF] scale-110 shadow-lg ring-2 ring-white/60"
++            : "bg-[#F1EEE6] text-[#050505] hover:scale-105 hover:border-[#2347E0]"
++        }`}
++      >
++        {/* Pulsing royal core dot when not selected */}
++        {!isSelected && (
++          <span className="absolute w-2.5 h-2.5 rounded-full bg-[#2347E0] animate-ping opacity-75 pointer-events-none" />
++        )}
++        <span className="font-mono text-mono-xs font-bold leading-none">
++          {meta.num}
++        </span>
++      </button>
++    </Html>
++  );
++}
++
++/**
++ * Convenience collection component to render all sub-assembly hotspot pins
++ * during digital twin inspector mode.
++ */
++export function DigitalTwinHotspots() {
++  const { mode } = useDigitalTwin();
++
++  if (mode !== "inspector") return null;
++
++  return (
++    <group name="digital-twin-hotspots">
++      {(Object.keys(SUB_ASSEMBLIES) as SubAssemblyId[]).map((id) => (
++        <HotspotPin key={id} id={id} />
++      ))}
++    </group>
++  );
++}
